@@ -1,6 +1,5 @@
-# **Project Title**
+# **Sparse Hypergraph RAG: Bridging Structured Knowledge for Multi-Hop QA.**
 
-*Sparse Hypergraph RAG: Bridging Structured Knowledge for Multi-Hop QA.*
 
 SHGraphRAG is a hypergraph-based RAG framework that preserves key entities and uses 2-hop reasoning to improve multi-document QA.
 
