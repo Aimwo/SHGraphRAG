@@ -39,7 +39,6 @@ pip install -r requirements.txt
 ```
 dataset/xxx/xxx.parquet
 ```
-下面是一个适合放在 README 的英文环境变量配置说明（简洁、规范）：
 
 ---
 
@@ -57,8 +56,6 @@ export NEO4J_PASSWORD="your_password"
 
 ---
 
-如果你想，我还可以补充 `.env` 文件示例或用 `dotenv` 自动加载的版本。
-
 ### **Build the Graph**
 
 ```bash
@@ -66,7 +63,7 @@ export NEO4J_PASSWORD="your_password"
 python -m build.main
 
 ### **3️⃣ Inference**
-
+```
 ```bash
 python qa/hotpot_evaluate_v1.py
 ```
