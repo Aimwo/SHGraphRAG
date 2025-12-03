@@ -39,7 +39,31 @@ pip install -r requirements.txt
 ```
 dataset/xxx/xxx.parquet
 ```
+下面是一个适合放在 README 的英文环境变量配置说明（简洁、规范）：
 
+---
+
+### 🔧 Environment Configuration
+
+Before running the project, please configure the required environment variables:
+
+```bash
+export OPENAI_API_KEY="your_openai_api_key"
+export OLLAMA_EMBEDDINGS_MODEL="your_embedding_model_name"
+export NEO4J_URI="bolt://localhost:7687"
+export NEO4J_USER="neo4j"
+export NEO4J_PASSWORD="your_password"
+```
+
+---
+
+如果你想，我还可以补充 `.env` 文件示例或用 `dotenv` 自动加载的版本。
+
+### **Build the Graph**
+
+```bash
+# 执行完整构建
+python -m build.main
 
 ### **3️⃣ Inference**
 
