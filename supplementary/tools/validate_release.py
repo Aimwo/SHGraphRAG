@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import ast
 import hashlib
+from html.parser import HTMLParser
 import json
 from pathlib import Path
 import re
@@ -22,6 +23,20 @@ def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+class DocumentationHTMLLinks(HTMLParser):
+    """Collect navigation and badge paths in GitHub README HTML."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.targets = []
+
+    def handle_starttag(self, tag, attrs):
+        attribute = {"a": "href", "img": "src"}.get(tag)
+        if attribute:
+            self.targets.extend(value for key, value in attrs
+                                if key == attribute and value)
+
+
 def check_links(paths):
     errors = []
     for path in paths:
@@ -29,7 +44,10 @@ def check_links(paths):
             # Verbatim historical README retains its original image/navigation.
             continue
         text = path.read_text(encoding="utf-8-sig")
-        for target in re.findall(r"!?\[[^\]\n]*\]\(([^)\n]+)\)", text):
+        html_links = DocumentationHTMLLinks()
+        html_links.feed(text)
+        targets = re.findall(r"!?\[[^\]\n]*\]\(([^)\n]+)\)", text)
+        for target in [*targets, *html_links.targets]:
             target = target.split(" ", 1)[0].strip("<>")
             if not target or target.startswith(("#", "http://", "https://", "mailto:")):
                 continue

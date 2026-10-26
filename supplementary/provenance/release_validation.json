@@ -1,6 +1,6 @@
 {
   "record_kind": "publication_offline_validation_not_a_new_inference_run",
-  "validated_at": "2026-10-26T16:37:48.422770+00:00",
+  "validated_at": "2026-10-26T17:08:53.590911+00:00",
   "official_data_reconstruction": {
     "status": "passed",
     "seeds": [
@@ -1085,7 +1085,7 @@
   "fresh_dependency_installation_performed": false,
   "static_release_validation": {
     "status": "passed",
-    "published_files_checked": 592,
+    "published_files_checked": 598,
     "json_files_parsed": 82,
     "protocol_lists_checked": 6,
     "markdown_files_checked": 18,

@@ -1,6 +1,31 @@
-# SHGraphRAG 补充实验与复现
+<div align="center">
 
-[English](README.md) · [完整操作流程](supplementary/docs/QUICKSTART.md) · [详细配置](supplementary/docs/CONFIGURATION.md) · [历史结果](supplementary/docs/RESULTS.md)
+<h1>SHGraphRAG</h1>
+
+<p><strong>补充实验与完整复现</strong></p>
+
+<p>SHGraphRAG · HyperGraphRAG &nbsp; | &nbsp; GPT‑4o mini · DeepSeek</p>
+
+<p>
+  <a href="LICENSE"><img src="supplementary/assets/badges/license.svg" alt="许可证：MIT" height="20"></a>
+  <a href="supplementary/docs/ENVIRONMENT.md"><img src="supplementary/assets/badges/python.svg" alt="实际运行的 Python 版本：3.11 和 3.12" height="20"></a>
+  <a href="#先确认实验口径"><img src="supplementary/assets/badges/profiles.svg" alt="实验配置：4 组" height="20"></a>
+  <a href="supplementary/docs/DATA.md"><img src="supplementary/assets/badges/benchmarks.svg" alt="评测数据集：3 个" height="20"></a>
+  <a href="supplementary/docs/ENVIRONMENT.md#bgem3"><img src="supplementary/assets/badges/embedding.svg" alt="嵌入模型：BGE-M3" height="20"></a>
+</p>
+
+<p>
+  <a href="supplementary/docs/QUICKSTART.md"><strong>完整复现流程</strong></a> &nbsp;·&nbsp;
+  <a href="supplementary/docs/CONFIGURATION.md">详细配置</a> &nbsp;·&nbsp;
+  <a href="supplementary/docs/RESULTS.md">实验结果</a> &nbsp;·&nbsp;
+  <a href="supplementary/docs/PROVENANCE.md">源码溯源</a>
+</p>
+
+<p><a href="README.md">English</a> &nbsp;|&nbsp; <strong>简体中文</strong></p>
+
+</div>
+
+---
 
 本分支集中提供最近完成的 **SHGraphRAG / HyperGraphRAG × GPT‑4o mini / DeepSeek** 四组补充实验的完整执行代码、配置、提示词、依赖和复现流程。每组均包含 HotpotQA、2WikiMultiHopQA 和 MuSiQue-Ans 三个数据集，每个数据集评测 1,000 道开发集问题。
 
@@ -24,7 +49,7 @@
 - 原始提示词、依赖锁定、模型与嵌入配置、并发及重试设置。
 - 六份有序问题 ID 清单、官方数据版本与哈希、从本地官方开发集重建全部输入的脚本。
 - 脱敏后的配置、聚合指标和完成凭据，以及源码原始/发布 SHA‑256 与移植差异。
-- 英文详细文档、中文导航、两张本地 SVG 配图和离线检查工具。
+- 英文详细文档、中文导航、可点击的本地 SVG 徽章、两张配图和离线检查工具。
 
 按本分支的用途，**不上传数据正文、标准答案、预测、图数据库、索引、向量、响应缓存、模型权重、虚拟环境或任何密钥**。问题 ID 属于小型复现元数据，不含问题与段落文本。
 

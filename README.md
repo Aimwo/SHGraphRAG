@@ -1,8 +1,31 @@
-# SHGraphRAG · Supplementary Reproduction
+<div align="center">
 
-**Code, configurations, prompts, and execution procedures for the completed GPT‑4o mini and DeepSeek revision experiments.**
+<h1>SHGraphRAG</h1>
 
-[中文说明](README.zh-CN.md) · [Start reproducing](supplementary/docs/QUICKSTART.md) · [Experimental settings](supplementary/docs/CONFIGURATION.md) · [Recorded results](supplementary/docs/RESULTS.md) · [Source provenance](supplementary/docs/PROVENANCE.md)
+<p><strong>Supplementary Experiments &amp; Reproduction</strong></p>
+
+<p>SHGraphRAG · HyperGraphRAG &nbsp; | &nbsp; GPT‑4o mini · DeepSeek</p>
+
+<p>
+  <a href="LICENSE"><img src="supplementary/assets/badges/license.svg" alt="License: MIT" height="20"></a>
+  <a href="supplementary/docs/ENVIRONMENT.md"><img src="supplementary/assets/badges/python.svg" alt="Recorded Python versions: 3.11 and 3.12" height="20"></a>
+  <a href="#experiment-matrix"><img src="supplementary/assets/badges/profiles.svg" alt="Experiment profiles: 4" height="20"></a>
+  <a href="supplementary/docs/DATA.md"><img src="supplementary/assets/badges/benchmarks.svg" alt="Benchmarks: 3" height="20"></a>
+  <a href="supplementary/docs/ENVIRONMENT.md#bgem3"><img src="supplementary/assets/badges/embedding.svg" alt="Embedding: BGE-M3" height="20"></a>
+</p>
+
+<p>
+  <a href="supplementary/docs/QUICKSTART.md"><strong>Quick start</strong></a> &nbsp;·&nbsp;
+  <a href="supplementary/docs/CONFIGURATION.md">Configuration</a> &nbsp;·&nbsp;
+  <a href="supplementary/docs/RESULTS.md">Results</a> &nbsp;·&nbsp;
+  <a href="supplementary/docs/PROVENANCE.md">Provenance</a>
+</p>
+
+<p><strong>English</strong> &nbsp;|&nbsp; <a href="README.zh-CN.md">简体中文</a></p>
+
+</div>
+
+---
 
 ![Reproduction overview: official development releases, two frozen protocols, four implementations, and independent evaluation](supplementary/assets/reproduction-overview.svg)
 
@@ -61,7 +84,7 @@ Actual model execution requires both `--execute` and `--allow-model-api`. Offlin
 
 ```text
 supplementary/
-├── assets/                         # Editable SVG diagrams and their generator
+├── assets/                         # Local SVG badges, diagrams, and generators
 ├── code/
 │   ├── shgraphrag_gpt4omini/        # One implementation, three datasets
 │   ├── hypergraphrag_gpt4omini/     # One implementation, three datasets
