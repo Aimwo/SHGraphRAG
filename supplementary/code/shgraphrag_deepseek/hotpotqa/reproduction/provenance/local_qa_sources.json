@@ -1,0 +1,26 @@
+[
+  {
+    "name": "prediction.py",
+    "source": "D:\\Users\\hd\\Desktop\\2026-CommercialOrder\\OnGoingOrders\\Papers\\Paper_SHGraphRAG\\Edit\\Repo\\SHGraphRAG\\qa\\prediction.py",
+    "original_sha256": "491594ae61629636c0eb55034984a3c2b2006c1613b8a56d2935e91f811b5cfb",
+    "copied_at": "2026-10-24T11:40:50.8304039+08:00"
+  },
+  {
+    "name": "musique_evaluate_v1.0.py",
+    "source": "D:\\Users\\hd\\Desktop\\2026-CommercialOrder\\OnGoingOrders\\Papers\\Paper_SHGraphRAG\\Edit\\Repo\\SHGraphRAG\\qa\\musique_evaluate_v1.0.py",
+    "original_sha256": "0c4b44215afa26c4ed70e481d90b0e2a7519e696c0338bd9e0966581bc2ad7f6",
+    "copied_at": "2026-10-24T11:40:50.8347730+08:00"
+  },
+  {
+    "name": "hotpot_evaluate_v1.py",
+    "source": "D:\\Users\\hd\\Desktop\\2026-CommercialOrder\\OnGoingOrders\\Papers\\Paper_SHGraphRAG\\Edit\\Repo\\SHGraphRAG\\qa\\hotpot_evaluate_v1.py",
+    "original_sha256": "93d6928b7b4dc5aa34f1b8115a05faafc5c3772434ba4d7622def7c5f7d2d053",
+    "copied_at": "2026-10-24T11:40:50.8360398+08:00"
+  },
+  {
+    "name": "2wikimultihop_evaluate.py",
+    "source": "D:\\Users\\hd\\Desktop\\2026-CommercialOrder\\OnGoingOrders\\Papers\\Paper_SHGraphRAG\\Edit\\Repo\\SHGraphRAG\\qa\\2wikimultihop_evaluate.py",
+    "original_sha256": "5c2a656b165d96f4f627e6e295f5013da390316c77c019bb2db7d6ef881a5e38",
+    "copied_at": "2026-10-24T11:40:50.8373726+08:00"
+  }
+]

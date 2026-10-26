@@ -1,0 +1,20 @@
+{
+  "id": "2wiki",
+  "name": "2WikiMultiHopQA IDs release 2021-04-07",
+  "source_rows": 12576,
+  "source": "dataset/2wiki/dev.parquet",
+  "source_sha256": "fd4cece6f7dfd7e57ca015d39d7e431cf22208f7892b1d205c5b9e87146d2d0d",
+  "native_gold": "dataset/2wiki/dev.native.json",
+  "native_gold_sha256": "79f77ae104088ea8e25b1a65dbece768d45771194663bc5660ec9a98070dadf5",
+  "native_gold_format": "json",
+  "aliases": "dataset/2wiki/id_aliases.jsonl",
+  "aliases_sha256": "f08ffcb6c2cefca9bdbe86b4248d6ad7a7743762d3f7264c14ff0bae85726fb6",
+  "native_source": {
+    "source": "D:\\Users\\hd\\Desktop\\2026-CommercialOrder\\OnGoingOrders\\Papers\\Paper_SHGraphRAG\\Edit\\Repo\\SHGraphRAG\\dataset\\raw_official\\2wiki\\release_20210407\\dev.json",
+    "sha256": "79f77ae104088ea8e25b1a65dbece768d45771194663bc5660ec9a98070dadf5",
+    "conversion": "Native gold copied byte-for-byte; full Parquet preserves native candidates/order"
+  },
+  "conversion_helper_sha256": "84fbcc37045008ff30395a45d56ef94151c356bfd64526460f0ac424f16c569d",
+  "seed": 42,
+  "sample_size": 1000
+}

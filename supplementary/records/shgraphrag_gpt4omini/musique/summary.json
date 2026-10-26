@@ -1,0 +1,134 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-4omini-repro-20261021/reproduction/runs/full1000_4omini_v2_20261021/musique/summary.json",
+  "original_file_sha256": "c1722614e84155b2187852c69713ddec37df457c899f0f4ba0d8af43c28bcd76",
+  "content": {
+    "config": {
+      "dataset": "musique",
+      "limit": 1000,
+      "workers": 64,
+      "method_version": "source_alias_merge_global_graph_v2",
+      "source": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG",
+      "model": "openai/gpt-4o-mini",
+      "reasoning_effort": "none",
+      "provider": "openrouter",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api": "chat_completions",
+      "temperature": 0,
+      "reasoning_configuration": "non_reasoning_model_no_parameter",
+      "transport_timeout_s": 240,
+      "transport_max_attempts": 5,
+      "retry_incomplete_chunked_response": true,
+      "prediction_attempt_telemetry": "started_terminal_events_v1",
+      "retryable_finish_reasons": [
+        "content_filter",
+        "error"
+      ],
+      "malformed_finish_reason_retry": true,
+      "atomic_json_replace_max_attempts": 8,
+      "structured_max_attempts": 3,
+      "resource_sample_interval_s": 5,
+      "endpoint_completion": "fixed_missing_endpoint_records_v1_after_three_invalid_outputs",
+      "endpoint_completion_max_attempts": 3,
+      "max_subquestions": 6,
+      "path_length_edges": 2,
+      "questions_per_path": 2,
+      "embedding_model": "bge-m3:latest",
+      "embedding_dimensions": 1024,
+      "embedding_batch_size": 32,
+      "path_embedding_cache": "model_digest_exact_text_all_rows_retained",
+      "embedding_keep_alive": "5m",
+      "embedding_truncate": false,
+      "vector_dtype": "float32",
+      "vector_search": "exact_cosine_stable_tie_breaking",
+      "seed": 20261020,
+      "llm_seed": null,
+      "llm_seed_note": "No deterministic seed support established for this endpoint",
+      "top_paths": 3,
+      "top_entities": 2,
+      "top_hyperedges": 3,
+      "fallback_hyperedges": 2,
+      "entity_cosine_threshold": 0.3,
+      "entity_merge_threshold": 0.95,
+      "entity_merge_batch_size": 10,
+      "entity_merge_scope": "unlabelled_candidate_groups_construction_only",
+      "entity_index_text": "canonical_name",
+      "independent_subquestions": "parallel_waves_shared_request_semaphore",
+      "path_batch_size": 32,
+      "path_caps": null,
+      "storage": "isolated_JSON_graph_SQLite_embedding_cache_exact_cosine_numpy",
+      "retrieval_scope": "global_candidate_passage_union"
+    },
+    "data": {
+      "dataset": "musique",
+      "questions": 1000,
+      "passages": 11524,
+      "seed": 20261020,
+      "sample_status": "new_revision_sample_not_original_paper_sample",
+      "scope": "union_of_selected_questions_candidate_passages",
+      "retrieval_filter": "none_global_union",
+      "entity_merge_scope": "unlabelled_candidate_groups_construction_only",
+      "selection": "first_1000_frozen_ids_in_saved_sample_order",
+      "source_files": {
+        "sample_ids": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\musique\\sample_1000_seed20261020\\ids.json",
+          "sha256": "f040f245c0c49232e0aea1fdcf3a556c82446faff596d9708c0d6eac9a4da019"
+        },
+        "sample_gold": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\musique\\sample_1000_seed20261020\\gold.jsonl",
+          "sha256": "8be447021fa5a75309e6e80375bd2fb79dce78fc16a20267662b9569e8176459"
+        },
+        "sample_parquet": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\musique\\sample_1000_seed20261020\\questions.parquet",
+          "sha256": "7e93748c45cfd32d6f09ca90744d6df75b678e99ba93722a63875cafa8912f35"
+        },
+        "corpus": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\musique\\sample_1000_seed20261020\\candidate_corpus.jsonl",
+          "sha256": "3d76e8957a0a84c4526d1a7eae55f040aaeaa33a45f960cb7d3322bc48bd5447"
+        },
+        "question_passages": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\musique\\sample_1000_seed20261020\\question_passages.jsonl",
+          "sha256": "5f591fcd6fe2c950510fea2e682cc6fe1680572a39cdff523a030d27e2d8265f"
+        }
+      },
+      "inputs_sha256": {
+        "construction_groups.json": "64c8f969ddc874799df8dd2a3be4f4389270fd0794c0c83bd59355335b798d2a",
+        "corpus.jsonl": "47f413556b7fae4029db16fc581f4a823c3409565c4f34e98b384b2b65c9f4f8",
+        "ids.json": "0be72620d5d4ca29e4ffc6425a5d9689e98e0f5e19fa191734351a77502d1441",
+        "questions.json": "e873eb80412c6bb4a489a42d0c54fb3e3cc32ad57a93fb5fd54df662078e85cd"
+      }
+    },
+    "path_repository": {
+      "paths_expected": 1249734,
+      "paths_completed": 1249734,
+      "questions": 2499468,
+      "sha256": "1556f408b53a91b166c13952679f6bca20956f9ac674f33ac4f77b9f13606b54",
+      "batch_size": 32,
+      "caps": null
+    },
+    "metrics": {
+      "dataset": "musique",
+      "expected": 1000,
+      "completed": 1000,
+      "missing_or_failed": 0,
+      "primary_protocol": "HotpotQA_single_reference_answer_EM_token_F1",
+      "primary_em": 27.4,
+      "primary_f1": 38.87805905996307,
+      "native_alias_em": 30.6,
+      "native_alias_f1": 40.78932890123291,
+      "retrieval_passage_recall": 67.34999999999995,
+      "retrieval_all_supports": 40.2,
+      "supporting_passage_f1": 35.80015873015876,
+      "support_metric_note": "Passage-level diagnostic, not official sentence-level support F1.",
+      "direct_count": 191,
+      "direct_fraction": 0.191,
+      "nonempty_answers": 776
+    },
+    "coverage": {
+      "extractions": 11524,
+      "predictions": 1000,
+      "expected_questions": 1000,
+      "expected_passages": 11524
+    }
+  }
+}

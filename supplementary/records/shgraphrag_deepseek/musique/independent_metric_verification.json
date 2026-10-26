@@ -1,0 +1,13 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-upstream-deepseek-relay-20261024/reproduction/runs/musique1000_seed42_deepseek-relay-14ac1cd4ea79_20261024/independent_metric_verification.json",
+  "original_file_sha256": "b99d1452b00c21ba0b7ebc1995c907c0d55661d508aef1c32bd91b95d9989dcb",
+  "content": {
+    "passed": true,
+    "native_source_sha256": "0c4b44215afa26c4ed70e481d90b0e2a7519e696c0338bd9e0966581bc2ad7f6",
+    "questions": 1000,
+    "answer_em": 0.496,
+    "answer_f1": 0.6199591114261319,
+    "new_model_api_requests": 0
+  }
+}

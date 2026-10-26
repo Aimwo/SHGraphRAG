@@ -1,0 +1,16 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-upstream-deepseek-relay-20261024/reproduction/runs/musique1000_seed42_deepseek-relay-14ac1cd4ea79_20261024/metrics.json",
+  "original_file_sha256": "b24162c573d007166ebd0cc1c60837a2ac5e86c9906f1a7ad1df193bfa591b64",
+  "content": {
+    "answer_em": 0.496,
+    "answer_f1": 0.6199591114261311,
+    "answer_em_percent": 49.6,
+    "answer_f1_percent": 61.99591114261311,
+    "denominator": 1000,
+    "prediction_count": 1000,
+    "prediction_coverage": 1.0,
+    "missing_prediction_ids": [],
+    "metric_definition": "Supplied MuSiQue Ans normalization, token F1 and max over native aliases"
+  }
+}

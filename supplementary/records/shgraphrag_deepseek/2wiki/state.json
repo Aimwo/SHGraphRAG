@@ -1,0 +1,14 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-upstream-deepseek-relay-2wiki-20261024/reproduction/runs/2wiki1000_seed42_deepseek-relay-14ac1cd4ea79_20261024/state.json",
+  "original_file_sha256": "36b42939627112e227d6a98b1ddf7726ff25c4de435e6a7fff0c99bfda2a6186",
+  "content": {
+    "status": "completed",
+    "stage": "evaluation",
+    "started_at": "2026-10-25T03:59:47.924388+00:00",
+    "source_bundle_sha256": "c220524c775ade9caaed3e95cf1eac1776e6a78911783303ef8143be7656f40e",
+    "full_reproduction_completed": true,
+    "updated_at": "2026-10-25T04:06:00.895976+00:00",
+    "finished_at": "2026-10-25T04:06:04.884144+00:00"
+  }
+}

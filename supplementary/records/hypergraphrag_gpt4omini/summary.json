@@ -1,0 +1,130 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/CompareMethods/HyperGraphRAG/revision_openrouter/runs/full1000_gpt4omini_20261022_overflow1/summary.json",
+  "original_file_sha256": "aca24862abf7557b19fceb781555f9a16fae82085205acc0f218758119c9a584",
+  "content": {
+    "status": "completed",
+    "full_benchmark": true,
+    "datasets": [
+      {
+        "dataset": "hotpotqa",
+        "expected": 1000,
+        "completed": 1000,
+        "missing_or_failed": 0,
+        "primary_protocol": "HotpotQA_single_reference_answer_EM_token_F1",
+        "primary_em": 53.1,
+        "primary_f1": 69.12998127662406,
+        "native_alias_em": 53.1,
+        "native_alias_f1": 69.12998127662406,
+        "nonempty_answers": 972,
+        "retrieval_order": "global_branch_sources_then_local_deduplicated",
+        "passage_recall_at_2": 59.8,
+        "all_supports_at_2": 28.9,
+        "passage_recall_at_5": 78.75,
+        "all_supports_at_5": 60.2,
+        "passage_recall_at_10": 86.3,
+        "all_supports_at_10": 73.4,
+        "index": {
+          "directory": "index_20261021_152255",
+          "elapsed_s": 4336.2766533000395,
+          "new_llm_calls": 0,
+          "cached_llm_calls": 29799,
+          "full_docs": 9800,
+          "chunks": 9801,
+          "entity_nodes": 108237,
+          "hyperedge_nodes": 75979,
+          "incidence_edges": 182045,
+          "nodes_without_role": 0
+        },
+        "latency": {
+          "mean_s": 12.8784866422005,
+          "p50_s": 12.782814800040796,
+          "p95_s": 16.814963564951903,
+          "concurrent_query_workers": 32,
+          "note": "Shared provider/GPU contention; record cache hits separately"
+        }
+      },
+      {
+        "dataset": "2wiki",
+        "expected": 1000,
+        "completed": 1000,
+        "missing_or_failed": 0,
+        "primary_protocol": "HotpotQA_single_reference_answer_EM_token_F1",
+        "primary_em": 42.6,
+        "primary_f1": 48.51798701298703,
+        "native_alias_em": 45.9,
+        "native_alias_f1": 51.56004773004774,
+        "nonempty_answers": 843,
+        "retrieval_order": "global_branch_sources_then_local_deduplicated",
+        "passage_recall_at_2": 52.025,
+        "all_supports_at_2": 20.8,
+        "passage_recall_at_5": 63.75,
+        "all_supports_at_5": 32.7,
+        "passage_recall_at_10": 68.825,
+        "all_supports_at_10": 39.1,
+        "index": {
+          "directory": "index_20261021_230240",
+          "elapsed_s": 2485.667673500022,
+          "new_llm_calls": 10032,
+          "cached_llm_calls": 9092,
+          "full_docs": 6293,
+          "chunks": 6293,
+          "entity_nodes": 57836,
+          "hyperedge_nodes": 48384,
+          "incidence_edges": 102044,
+          "nodes_without_role": 0
+        },
+        "latency": {
+          "mean_s": 6.732301961201709,
+          "p50_s": 6.279145349981263,
+          "p95_s": 10.275968765001744,
+          "concurrent_query_workers": 32,
+          "note": "Shared provider/GPU contention; record cache hits separately"
+        }
+      },
+      {
+        "dataset": "musique",
+        "expected": 1000,
+        "completed": 1000,
+        "missing_or_failed": 0,
+        "primary_protocol": "HotpotQA_single_reference_answer_EM_token_F1",
+        "primary_em": 22.7,
+        "primary_f1": 33.7914554623742,
+        "native_alias_em": 25.3,
+        "native_alias_f1": 35.16922103013976,
+        "nonempty_answers": 795,
+        "retrieval_order": "global_branch_sources_then_local_deduplicated",
+        "passage_recall_at_2": 31.358333333333313,
+        "all_supports_at_2": 4.6,
+        "passage_recall_at_5": 42.76666666666664,
+        "all_supports_at_5": 11.5,
+        "passage_recall_at_10": 51.48333333333333,
+        "all_supports_at_10": 19.1,
+        "index": {
+          "directory": "index_20261022_061906",
+          "elapsed_s": 349.0273456000723,
+          "new_llm_calls": 0,
+          "cached_llm_calls": 35178,
+          "full_docs": 11524,
+          "chunks": 11524,
+          "entity_nodes": 115345,
+          "hyperedge_nodes": 89079,
+          "incidence_edges": 205480,
+          "nodes_without_role": 0
+        },
+        "latency": {
+          "mean_s": 6.143615162300877,
+          "p50_s": 5.8983414500253275,
+          "p95_s": 9.318005135108251,
+          "concurrent_query_workers": 32,
+          "note": "Shared provider/GPU contention; record cache hits separately"
+        }
+      }
+    ],
+    "invocation_wall_s": 226.13983220001683,
+    "average_em": 39.46666666666667,
+    "average_f1": 50.47980791732843,
+    "average_native_em": 41.43333333333334,
+    "average_native_f1": 51.95308334560386
+  }
+}

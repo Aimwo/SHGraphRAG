@@ -1,0 +1,43 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/CompareMethods/HyperGraphRAG/revision_openrouter/runs/full1000_gpt4omini_20261022_overflow1/musique/summary.json",
+  "original_file_sha256": "473253d7458136fea8657232df05199ae35a9d25fd7e75e28233f9827f7f9363",
+  "content": {
+    "dataset": "musique",
+    "expected": 1000,
+    "completed": 1000,
+    "missing_or_failed": 0,
+    "primary_protocol": "HotpotQA_single_reference_answer_EM_token_F1",
+    "primary_em": 22.7,
+    "primary_f1": 33.7914554623742,
+    "native_alias_em": 25.3,
+    "native_alias_f1": 35.16922103013976,
+    "nonempty_answers": 795,
+    "retrieval_order": "global_branch_sources_then_local_deduplicated",
+    "passage_recall_at_2": 31.358333333333313,
+    "all_supports_at_2": 4.6,
+    "passage_recall_at_5": 42.76666666666664,
+    "all_supports_at_5": 11.5,
+    "passage_recall_at_10": 51.48333333333333,
+    "all_supports_at_10": 19.1,
+    "index": {
+      "directory": "index_20261022_061906",
+      "elapsed_s": 349.0273456000723,
+      "new_llm_calls": 0,
+      "cached_llm_calls": 35178,
+      "full_docs": 11524,
+      "chunks": 11524,
+      "entity_nodes": 115345,
+      "hyperedge_nodes": 89079,
+      "incidence_edges": 205480,
+      "nodes_without_role": 0
+    },
+    "latency": {
+      "mean_s": 6.143615162300877,
+      "p50_s": 5.8983414500253275,
+      "p95_s": 9.318005135108251,
+      "concurrent_query_workers": 32,
+      "note": "Shared provider/GPU contention; record cache hits separately"
+    }
+  }
+}

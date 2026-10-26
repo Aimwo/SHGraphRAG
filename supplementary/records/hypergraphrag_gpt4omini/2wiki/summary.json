@@ -1,0 +1,43 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/CompareMethods/HyperGraphRAG/revision_openrouter/runs/full1000_gpt4omini_20261022_overflow1/2wiki/summary.json",
+  "original_file_sha256": "dc4f8c38711e255e1e172c852733c2f1a09470c535ccde7dfaebce48d1e4f944",
+  "content": {
+    "dataset": "2wiki",
+    "expected": 1000,
+    "completed": 1000,
+    "missing_or_failed": 0,
+    "primary_protocol": "HotpotQA_single_reference_answer_EM_token_F1",
+    "primary_em": 42.6,
+    "primary_f1": 48.51798701298703,
+    "native_alias_em": 45.9,
+    "native_alias_f1": 51.56004773004774,
+    "nonempty_answers": 843,
+    "retrieval_order": "global_branch_sources_then_local_deduplicated",
+    "passage_recall_at_2": 52.025,
+    "all_supports_at_2": 20.8,
+    "passage_recall_at_5": 63.75,
+    "all_supports_at_5": 32.7,
+    "passage_recall_at_10": 68.825,
+    "all_supports_at_10": 39.1,
+    "index": {
+      "directory": "index_20261021_230240",
+      "elapsed_s": 2485.667673500022,
+      "new_llm_calls": 10032,
+      "cached_llm_calls": 9092,
+      "full_docs": 6293,
+      "chunks": 6293,
+      "entity_nodes": 57836,
+      "hyperedge_nodes": 48384,
+      "incidence_edges": 102044,
+      "nodes_without_role": 0
+    },
+    "latency": {
+      "mean_s": 6.732301961201709,
+      "p50_s": 6.279145349981263,
+      "p95_s": 10.275968765001744,
+      "concurrent_query_workers": 32,
+      "note": "Shared provider/GPU contention; record cache hits separately"
+    }
+  }
+}

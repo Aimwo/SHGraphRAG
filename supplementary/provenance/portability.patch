@@ -1,0 +1,2647 @@
+--- a/code/hypergraphrag_deepseek/2wiki/experiment/capacity_recovery.py
++++ b/code/hypergraphrag_deepseek/2wiki/experiment/capacity_recovery.py
+@@ -23,20 +23,12 @@
+ 
+ 
+ def require_model_calls_allowed():
+-    """Fail before credential loading and before every physical request."""
+-    for parent in (ROOT, *ROOT.parents):
+-        coordination = parent / CAMPAIGN_NAME
+-        marker = coordination / "api_pause.json"
+-        if marker.is_file():
+-            pause = read_json(marker)
+-            campaign = read_json(coordination / "campaign.json")
+-            if pause.get("active") is not False or campaign.get("api_calls_paused"):
+-                raise RuntimeError(
+-                    "User paused campaign API calls; explicit user resume is required")
+-            from .resume_guard import require_conditional_release
+-            require_conditional_release(coordination)
+-            return
+-    raise RuntimeError("The campaign user-pause record is missing; calls remain disabled")
++    """Fresh public runs use explicit opt-in and a local stop marker."""
++    import os
++    if os.environ.get("SHGRAPHRAG_ALLOW_MODEL_API") != "1":
++        raise RuntimeError("Model calls require explicit opt-in for this fresh run")
++    if (ROOT / "STOP_MODEL_CALLS").exists():
++        raise RuntimeError("STOP_MODEL_CALLS exists; remove it only to resume intentionally")
+ 
+ 
+ def source_root_for(manifest):
+--- a/code/hypergraphrag_deepseek/2wiki/experiment/common.py
++++ b/code/hypergraphrag_deepseek/2wiki/experiment/common.py
+@@ -9,7 +9,7 @@
+ import time
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+-PROJECT = ROOT.parents[6]
++PROJECT = Path(os.environ.get("SHGRAPHRAG_DATA_ROOT", ROOT / "data")).resolve()
+ ITEM = contextvars.ContextVar("hypergraph_deepseek_item", default={})
+ 
+ 
+--- a/code/hypergraphrag_deepseek/2wiki/experiment/config.json
++++ b/code/hypergraphrag_deepseek/2wiki/experiment/config.json
+@@ -7,8 +7,7 @@
+   "allowed_returned_models": [
+     "deepseek-v4.1-flash"
+   ],
+-  "credential_id": "deepseek-relay-14ac1cd4ea79",
+-  "credential_file": "C:/Users/hd/.codex/secrets/shgraphrag/deepseek-relay-20261024.dpapi.json",
++  "credential_id": "user-supplied-DEEPSEEK_API_KEY",
+   "max_in_flight": 100,
+   "generation_parameters": {},
+   "generation_note": "Temperature, output caps and thinking controls are omitted unless explicitly supplied by the native method or confirmed for the chosen relay model.",
+@@ -34,7 +33,7 @@
+   "dataset": "2WikiMultiHopQA 2021-04-07 development",
+   "sample_seed": 42,
+   "sample_size": 1000,
+-  "reference_chat": "01a16c84-bb09-78b3-adde-be6601a96137",
+-  "authorization": "User explicitly authorized on 2026-10-25: after chat 01a16c84-bb09-78b3-adde-be6601a96137 completes its last dataset evaluation, resume this native HyperGraphRAG three-dataset experiment using the same DeepSeek relay/model/credential and local BGE-M3, with a combined physical request ceiling of 100. Preserve all reviewer evidence. No call is permitted before the saved completion condition.",
+-  "dataset_id": "2wiki"
++  "authorization": "Fresh runs require explicit local model API opt-in.",
++  "dataset_id": "2wiki",
++  "credential_environment": "DEEPSEEK_API_KEY"
+ }
+--- a/code/hypergraphrag_deepseek/2wiki/experiment/config.py
++++ b/code/hypergraphrag_deepseek/2wiki/experiment/config.py
+@@ -10,16 +10,13 @@
+ from .capacity_recovery import require_model_calls_allowed
+ 
+ CONFIG_PATH = ROOT / "experiment/config.json"
+-CREDENTIAL_ID = "deepseek-relay-14ac1cd4ea79"
+-CREDENTIAL_PATH = Path(
+-    "C:/Users/hd/.codex/secrets/shgraphrag/deepseek-relay-20261024.dpapi.json")
++CREDENTIAL_ID = "user-supplied-DEEPSEEK_API_KEY"
+ 
+ 
+ def validate(config, *, ready=True):
+     if config["provider"] != "deepseek-relay" or config["text_api"] != "openai-chat-completions":
+         raise ValueError("This run only authorizes the selected DeepSeek relay")
+-    if (config["credential_id"] != CREDENTIAL_ID
+-            or Path(config["credential_file"]).resolve() != CREDENTIAL_PATH.resolve()):
++    if config["credential_id"] != CREDENTIAL_ID:
+         raise ValueError("Credential identity changed")
+     if config["max_in_flight"] != 100:
+         raise ValueError("The shared request ceiling must remain 100")
+@@ -58,44 +55,12 @@
+ 
+ 
+ def read_authorized_key(config):
++    import os
+     validate(config)
+     require_model_calls_allowed()
+-    # This self-contained reader is copied from the referenced experiment.
+-    # Importing it reads no secret; decryption happens only below after validation.
+-    import ctypes
+-    from ctypes import wintypes
+-    import hashlib
+-    import os
+-    if os.name != "nt":
+-        raise RuntimeError("The selected credential uses Windows CurrentUser DPAPI")
+-    record = read_json(config["credential_file"])
+-    if record["credential_id"] != config["credential_id"]:
+-        raise ValueError("Saved credential identity differs")
+-
+-    class Blob(ctypes.Structure):
+-        _fields_ = [("cbData", wintypes.DWORD),
+-                    ("pbData", ctypes.POINTER(ctypes.c_ubyte))]
+-
+-    encrypted = bytes.fromhex(record["encrypted_key"])
+-    buffer = (ctypes.c_ubyte * len(encrypted)).from_buffer_copy(encrypted)
+-    source, destination = Blob(len(encrypted), buffer), Blob()
+-    crypt32 = ctypes.WinDLL("crypt32", use_last_error=True)
+-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+-    crypt32.CryptUnprotectData.argtypes = [
+-        ctypes.POINTER(Blob), ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p,
+-        ctypes.c_void_p, wintypes.DWORD, ctypes.POINTER(Blob)]
+-    crypt32.CryptUnprotectData.restype = wintypes.BOOL
+-    kernel32.LocalFree.argtypes = [ctypes.c_void_p]
+-    kernel32.LocalFree.restype = ctypes.c_void_p
+-    if not crypt32.CryptUnprotectData(
+-            ctypes.byref(source), None, None, None, None, 0, ctypes.byref(destination)):
+-        raise ctypes.WinError(ctypes.get_last_error())
+-    try:
+-        key = ctypes.string_at(destination.pbData, destination.cbData).decode("utf-16-le")
+-    finally:
+-        kernel32.LocalFree(destination.pbData)
+-    if not key or hashlib.sha256(key.encode()).hexdigest() != record["key_sha256"]:
+-        raise ValueError("Saved credential integrity check failed")
++    key = os.environ.get("DEEPSEEK_API_KEY", "").strip()
++    if not key:
++        raise RuntimeError("Set your own authorized DEEPSEEK_API_KEY in this process")
+     return key
+ 
+ 
+--- a/code/hypergraphrag_deepseek/2wiki/experiment/prepare.py
++++ b/code/hypergraphrag_deepseek/2wiki/experiment/prepare.py
+@@ -1,188 +1,49 @@
+-"""Freeze and independently reconstruct official seed42 development samples.
+-
+-All work is offline. Only queries.jsonl and candidate_corpus.jsonl are passed
+-to inference. Gold labels and answer aliases are used for validation/scoring.
+-"""
++"""Use independently reconstructed, hash-checked seed42 inputs."""
+ from __future__ import annotations
+-
+-from collections import Counter
+-import hashlib
+ import json
+-import random
+-
+-from .common import PROJECT, ROOT, file_hash, read_json, read_jsonl, write_json
++import shutil
++from .common import PROJECT, ROOT, file_hash, read_json, write_json
+ from .config import load_config
+-
+-RESEARCH = PROJECT / "Edit/Repo/SHGraphRAG"
+-SPECS = {
+-    "hotpotqa": {
+-        "name": "HotpotQA distractor development",
+-        "source": "dataset/paper_ready/hotpotqa/dev.json",
+-        "sha256": "5642f62c533df6066d86bb458af83d6fa7508d823173825ac9ae39f6de2308fa",
+-        "count": 7405,
+-        "parquet": "dataset/hotpot_qa/distractor/validation-00000-of-00001.parquet",
+-        "parquet_sha256": "c20b638ca82b21d04fe12e14ff417ad05153d4d215a65de54497fca4e972f7c6",
+-        "release": "hotpotqa/hotpot_qa commit 1908d6afbbead072334abe2965f91bd2709910ab",
+-    },
+-    "2wiki": {
+-        "name": "2WikiMultiHopQA 2021-04-07 development",
+-        "source": "dataset/raw_official/2wiki/release_20210407/dev.json",
+-        "sha256": "79f77ae104088ea8e25b1a65dbece768d45771194663bc5660ec9a98070dadf5",
+-        "count": 12576,
+-        "aliases": "dataset/raw_official/2wiki/release_20210407/id_aliases.json",
+-        "aliases_sha256": "f08ffcb6c2cefca9bdbe86b4248d6ad7a7743762d3f7264c14ff0bae85726fb6",
+-        "release": "Official 2021-04-07 IDs release; original candidate order",
+-    },
+-}
+-
+-
+-def dataset_id():
+-    dataset = load_config(ready=False)["dataset_id"]
+-    if dataset not in SPECS:
+-        raise ValueError("This adapter is scoped to HotpotQA and 2Wiki")
+-    return dataset
+-
+-
+-def payload():
+-    dataset = dataset_id()
+-    spec = SPECS[dataset]
+-    source = RESEARCH / spec["source"]
+-    if file_hash(source) != spec["sha256"]:
+-        raise ValueError("Official development source hash differs")
+-    if dataset == "hotpotqa" and file_hash(RESEARCH / spec["parquet"]) != spec["parquet_sha256"]:
+-        raise ValueError("Pinned HotpotQA Parquet source hash differs")
+-    official = read_json(source)
+-    by_id = {row["_id"]: row for row in official}
+-    if len(by_id) != len(official) or len(official) != spec["count"]:
+-        raise ValueError("Official release ID uniqueness/count differs")
+-    ids = random.Random(42).sample(sorted(by_id), 1000)
+-    gold = [by_id[qid] for qid in ids]
+-    queries = [{"id": row["_id"], "question": row["question"]} for row in gold]
+-    index = {row["_id"]: pos for pos, row in enumerate(official)}
+-    corpus, membership = {}, []
+-    missing_supports = []
+-    for row in gold:
+-        passage_ids = []
+-        if not row["context"] or not row["question"] or not isinstance(row["answer"], str):
+-            raise ValueError("Native sample has invalid question/context/answer fields")
+-        for title, sentences in row["context"]:
+-            if not isinstance(title, str) or not isinstance(sentences, list):
+-                raise ValueError("Native paragraph schema differs")
+-            text = title + "\n" + "\n".join(sentences)
+-            pid = hashlib.sha256(text.encode("utf-8")).hexdigest()
+-            value = {"id": pid, "title": title, "sentences": sentences, "text": text}
+-            if pid in corpus and corpus[pid] != value:
+-                raise ValueError("Passage content hash collision")
+-            corpus[pid] = value
+-            passage_ids.append(pid)
+-        membership.append({"question_id": row["_id"], "passage_ids": passage_ids})
+-        titles = {item[0] for item in row["context"]}
+-        absent = sorted({item[0] for item in row["supporting_facts"]} - titles)
+-        if absent:
+-            missing_supports.append({"question_id": row["_id"], "titles": absent})
+-    aliases = []
+-    if dataset == "2wiki":
+-        source = RESEARCH / spec["aliases"]
+-        if file_hash(source) != spec["aliases_sha256"]:
+-            raise ValueError("Official answer alias source hash differs")
+-        needed = {row.get("answer_id") for row in gold}
+-        aliases = [row for row in read_jsonl(source) if row["Q_id"] in needed]
+-        if len(aliases) != len({row["Q_id"] for row in aliases}):
+-            raise ValueError("Official answer alias IDs are not unique")
+-    return {
+-        "ids.json": ids,
+-        "source_indices.json": [index[qid] for qid in ids],
+-        "queries.jsonl": queries,
+-        "gold.jsonl": gold,
+-        "candidate_corpus.jsonl": list(corpus.values()),
+-        "question_passages.jsonl": membership,
+-        "answer_aliases.jsonl": aliases,
+-        "_statistics": {
+-            "candidate_occurrences": sum(len(r["passage_ids"]) for r in membership),
+-            "unique_candidate_passages": len(corpus),
+-            "type_counts": dict(Counter(row["type"] for row in gold)),
+-            "native_support_titles_absent_from_candidates": missing_supports,
+-        },
+-    }
+-
+-
+-def write_payload(path, value):
+-    path.parent.mkdir(parents=True, exist_ok=True)
+-    if path.suffix == ".jsonl":
+-        content = "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in value)
+-    else:
+-        content = json.dumps(value, ensure_ascii=False, indent=2) + "\n"
+-    if path.exists():
+-        existing = read_jsonl(path) if path.suffix == ".jsonl" else read_json(path)
+-        if existing != value:
+-            raise ValueError("Existing frozen input differs: " + path.name)
+-    else:
+-        path.write_text(content, encoding="utf-8")
+ 
+ 
+ def prepare():
+-    dataset, values = dataset_id(), payload()
++    dataset = load_config(ready=False)["dataset_id"]
++    source = PROJECT / "deepseek" / dataset
++    manifest = read_json(source / "manifest.json")
+     inputs = ROOT / "inputs"
+-    for name, value in values.items():
+-        if not name.startswith("_"):
+-            write_payload(inputs / name, value)
+-    spec = SPECS[dataset]
+-    manifest = {
+-        "dataset": spec["name"], "dataset_id": dataset, "split": "development",
+-        "seed": 42, "count": 1000, "source_count": spec["count"],
+-        "sampling": "random.Random(42).sample(sorted(unique_ids), 1000)",
+-        "order": "RNG draw order",
+-        "source": spec, "official_gold_sha256": spec["sha256"],
+-        "retrieval_scope": "global union of all selected candidate passages; no question ID filtering",
+-        "gold_policy": "evaluation only; model input is id/question and unlabeled passage text",
+-        "corpus_text_policy": "title + newline + original sentences joined with newlines; no resegmentation",
+-        "status": "new_revision_sample_not_original_paper_sample",
+-        **values["_statistics"],
+-        "files": {p.name: {"sha256": file_hash(p), "bytes": p.stat().st_size}
+-                  for p in sorted(inputs.iterdir()) if p.is_file() and p.name != "manifest.json"},
+-        "model_api_requests": 0,
+-    }
+-    current = inputs / "manifest.json"
+-    if current.exists() and read_json(current) != manifest:
+-        raise ValueError("Existing input manifest differs")
+-    write_json(current, manifest)
++    inputs.mkdir(exist_ok=True)
++    for name, record in manifest["files"].items():
++        if file_hash(source / name) != record["sha256"]:
++            raise ValueError("Prepared data hash changed: " + name)
++        target = inputs / name
++        if target.exists() and file_hash(target) != record["sha256"]:
++            raise ValueError("Existing experiment input differs: " + name)
++        if not target.exists():
++            shutil.copyfile(source / name, target)
++    write_json(inputs / "manifest.json", manifest)
+     return validate_inputs()
+ 
+ 
+ def validate_inputs():
+     inputs = ROOT / "inputs"
+     manifest = read_json(inputs / "manifest.json")
+-    if (manifest["dataset_id"] != dataset_id() or manifest["seed"] != 42
+-            or manifest["count"] != 1000):
+-        raise ValueError("Frozen dataset/seed/sample size differs")
+-    for name, expected in manifest["files"].items():
+-        if file_hash(inputs / name) != expected["sha256"]:
++    dataset = load_config(ready=False)["dataset_id"]
++    if manifest["dataset_id"] != dataset or manifest["seed"] != 42 or manifest["count"] != 1000:
++        raise ValueError("Wrong dataset, seed, or evaluation denominator")
++    for name, record in manifest["files"].items():
++        if file_hash(inputs / name) != record["sha256"]:
+             raise ValueError("Frozen input hash differs: " + name)
+-    expected = payload()
+-    for name, value in expected.items():
+-        if name.startswith("_"):
+-            continue
+-        actual = read_jsonl(inputs / name) if name.endswith(".jsonl") else read_json(inputs / name)
+-        if actual != value:
+-            raise ValueError("Input does not reconstruct from official release: " + name)
+-    if any(set(query) != {"id", "question"} for query in expected["queries.jsonl"]):
+-        raise ValueError("Inference queries expose evaluation-only annotations")
+-    for name, value in expected["_statistics"].items():
+-        if manifest[name] != value:
+-            raise ValueError("Corpus statistics differ")
+-    return {
+-        "passed": True, "dataset": dataset_id(), "questions": 1000,
+-        "passages": manifest["unique_candidate_passages"],
+-        "candidate_occurrences": manifest["candidate_occurrences"],
+-        "seed": 42, "inputs_sha256": file_hash(inputs / "manifest.json"), "api_calls": 0,
+-    }
++    ids = read_json(inputs / "ids.json")
++    queries = [json.loads(line) for line in (inputs / "queries.jsonl").read_text(encoding="utf-8").splitlines()]
++    if len(set(ids)) != 1000 or [row["id"] for row in queries] != ids or any(set(row) != {"id", "question"} for row in queries):
++        raise ValueError("Inference fields or ID alignment differ")
++    expected = read_json(ROOT.parents[2] / "protocols/seed42" / dataset / "ids.json")
++    if ids != expected:
++        raise ValueError("Question IDs differ from the completed experiment")
++    return {"passed": True, "dataset": dataset, "questions": 1000, "seed": 42,
++            "passages": manifest["unique_candidate_passages"],
++            "inputs_sha256": file_hash(inputs / "manifest.json"), "api_calls": 0}
+ 
+ 
+ if __name__ == "__main__":
+-    import argparse
+-    parser = argparse.ArgumentParser()
+-    parser.add_argument("--validate-only", action="store_true")
+-    args = parser.parse_args()
+-    report = validate_inputs() if args.validate_only else prepare()
+-    write_json(ROOT / "audit/input_validation.json", report)
+-    print(json.dumps(report, ensure_ascii=True, indent=2))
++    print(json.dumps(prepare(), indent=2))
+--- a/code/hypergraphrag_deepseek/2wiki/experiment/run.py
++++ b/code/hypergraphrag_deepseek/2wiki/experiment/run.py
+@@ -20,7 +20,7 @@
+ from .config import load_config, read_authorized_key
+ from .prepare import validate_inputs
+ 
+-os.environ["TIKTOKEN_CACHE_DIR"] = str(ROOT / "tokenizer_cache")
++os.environ.setdefault("TIKTOKEN_CACHE_DIR", str(ROOT / "tokenizer_cache"))
+ for stream in (sys.stdout, sys.stderr):
+     if hasattr(stream, "reconfigure"):
+         stream.reconfigure(encoding="utf-8", errors="backslashreplace")
+@@ -105,7 +105,7 @@
+         "source_provenance": original,
+         "dependency_lock_sha256": file_hash(ROOT / "provenance/requirements.lock.txt"),
+         "python_hash_seed": os.environ.get("PYTHONHASHSEED"),
+-        "capacity_recovery_import": read_json(ROOT / "provenance/capacity_recovery.json"),
++        "capacity_recovery_import": None,  # Public fresh run; no private caches imported.
+     }
+ 
+ 
+--- a/code/hypergraphrag_deepseek/2wiki/experiment/test_additional_datasets.py
++++ b/code/hypergraphrag_deepseek/2wiki/experiment/test_additional_datasets.py
+@@ -9,7 +9,7 @@
+ 
+ class NativeDatasetTests(unittest.TestCase):
+     def test_native_metric_primitives_match_both_supplied_reference_scripts(self):
+-        qa = PROJECT / "Edit/Repo/SHGraphRAG/qa"
++        qa = ROOT.parents[2] / "code/shgraphrag_gpt4omini/qa"
+         pairs = [
+             ("The Paris.", "paris"), ("yes indeed", "yes"), ("yes", "yes"),
+             ("", "some answer"), ("first second", "second third"), ("", ""),
+--- a/code/hypergraphrag_deepseek/2wiki/experiment/test_experiment.py
++++ b/code/hypergraphrag_deepseek/2wiki/experiment/test_experiment.py
+@@ -410,7 +410,7 @@
+                                     "contract", "index", {"passage"})
+ 
+     def test_answer_metrics_match_supplied_musique_answer_metric(self):
+-        path = PROJECT / "Edit/Repo/SHGraphRAG/qa/musique_evaluate_v1.0.py"
++        path = ROOT.parents[2] / "code/shgraphrag_gpt4omini/qa/musique_evaluate_v1.0.py"
+         spec = importlib.util.spec_from_file_location("reference_musique_metric", path)
+         reference = importlib.util.module_from_spec(spec)
+         spec.loader.exec_module(reference)
+--- a/code/hypergraphrag_deepseek/2wiki/experiment/verify.py
++++ b/code/hypergraphrag_deepseek/2wiki/experiment/verify.py
+@@ -163,6 +163,10 @@
+     summary_audit = audit_summary_outputs(run, graph, index["directory"])
+     from .summary_reuse import audit_seeded_validation
+     validation_audit = audit_seeded_validation(run)
++    imported_timing = (capacity_import["timing"] if capacity_import is not None else {
++        "construction_wall_s_including_observed_upper_bounds": 0.0,
++        "invocation_wall_s_including_observed_upper_bounds": 0.0,
++    })  # A fresh run has no imported physical history.
+     report = {
+         "status": "verified_complete", "dataset": DATASET, "questions": 1000,
+         "capacity_recovery_import_audit": capacity_import,
+@@ -173,10 +177,10 @@
+         "missing_or_failed_predictions": metrics["missing_or_failed"],
+         "native_alias_em": metrics["native_alias_em"], "native_alias_f1": metrics["native_alias_f1"],
+         "construction_wall_s_all_attempts": sum(a["wall_s"] for a in construction)
+-            + capacity_import["timing"]["construction_wall_s_including_observed_upper_bounds"],
++            + imported_timing["construction_wall_s_including_observed_upper_bounds"],
+         "construction_last_success_wall_s": index["wall_s"],
+         "execution_wall_s_all_invocations": sum(a["wall_s"] for a in invocations)
+-            + capacity_import["timing"]["invocation_wall_s_including_observed_upper_bounds"],
++            + imported_timing["invocation_wall_s_including_observed_upper_bounds"],
+         "query_phase_wall_s_all_attempts": sum(p["wall_s"] for p in phases if p["phase"] == "query_finished"),
+         "latency_s": {"mean": statistics.mean(latencies),
+                       "p50": float(np.percentile(latencies, 50)),
+--- a/code/hypergraphrag_deepseek/2wiki/launch.ps1
++++ b/code/hypergraphrag_deepseek/2wiki/launch.ps1
+@@ -1,85 +1,18 @@
+ [CmdletBinding()]
+ param(
+-    [ValidateSet('Check', 'Checks', 'Start', 'Status', 'Evaluate', 'Verify')]
+-    [string]$Action = 'Check'
++    [ValidateSet('plan','prepare','run','evaluate','verify')]
++    [string]$Action = 'plan',
++    [Parameter(Mandatory=$true)][string]$DataRoot,
++    [string]$Python = 'python',
++    [switch]$AllowModelApi
+ )
+-
+ $ErrorActionPreference = 'Stop'
+-$experimentRoot = $PSScriptRoot
+-$researchRoot = (Resolve-Path -LiteralPath (Join-Path $experimentRoot '../../../..')).Path
+-$experimentPython = Join-Path $researchRoot '.runtime/hypergraphrag-native-20261024/Scripts/python.exe'
+-if (-not (Test-Path -LiteralPath $experimentPython -PathType Leaf)) {
+-    throw 'The dedicated experiment interpreter is missing.'
+-}
+-
+-$previousDirectory = (Get-Location).Path
+-$previousUtf8 = $env:PYTHONUTF8
+-$previousHashSeed = $env:PYTHONHASHSEED
+-$previousIoEncoding = $env:PYTHONIOENCODING
+-try {
+-    Set-Location -LiteralPath $experimentRoot
+-    $env:PYTHONUTF8 = '1'
+-    $env:PYTHONHASHSEED = '42'
+-    $env:PYTHONIOENCODING = 'utf-8'
+-    switch ($Action) {
+-        'Check' {
+-            & $experimentPython -X utf8 -m experiment.run --check
+-            if ($LASTEXITCODE -ne 0) { throw 'Offline readiness check failed.' }
+-        }
+-        'Checks' {
+-            & $experimentPython -X utf8 -m experiment.offline_checks
+-            if ($LASTEXITCODE -ne 0) { throw 'Offline checks failed; inspect audit/offline_tests.log.' }
+-        }
+-        'Start' {
+-            & $experimentPython -X utf8 -m experiment.run --check
+-            if ($LASTEXITCODE -ne 0) { throw 'Offline readiness check failed.' }
+-            $readiness = Get-Content -LiteralPath (Join-Path $experimentRoot 'audit/readiness.json') -Raw |
+-                ConvertFrom-Json
+-            if ($readiness.status -ne 'ready_to_run') {
+-                throw 'Supply the confirmed DeepSeek relay Base URL and exact API model ID before starting.'
+-            }
+-            $launchDirectory = Join-Path $experimentRoot ('launches/' + (Get-Date -Format 'yyyyMMdd_HHmmss_fff'))
+-            [void](New-Item -ItemType Directory -Path $launchDirectory -Force)
+-            $stdoutPath = Join-Path $launchDirectory 'stdout.log'
+-            $stderrPath = Join-Path $launchDirectory 'stderr.log'
+-            $worker = Start-Process -FilePath $experimentPython `
+-                -ArgumentList @('-X', 'utf8', '-u', '-m', 'experiment.run') `
+-                -WorkingDirectory $experimentRoot -WindowStyle Hidden `
+-                -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath -PassThru
+-            $launchRecord = [ordered]@{
+-                pid = $worker.Id
+-                launched_at = (Get-Date -Format 'o')
+-                interpreter = $experimentPython
+-                stdout = $stdoutPath
+-                stderr = $stderrPath
+-                note = 'Launch is not completion; inspect run/status.json and run/verification.json.'
+-            }
+-            $recordPath = Join-Path $experimentRoot 'launcher.json'
+-            [System.IO.File]::WriteAllText(
+-                $recordPath, ($launchRecord | ConvertTo-Json -Depth 8),
+-                [System.Text.UTF8Encoding]::new($false))
+-            $launchRecord | ConvertTo-Json -Depth 8
+-        }
+-        'Status' {
+-            $statusPath = Join-Path $experimentRoot 'run/status.json'
+-            if (Test-Path -LiteralPath $statusPath) {
+-                Get-Content -LiteralPath $statusPath -Raw
+-            } else {
+-                '{"status":"not_started","full_experiment_completed":false}'
+-            }
+-        }
+-        'Evaluate' {
+-            & $experimentPython -X utf8 -m experiment.evaluate
+-            if ($LASTEXITCODE -ne 0) { throw 'Evaluation failed.' }
+-        }
+-        'Verify' {
+-            & $experimentPython -X utf8 -m experiment.verify
+-            if ($LASTEXITCODE -ne 0) { throw 'Completion verification failed.' }
+-        }
+-    }
+-} finally {
+-    Set-Location -LiteralPath $previousDirectory
+-    $env:PYTHONUTF8 = $previousUtf8
+-    $env:PYTHONHASHSEED = $previousHashSeed
+-    $env:PYTHONIOENCODING = $previousIoEncoding
+-}
++$supplement = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../../..')).Path
++$dataset = Split-Path -Leaf $PSScriptRoot
++$arguments = @((Join-Path $supplement 'tools/reproduce.py'),
++    '--profile','hyper-deepseek','--dataset',$dataset,'--data-root',$DataRoot,
++    '--phase',$Action)
++if ($Action -ne 'plan') { $arguments += '--execute' }
++if ($AllowModelApi) { $arguments += '--allow-model-api' }
++& $Python @arguments
++exit $LASTEXITCODE
+--- a/code/hypergraphrag_deepseek/2wiki/provenance/source.json
++++ b/code/hypergraphrag_deepseek/2wiki/provenance/source.json
+@@ -1,30 +1,28 @@
+ {
+   "official_repository": "https://github.com/LHRLAB/HyperGraphRAG",
+   "official_commit": "d587cdf8c3fe2be7719557f845324cb3a321f5e2",
+-  "copied_working_source": "D:\\Users\\hd\\Desktop\\2026-CommercialOrder\\OnGoingOrders\\Papers\\Paper_SHGraphRAG\\Edit\\Repo\\CompareMethods\\HyperGraphRAG",
++  "copied_working_source": "vendored HyperGraphRAG source in this directory",
+   "source_sha256": {
+-    "hypergraphrag\\__init__.py": "42db2a734b8c565ead8ea7d84f1422226dba430674d2e28e124b8656c8a02103",
+-    "hypergraphrag\\base.py": "2d9437b8c1c005c64902b04a4a978efa8d52395ee3703c363070ce9509ec6c68",
+-    "hypergraphrag\\hypergraphrag.py": "2b1c49dd201232706705526dfe16d55a451b7b8a63837aea8e9978a6b56cfc79",
+-    "hypergraphrag\\kg\\__init__.py": "fbd3eff0946b1cd66087d6a8ced0d073e050b053fa70e082af6769923565a202",
+-    "hypergraphrag\\kg\\chroma_impl.py": "b9aaf16bda1a7155c1ccc42e41439be3c0ff9edb81dd4e48f09a8be4a782774d",
+-    "hypergraphrag\\kg\\milvus_impl.py": "a1d491c90faf98ee9e0c6e0747c04f841aa0827a0169b2be0811f366f768a6d8",
+-    "hypergraphrag\\kg\\mongo_impl.py": "c37b8ba5582216c3c3986eabe7bdc02e9b33f99e2f9de941523041323517c5bf",
+-    "hypergraphrag\\kg\\neo4j_impl.py": "8c26260a07953da3387592b63b8049eb302a31845b75fae7ab27cff55f688078",
+-    "hypergraphrag\\kg\\oracle_impl.py": "e44e57dfaa692f7583eda2dd6033006b4ec91fe30b7fc0493d29dc8666405ced",
+-    "hypergraphrag\\kg\\tidb_impl.py": "fa9dd0fceab7e699facbb4c13f536267cff7acff751a9131d873203e7f75feb8",
+-    "hypergraphrag\\llm.py": "aa62c03e368aa5bfd8765820c12db7e3b0b3bf43d292a0c980af60cac74c44a3",
+-    "hypergraphrag\\operate.py": "2751b4c8f94da95918b6458635159fd8767e0e0ab2ce93b2a0cac4bd42f9faa3",
+-    "hypergraphrag\\prompt.py": "2730b18d849641d9dedafad2374034bd5ed90d403402a1991ea0596e869b085e",
+-    "hypergraphrag\\storage.py": "42c270938b33169cbacb85415a43dc32e0e3cf459e4485b5f09ff11fce5e4669",
+-    "hypergraphrag\\utils.py": "77fa3fdf368b7b3df1da3a5a6f88bdadb65a9265d8b2b50903d55a7889eb9eca"
++    "hypergraphrag/__init__.py": "42db2a734b8c565ead8ea7d84f1422226dba430674d2e28e124b8656c8a02103",
++    "hypergraphrag/base.py": "2d9437b8c1c005c64902b04a4a978efa8d52395ee3703c363070ce9509ec6c68",
++    "hypergraphrag/hypergraphrag.py": "2b1c49dd201232706705526dfe16d55a451b7b8a63837aea8e9978a6b56cfc79",
++    "hypergraphrag/kg/__init__.py": "fbd3eff0946b1cd66087d6a8ced0d073e050b053fa70e082af6769923565a202",
++    "hypergraphrag/kg/chroma_impl.py": "b9aaf16bda1a7155c1ccc42e41439be3c0ff9edb81dd4e48f09a8be4a782774d",
++    "hypergraphrag/kg/milvus_impl.py": "a1d491c90faf98ee9e0c6e0747c04f841aa0827a0169b2be0811f366f768a6d8",
++    "hypergraphrag/kg/mongo_impl.py": "c37b8ba5582216c3c3986eabe7bdc02e9b33f99e2f9de941523041323517c5bf",
++    "hypergraphrag/kg/neo4j_impl.py": "8c26260a07953da3387592b63b8049eb302a31845b75fae7ab27cff55f688078",
++    "hypergraphrag/kg/oracle_impl.py": "e44e57dfaa692f7583eda2dd6033006b4ec91fe30b7fc0493d29dc8666405ced",
++    "hypergraphrag/kg/tidb_impl.py": "fa9dd0fceab7e699facbb4c13f536267cff7acff751a9131d873203e7f75feb8",
++    "hypergraphrag/llm.py": "aa62c03e368aa5bfd8765820c12db7e3b0b3bf43d292a0c980af60cac74c44a3",
++    "hypergraphrag/operate.py": "2751b4c8f94da95918b6458635159fd8767e0e0ab2ce93b2a0cac4bd42f9faa3",
++    "hypergraphrag/prompt.py": "2730b18d849641d9dedafad2374034bd5ed90d403402a1991ea0596e869b085e",
++    "hypergraphrag/storage.py": "42c270938b33169cbacb85415a43dc32e0e3cf459e4485b5f09ff11fce5e4669",
++    "hypergraphrag/utils.py": "77fa3fdf368b7b3df1da3a5a6f88bdadb65a9265d8b2b50903d55a7889eb9eca"
+   },
+   "patch_sha256": "74972a0bd89768b728fcf2295b65e3346695d71b60155a9d653206b4a86d5a7a",
+   "prior_model_outputs_copied": false,
+   "prior_vectors_copied": false,
+   "credentials_copied_or_loaded": false,
+-  "reference_chat": "01a16c84-bb09-78b3-adde-be6601a96137",
+-  "upstream_reference_chat": "01a15ac7-0a19-7f51-88dd-fe73d6040d6f",
+   "source_notes": [
+     "Original tuple prompts, graph construction and hybrid ranking retained.",
+     "Existing instrumentation adds retrieval trace and exception-safe async scheduling.",
+--- a/code/hypergraphrag_deepseek/hotpotqa/experiment/capacity_recovery.py
++++ b/code/hypergraphrag_deepseek/hotpotqa/experiment/capacity_recovery.py
+@@ -23,20 +23,12 @@
+ 
+ 
+ def require_model_calls_allowed():
+-    """Fail before credential loading and before every physical request."""
+-    for parent in (ROOT, *ROOT.parents):
+-        coordination = parent / CAMPAIGN_NAME
+-        marker = coordination / "api_pause.json"
+-        if marker.is_file():
+-            pause = read_json(marker)
+-            campaign = read_json(coordination / "campaign.json")
+-            if pause.get("active") is not False or campaign.get("api_calls_paused"):
+-                raise RuntimeError(
+-                    "User paused campaign API calls; explicit user resume is required")
+-            from .resume_guard import require_conditional_release
+-            require_conditional_release(coordination)
+-            return
+-    raise RuntimeError("The campaign user-pause record is missing; calls remain disabled")
++    """Fresh public runs use explicit opt-in and a local stop marker."""
++    import os
++    if os.environ.get("SHGRAPHRAG_ALLOW_MODEL_API") != "1":
++        raise RuntimeError("Model calls require explicit opt-in for this fresh run")
++    if (ROOT / "STOP_MODEL_CALLS").exists():
++        raise RuntimeError("STOP_MODEL_CALLS exists; remove it only to resume intentionally")
+ 
+ 
+ def source_root_for(manifest):
+--- a/code/hypergraphrag_deepseek/hotpotqa/experiment/common.py
++++ b/code/hypergraphrag_deepseek/hotpotqa/experiment/common.py
+@@ -9,7 +9,7 @@
+ import time
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+-PROJECT = ROOT.parents[6]
++PROJECT = Path(os.environ.get("SHGRAPHRAG_DATA_ROOT", ROOT / "data")).resolve()
+ ITEM = contextvars.ContextVar("hypergraph_deepseek_item", default={})
+ 
+ 
+--- a/code/hypergraphrag_deepseek/hotpotqa/experiment/config.json
++++ b/code/hypergraphrag_deepseek/hotpotqa/experiment/config.json
+@@ -7,8 +7,7 @@
+   "allowed_returned_models": [
+     "deepseek-v4.1-flash"
+   ],
+-  "credential_id": "deepseek-relay-14ac1cd4ea79",
+-  "credential_file": "C:/Users/hd/.codex/secrets/shgraphrag/deepseek-relay-20261024.dpapi.json",
++  "credential_id": "user-supplied-DEEPSEEK_API_KEY",
+   "max_in_flight": 100,
+   "generation_parameters": {},
+   "generation_note": "Temperature, output caps and thinking controls are omitted unless explicitly supplied by the native method or confirmed for the chosen relay model.",
+@@ -34,7 +33,7 @@
+   "dataset": "HotpotQA distractor development",
+   "sample_seed": 42,
+   "sample_size": 1000,
+-  "reference_chat": "01a16c84-bb09-78b3-adde-be6601a96137",
+-  "authorization": "User explicitly authorized on 2026-10-25: after chat 01a16c84-bb09-78b3-adde-be6601a96137 completes its last dataset evaluation, resume this native HyperGraphRAG three-dataset experiment using the same DeepSeek relay/model/credential and local BGE-M3, with a combined physical request ceiling of 100. Preserve all reviewer evidence. No call is permitted before the saved completion condition.",
+-  "dataset_id": "hotpotqa"
++  "authorization": "Fresh runs require explicit local model API opt-in.",
++  "dataset_id": "hotpotqa",
++  "credential_environment": "DEEPSEEK_API_KEY"
+ }
+--- a/code/hypergraphrag_deepseek/hotpotqa/experiment/config.py
++++ b/code/hypergraphrag_deepseek/hotpotqa/experiment/config.py
+@@ -10,16 +10,13 @@
+ from .capacity_recovery import require_model_calls_allowed
+ 
+ CONFIG_PATH = ROOT / "experiment/config.json"
+-CREDENTIAL_ID = "deepseek-relay-14ac1cd4ea79"
+-CREDENTIAL_PATH = Path(
+-    "C:/Users/hd/.codex/secrets/shgraphrag/deepseek-relay-20261024.dpapi.json")
++CREDENTIAL_ID = "user-supplied-DEEPSEEK_API_KEY"
+ 
+ 
+ def validate(config, *, ready=True):
+     if config["provider"] != "deepseek-relay" or config["text_api"] != "openai-chat-completions":
+         raise ValueError("This run only authorizes the selected DeepSeek relay")
+-    if (config["credential_id"] != CREDENTIAL_ID
+-            or Path(config["credential_file"]).resolve() != CREDENTIAL_PATH.resolve()):
++    if config["credential_id"] != CREDENTIAL_ID:
+         raise ValueError("Credential identity changed")
+     if config["max_in_flight"] != 100:
+         raise ValueError("The shared request ceiling must remain 100")
+@@ -58,44 +55,12 @@
+ 
+ 
+ def read_authorized_key(config):
++    import os
+     validate(config)
+     require_model_calls_allowed()
+-    # This self-contained reader is copied from the referenced experiment.
+-    # Importing it reads no secret; decryption happens only below after validation.
+-    import ctypes
+-    from ctypes import wintypes
+-    import hashlib
+-    import os
+-    if os.name != "nt":
+-        raise RuntimeError("The selected credential uses Windows CurrentUser DPAPI")
+-    record = read_json(config["credential_file"])
+-    if record["credential_id"] != config["credential_id"]:
+-        raise ValueError("Saved credential identity differs")
+-
+-    class Blob(ctypes.Structure):
+-        _fields_ = [("cbData", wintypes.DWORD),
+-                    ("pbData", ctypes.POINTER(ctypes.c_ubyte))]
+-
+-    encrypted = bytes.fromhex(record["encrypted_key"])
+-    buffer = (ctypes.c_ubyte * len(encrypted)).from_buffer_copy(encrypted)
+-    source, destination = Blob(len(encrypted), buffer), Blob()
+-    crypt32 = ctypes.WinDLL("crypt32", use_last_error=True)
+-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+-    crypt32.CryptUnprotectData.argtypes = [
+-        ctypes.POINTER(Blob), ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p,
+-        ctypes.c_void_p, wintypes.DWORD, ctypes.POINTER(Blob)]
+-    crypt32.CryptUnprotectData.restype = wintypes.BOOL
+-    kernel32.LocalFree.argtypes = [ctypes.c_void_p]
+-    kernel32.LocalFree.restype = ctypes.c_void_p
+-    if not crypt32.CryptUnprotectData(
+-            ctypes.byref(source), None, None, None, None, 0, ctypes.byref(destination)):
+-        raise ctypes.WinError(ctypes.get_last_error())
+-    try:
+-        key = ctypes.string_at(destination.pbData, destination.cbData).decode("utf-16-le")
+-    finally:
+-        kernel32.LocalFree(destination.pbData)
+-    if not key or hashlib.sha256(key.encode()).hexdigest() != record["key_sha256"]:
+-        raise ValueError("Saved credential integrity check failed")
++    key = os.environ.get("DEEPSEEK_API_KEY", "").strip()
++    if not key:
++        raise RuntimeError("Set your own authorized DEEPSEEK_API_KEY in this process")
+     return key
+ 
+ 
+--- a/code/hypergraphrag_deepseek/hotpotqa/experiment/prepare.py
++++ b/code/hypergraphrag_deepseek/hotpotqa/experiment/prepare.py
+@@ -1,188 +1,49 @@
+-"""Freeze and independently reconstruct official seed42 development samples.
+-
+-All work is offline. Only queries.jsonl and candidate_corpus.jsonl are passed
+-to inference. Gold labels and answer aliases are used for validation/scoring.
+-"""
++"""Use independently reconstructed, hash-checked seed42 inputs."""
+ from __future__ import annotations
+-
+-from collections import Counter
+-import hashlib
+ import json
+-import random
+-
+-from .common import PROJECT, ROOT, file_hash, read_json, read_jsonl, write_json
++import shutil
++from .common import PROJECT, ROOT, file_hash, read_json, write_json
+ from .config import load_config
+-
+-RESEARCH = PROJECT / "Edit/Repo/SHGraphRAG"
+-SPECS = {
+-    "hotpotqa": {
+-        "name": "HotpotQA distractor development",
+-        "source": "dataset/paper_ready/hotpotqa/dev.json",
+-        "sha256": "5642f62c533df6066d86bb458af83d6fa7508d823173825ac9ae39f6de2308fa",
+-        "count": 7405,
+-        "parquet": "dataset/hotpot_qa/distractor/validation-00000-of-00001.parquet",
+-        "parquet_sha256": "c20b638ca82b21d04fe12e14ff417ad05153d4d215a65de54497fca4e972f7c6",
+-        "release": "hotpotqa/hotpot_qa commit 1908d6afbbead072334abe2965f91bd2709910ab",
+-    },
+-    "2wiki": {
+-        "name": "2WikiMultiHopQA 2021-04-07 development",
+-        "source": "dataset/raw_official/2wiki/release_20210407/dev.json",
+-        "sha256": "79f77ae104088ea8e25b1a65dbece768d45771194663bc5660ec9a98070dadf5",
+-        "count": 12576,
+-        "aliases": "dataset/raw_official/2wiki/release_20210407/id_aliases.json",
+-        "aliases_sha256": "f08ffcb6c2cefca9bdbe86b4248d6ad7a7743762d3f7264c14ff0bae85726fb6",
+-        "release": "Official 2021-04-07 IDs release; original candidate order",
+-    },
+-}
+-
+-
+-def dataset_id():
+-    dataset = load_config(ready=False)["dataset_id"]
+-    if dataset not in SPECS:
+-        raise ValueError("This adapter is scoped to HotpotQA and 2Wiki")
+-    return dataset
+-
+-
+-def payload():
+-    dataset = dataset_id()
+-    spec = SPECS[dataset]
+-    source = RESEARCH / spec["source"]
+-    if file_hash(source) != spec["sha256"]:
+-        raise ValueError("Official development source hash differs")
+-    if dataset == "hotpotqa" and file_hash(RESEARCH / spec["parquet"]) != spec["parquet_sha256"]:
+-        raise ValueError("Pinned HotpotQA Parquet source hash differs")
+-    official = read_json(source)
+-    by_id = {row["_id"]: row for row in official}
+-    if len(by_id) != len(official) or len(official) != spec["count"]:
+-        raise ValueError("Official release ID uniqueness/count differs")
+-    ids = random.Random(42).sample(sorted(by_id), 1000)
+-    gold = [by_id[qid] for qid in ids]
+-    queries = [{"id": row["_id"], "question": row["question"]} for row in gold]
+-    index = {row["_id"]: pos for pos, row in enumerate(official)}
+-    corpus, membership = {}, []
+-    missing_supports = []
+-    for row in gold:
+-        passage_ids = []
+-        if not row["context"] or not row["question"] or not isinstance(row["answer"], str):
+-            raise ValueError("Native sample has invalid question/context/answer fields")
+-        for title, sentences in row["context"]:
+-            if not isinstance(title, str) or not isinstance(sentences, list):
+-                raise ValueError("Native paragraph schema differs")
+-            text = title + "\n" + "\n".join(sentences)
+-            pid = hashlib.sha256(text.encode("utf-8")).hexdigest()
+-            value = {"id": pid, "title": title, "sentences": sentences, "text": text}
+-            if pid in corpus and corpus[pid] != value:
+-                raise ValueError("Passage content hash collision")
+-            corpus[pid] = value
+-            passage_ids.append(pid)
+-        membership.append({"question_id": row["_id"], "passage_ids": passage_ids})
+-        titles = {item[0] for item in row["context"]}
+-        absent = sorted({item[0] for item in row["supporting_facts"]} - titles)
+-        if absent:
+-            missing_supports.append({"question_id": row["_id"], "titles": absent})
+-    aliases = []
+-    if dataset == "2wiki":
+-        source = RESEARCH / spec["aliases"]
+-        if file_hash(source) != spec["aliases_sha256"]:
+-            raise ValueError("Official answer alias source hash differs")
+-        needed = {row.get("answer_id") for row in gold}
+-        aliases = [row for row in read_jsonl(source) if row["Q_id"] in needed]
+-        if len(aliases) != len({row["Q_id"] for row in aliases}):
+-            raise ValueError("Official answer alias IDs are not unique")
+-    return {
+-        "ids.json": ids,
+-        "source_indices.json": [index[qid] for qid in ids],
+-        "queries.jsonl": queries,
+-        "gold.jsonl": gold,
+-        "candidate_corpus.jsonl": list(corpus.values()),
+-        "question_passages.jsonl": membership,
+-        "answer_aliases.jsonl": aliases,
+-        "_statistics": {
+-            "candidate_occurrences": sum(len(r["passage_ids"]) for r in membership),
+-            "unique_candidate_passages": len(corpus),
+-            "type_counts": dict(Counter(row["type"] for row in gold)),
+-            "native_support_titles_absent_from_candidates": missing_supports,
+-        },
+-    }
+-
+-
+-def write_payload(path, value):
+-    path.parent.mkdir(parents=True, exist_ok=True)
+-    if path.suffix == ".jsonl":
+-        content = "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in value)
+-    else:
+-        content = json.dumps(value, ensure_ascii=False, indent=2) + "\n"
+-    if path.exists():
+-        existing = read_jsonl(path) if path.suffix == ".jsonl" else read_json(path)
+-        if existing != value:
+-            raise ValueError("Existing frozen input differs: " + path.name)
+-    else:
+-        path.write_text(content, encoding="utf-8")
+ 
+ 
+ def prepare():
+-    dataset, values = dataset_id(), payload()
++    dataset = load_config(ready=False)["dataset_id"]
++    source = PROJECT / "deepseek" / dataset
++    manifest = read_json(source / "manifest.json")
+     inputs = ROOT / "inputs"
+-    for name, value in values.items():
+-        if not name.startswith("_"):
+-            write_payload(inputs / name, value)
+-    spec = SPECS[dataset]
+-    manifest = {
+-        "dataset": spec["name"], "dataset_id": dataset, "split": "development",
+-        "seed": 42, "count": 1000, "source_count": spec["count"],
+-        "sampling": "random.Random(42).sample(sorted(unique_ids), 1000)",
+-        "order": "RNG draw order",
+-        "source": spec, "official_gold_sha256": spec["sha256"],
+-        "retrieval_scope": "global union of all selected candidate passages; no question ID filtering",
+-        "gold_policy": "evaluation only; model input is id/question and unlabeled passage text",
+-        "corpus_text_policy": "title + newline + original sentences joined with newlines; no resegmentation",
+-        "status": "new_revision_sample_not_original_paper_sample",
+-        **values["_statistics"],
+-        "files": {p.name: {"sha256": file_hash(p), "bytes": p.stat().st_size}
+-                  for p in sorted(inputs.iterdir()) if p.is_file() and p.name != "manifest.json"},
+-        "model_api_requests": 0,
+-    }
+-    current = inputs / "manifest.json"
+-    if current.exists() and read_json(current) != manifest:
+-        raise ValueError("Existing input manifest differs")
+-    write_json(current, manifest)
++    inputs.mkdir(exist_ok=True)
++    for name, record in manifest["files"].items():
++        if file_hash(source / name) != record["sha256"]:
++            raise ValueError("Prepared data hash changed: " + name)
++        target = inputs / name
++        if target.exists() and file_hash(target) != record["sha256"]:
++            raise ValueError("Existing experiment input differs: " + name)
++        if not target.exists():
++            shutil.copyfile(source / name, target)
++    write_json(inputs / "manifest.json", manifest)
+     return validate_inputs()
+ 
+ 
+ def validate_inputs():
+     inputs = ROOT / "inputs"
+     manifest = read_json(inputs / "manifest.json")
+-    if (manifest["dataset_id"] != dataset_id() or manifest["seed"] != 42
+-            or manifest["count"] != 1000):
+-        raise ValueError("Frozen dataset/seed/sample size differs")
+-    for name, expected in manifest["files"].items():
+-        if file_hash(inputs / name) != expected["sha256"]:
++    dataset = load_config(ready=False)["dataset_id"]
++    if manifest["dataset_id"] != dataset or manifest["seed"] != 42 or manifest["count"] != 1000:
++        raise ValueError("Wrong dataset, seed, or evaluation denominator")
++    for name, record in manifest["files"].items():
++        if file_hash(inputs / name) != record["sha256"]:
+             raise ValueError("Frozen input hash differs: " + name)
+-    expected = payload()
+-    for name, value in expected.items():
+-        if name.startswith("_"):
+-            continue
+-        actual = read_jsonl(inputs / name) if name.endswith(".jsonl") else read_json(inputs / name)
+-        if actual != value:
+-            raise ValueError("Input does not reconstruct from official release: " + name)
+-    if any(set(query) != {"id", "question"} for query in expected["queries.jsonl"]):
+-        raise ValueError("Inference queries expose evaluation-only annotations")
+-    for name, value in expected["_statistics"].items():
+-        if manifest[name] != value:
+-            raise ValueError("Corpus statistics differ")
+-    return {
+-        "passed": True, "dataset": dataset_id(), "questions": 1000,
+-        "passages": manifest["unique_candidate_passages"],
+-        "candidate_occurrences": manifest["candidate_occurrences"],
+-        "seed": 42, "inputs_sha256": file_hash(inputs / "manifest.json"), "api_calls": 0,
+-    }
++    ids = read_json(inputs / "ids.json")
++    queries = [json.loads(line) for line in (inputs / "queries.jsonl").read_text(encoding="utf-8").splitlines()]
++    if len(set(ids)) != 1000 or [row["id"] for row in queries] != ids or any(set(row) != {"id", "question"} for row in queries):
++        raise ValueError("Inference fields or ID alignment differ")
++    expected = read_json(ROOT.parents[2] / "protocols/seed42" / dataset / "ids.json")
++    if ids != expected:
++        raise ValueError("Question IDs differ from the completed experiment")
++    return {"passed": True, "dataset": dataset, "questions": 1000, "seed": 42,
++            "passages": manifest["unique_candidate_passages"],
++            "inputs_sha256": file_hash(inputs / "manifest.json"), "api_calls": 0}
+ 
+ 
+ if __name__ == "__main__":
+-    import argparse
+-    parser = argparse.ArgumentParser()
+-    parser.add_argument("--validate-only", action="store_true")
+-    args = parser.parse_args()
+-    report = validate_inputs() if args.validate_only else prepare()
+-    write_json(ROOT / "audit/input_validation.json", report)
+-    print(json.dumps(report, ensure_ascii=True, indent=2))
++    print(json.dumps(prepare(), indent=2))
+--- a/code/hypergraphrag_deepseek/hotpotqa/experiment/run.py
++++ b/code/hypergraphrag_deepseek/hotpotqa/experiment/run.py
+@@ -20,7 +20,7 @@
+ from .config import load_config, read_authorized_key
+ from .prepare import validate_inputs
+ 
+-os.environ["TIKTOKEN_CACHE_DIR"] = str(ROOT / "tokenizer_cache")
++os.environ.setdefault("TIKTOKEN_CACHE_DIR", str(ROOT / "tokenizer_cache"))
+ for stream in (sys.stdout, sys.stderr):
+     if hasattr(stream, "reconfigure"):
+         stream.reconfigure(encoding="utf-8", errors="backslashreplace")
+@@ -105,7 +105,7 @@
+         "source_provenance": original,
+         "dependency_lock_sha256": file_hash(ROOT / "provenance/requirements.lock.txt"),
+         "python_hash_seed": os.environ.get("PYTHONHASHSEED"),
+-        "capacity_recovery_import": read_json(ROOT / "provenance/capacity_recovery.json"),
++        "capacity_recovery_import": None,  # Public fresh run; no private caches imported.
+     }
+ 
+ 
+--- a/code/hypergraphrag_deepseek/hotpotqa/experiment/test_additional_datasets.py
++++ b/code/hypergraphrag_deepseek/hotpotqa/experiment/test_additional_datasets.py
+@@ -9,7 +9,7 @@
+ 
+ class NativeDatasetTests(unittest.TestCase):
+     def test_native_metric_primitives_match_both_supplied_reference_scripts(self):
+-        qa = PROJECT / "Edit/Repo/SHGraphRAG/qa"
++        qa = ROOT.parents[2] / "code/shgraphrag_gpt4omini/qa"
+         pairs = [
+             ("The Paris.", "paris"), ("yes indeed", "yes"), ("yes", "yes"),
+             ("", "some answer"), ("first second", "second third"), ("", ""),
+--- a/code/hypergraphrag_deepseek/hotpotqa/experiment/test_experiment.py
++++ b/code/hypergraphrag_deepseek/hotpotqa/experiment/test_experiment.py
+@@ -410,7 +410,7 @@
+                                     "contract", "index", {"passage"})
+ 
+     def test_answer_metrics_match_supplied_musique_answer_metric(self):
+-        path = PROJECT / "Edit/Repo/SHGraphRAG/qa/musique_evaluate_v1.0.py"
++        path = ROOT.parents[2] / "code/shgraphrag_gpt4omini/qa/musique_evaluate_v1.0.py"
+         spec = importlib.util.spec_from_file_location("reference_musique_metric", path)
+         reference = importlib.util.module_from_spec(spec)
+         spec.loader.exec_module(reference)
+--- a/code/hypergraphrag_deepseek/hotpotqa/experiment/verify.py
++++ b/code/hypergraphrag_deepseek/hotpotqa/experiment/verify.py
+@@ -163,6 +163,10 @@
+     summary_audit = audit_summary_outputs(run, graph, index["directory"])
+     from .summary_reuse import audit_seeded_validation
+     validation_audit = audit_seeded_validation(run)
++    imported_timing = (capacity_import["timing"] if capacity_import is not None else {
++        "construction_wall_s_including_observed_upper_bounds": 0.0,
++        "invocation_wall_s_including_observed_upper_bounds": 0.0,
++    })  # A fresh run has no imported physical history.
+     report = {
+         "status": "verified_complete", "dataset": DATASET, "questions": 1000,
+         "capacity_recovery_import_audit": capacity_import,
+@@ -173,10 +177,10 @@
+         "missing_or_failed_predictions": metrics["missing_or_failed"],
+         "native_alias_em": metrics["native_alias_em"], "native_alias_f1": metrics["native_alias_f1"],
+         "construction_wall_s_all_attempts": sum(a["wall_s"] for a in construction)
+-            + capacity_import["timing"]["construction_wall_s_including_observed_upper_bounds"],
++            + imported_timing["construction_wall_s_including_observed_upper_bounds"],
+         "construction_last_success_wall_s": index["wall_s"],
+         "execution_wall_s_all_invocations": sum(a["wall_s"] for a in invocations)
+-            + capacity_import["timing"]["invocation_wall_s_including_observed_upper_bounds"],
++            + imported_timing["invocation_wall_s_including_observed_upper_bounds"],
+         "query_phase_wall_s_all_attempts": sum(p["wall_s"] for p in phases if p["phase"] == "query_finished"),
+         "latency_s": {"mean": statistics.mean(latencies),
+                       "p50": float(np.percentile(latencies, 50)),
+--- a/code/hypergraphrag_deepseek/hotpotqa/launch.ps1
++++ b/code/hypergraphrag_deepseek/hotpotqa/launch.ps1
+@@ -1,85 +1,18 @@
+ [CmdletBinding()]
+ param(
+-    [ValidateSet('Check', 'Checks', 'Start', 'Status', 'Evaluate', 'Verify')]
+-    [string]$Action = 'Check'
++    [ValidateSet('plan','prepare','run','evaluate','verify')]
++    [string]$Action = 'plan',
++    [Parameter(Mandatory=$true)][string]$DataRoot,
++    [string]$Python = 'python',
++    [switch]$AllowModelApi
+ )
+-
+ $ErrorActionPreference = 'Stop'
+-$experimentRoot = $PSScriptRoot
+-$researchRoot = (Resolve-Path -LiteralPath (Join-Path $experimentRoot '../../../..')).Path
+-$experimentPython = Join-Path $researchRoot '.runtime/hypergraphrag-native-20261024/Scripts/python.exe'
+-if (-not (Test-Path -LiteralPath $experimentPython -PathType Leaf)) {
+-    throw 'The dedicated experiment interpreter is missing.'
+-}
+-
+-$previousDirectory = (Get-Location).Path
+-$previousUtf8 = $env:PYTHONUTF8
+-$previousHashSeed = $env:PYTHONHASHSEED
+-$previousIoEncoding = $env:PYTHONIOENCODING
+-try {
+-    Set-Location -LiteralPath $experimentRoot
+-    $env:PYTHONUTF8 = '1'
+-    $env:PYTHONHASHSEED = '42'
+-    $env:PYTHONIOENCODING = 'utf-8'
+-    switch ($Action) {
+-        'Check' {
+-            & $experimentPython -X utf8 -m experiment.run --check
+-            if ($LASTEXITCODE -ne 0) { throw 'Offline readiness check failed.' }
+-        }
+-        'Checks' {
+-            & $experimentPython -X utf8 -m experiment.offline_checks
+-            if ($LASTEXITCODE -ne 0) { throw 'Offline checks failed; inspect audit/offline_tests.log.' }
+-        }
+-        'Start' {
+-            & $experimentPython -X utf8 -m experiment.run --check
+-            if ($LASTEXITCODE -ne 0) { throw 'Offline readiness check failed.' }
+-            $readiness = Get-Content -LiteralPath (Join-Path $experimentRoot 'audit/readiness.json') -Raw |
+-                ConvertFrom-Json
+-            if ($readiness.status -ne 'ready_to_run') {
+-                throw 'Supply the confirmed DeepSeek relay Base URL and exact API model ID before starting.'
+-            }
+-            $launchDirectory = Join-Path $experimentRoot ('launches/' + (Get-Date -Format 'yyyyMMdd_HHmmss_fff'))
+-            [void](New-Item -ItemType Directory -Path $launchDirectory -Force)
+-            $stdoutPath = Join-Path $launchDirectory 'stdout.log'
+-            $stderrPath = Join-Path $launchDirectory 'stderr.log'
+-            $worker = Start-Process -FilePath $experimentPython `
+-                -ArgumentList @('-X', 'utf8', '-u', '-m', 'experiment.run') `
+-                -WorkingDirectory $experimentRoot -WindowStyle Hidden `
+-                -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath -PassThru
+-            $launchRecord = [ordered]@{
+-                pid = $worker.Id
+-                launched_at = (Get-Date -Format 'o')
+-                interpreter = $experimentPython
+-                stdout = $stdoutPath
+-                stderr = $stderrPath
+-                note = 'Launch is not completion; inspect run/status.json and run/verification.json.'
+-            }
+-            $recordPath = Join-Path $experimentRoot 'launcher.json'
+-            [System.IO.File]::WriteAllText(
+-                $recordPath, ($launchRecord | ConvertTo-Json -Depth 8),
+-                [System.Text.UTF8Encoding]::new($false))
+-            $launchRecord | ConvertTo-Json -Depth 8
+-        }
+-        'Status' {
+-            $statusPath = Join-Path $experimentRoot 'run/status.json'
+-            if (Test-Path -LiteralPath $statusPath) {
+-                Get-Content -LiteralPath $statusPath -Raw
+-            } else {
+-                '{"status":"not_started","full_experiment_completed":false}'
+-            }
+-        }
+-        'Evaluate' {
+-            & $experimentPython -X utf8 -m experiment.evaluate
+-            if ($LASTEXITCODE -ne 0) { throw 'Evaluation failed.' }
+-        }
+-        'Verify' {
+-            & $experimentPython -X utf8 -m experiment.verify
+-            if ($LASTEXITCODE -ne 0) { throw 'Completion verification failed.' }
+-        }
+-    }
+-} finally {
+-    Set-Location -LiteralPath $previousDirectory
+-    $env:PYTHONUTF8 = $previousUtf8
+-    $env:PYTHONHASHSEED = $previousHashSeed
+-    $env:PYTHONIOENCODING = $previousIoEncoding
+-}
++$supplement = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../../..')).Path
++$dataset = Split-Path -Leaf $PSScriptRoot
++$arguments = @((Join-Path $supplement 'tools/reproduce.py'),
++    '--profile','hyper-deepseek','--dataset',$dataset,'--data-root',$DataRoot,
++    '--phase',$Action)
++if ($Action -ne 'plan') { $arguments += '--execute' }
++if ($AllowModelApi) { $arguments += '--allow-model-api' }
++& $Python @arguments
++exit $LASTEXITCODE
+--- a/code/hypergraphrag_deepseek/hotpotqa/provenance/source.json
++++ b/code/hypergraphrag_deepseek/hotpotqa/provenance/source.json
+@@ -1,30 +1,28 @@
+ {
+   "official_repository": "https://github.com/LHRLAB/HyperGraphRAG",
+   "official_commit": "d587cdf8c3fe2be7719557f845324cb3a321f5e2",
+-  "copied_working_source": "D:\\Users\\hd\\Desktop\\2026-CommercialOrder\\OnGoingOrders\\Papers\\Paper_SHGraphRAG\\Edit\\Repo\\CompareMethods\\HyperGraphRAG",
++  "copied_working_source": "vendored HyperGraphRAG source in this directory",
+   "source_sha256": {
+-    "hypergraphrag\\__init__.py": "42db2a734b8c565ead8ea7d84f1422226dba430674d2e28e124b8656c8a02103",
+-    "hypergraphrag\\base.py": "2d9437b8c1c005c64902b04a4a978efa8d52395ee3703c363070ce9509ec6c68",
+-    "hypergraphrag\\hypergraphrag.py": "2b1c49dd201232706705526dfe16d55a451b7b8a63837aea8e9978a6b56cfc79",
+-    "hypergraphrag\\kg\\__init__.py": "fbd3eff0946b1cd66087d6a8ced0d073e050b053fa70e082af6769923565a202",
+-    "hypergraphrag\\kg\\chroma_impl.py": "b9aaf16bda1a7155c1ccc42e41439be3c0ff9edb81dd4e48f09a8be4a782774d",
+-    "hypergraphrag\\kg\\milvus_impl.py": "a1d491c90faf98ee9e0c6e0747c04f841aa0827a0169b2be0811f366f768a6d8",
+-    "hypergraphrag\\kg\\mongo_impl.py": "c37b8ba5582216c3c3986eabe7bdc02e9b33f99e2f9de941523041323517c5bf",
+-    "hypergraphrag\\kg\\neo4j_impl.py": "8c26260a07953da3387592b63b8049eb302a31845b75fae7ab27cff55f688078",
+-    "hypergraphrag\\kg\\oracle_impl.py": "e44e57dfaa692f7583eda2dd6033006b4ec91fe30b7fc0493d29dc8666405ced",
+-    "hypergraphrag\\kg\\tidb_impl.py": "fa9dd0fceab7e699facbb4c13f536267cff7acff751a9131d873203e7f75feb8",
+-    "hypergraphrag\\llm.py": "aa62c03e368aa5bfd8765820c12db7e3b0b3bf43d292a0c980af60cac74c44a3",
+-    "hypergraphrag\\operate.py": "2751b4c8f94da95918b6458635159fd8767e0e0ab2ce93b2a0cac4bd42f9faa3",
+-    "hypergraphrag\\prompt.py": "2730b18d849641d9dedafad2374034bd5ed90d403402a1991ea0596e869b085e",
+-    "hypergraphrag\\storage.py": "42c270938b33169cbacb85415a43dc32e0e3cf459e4485b5f09ff11fce5e4669",
+-    "hypergraphrag\\utils.py": "77fa3fdf368b7b3df1da3a5a6f88bdadb65a9265d8b2b50903d55a7889eb9eca"
++    "hypergraphrag/__init__.py": "42db2a734b8c565ead8ea7d84f1422226dba430674d2e28e124b8656c8a02103",
++    "hypergraphrag/base.py": "2d9437b8c1c005c64902b04a4a978efa8d52395ee3703c363070ce9509ec6c68",
++    "hypergraphrag/hypergraphrag.py": "2b1c49dd201232706705526dfe16d55a451b7b8a63837aea8e9978a6b56cfc79",
++    "hypergraphrag/kg/__init__.py": "fbd3eff0946b1cd66087d6a8ced0d073e050b053fa70e082af6769923565a202",
++    "hypergraphrag/kg/chroma_impl.py": "b9aaf16bda1a7155c1ccc42e41439be3c0ff9edb81dd4e48f09a8be4a782774d",
++    "hypergraphrag/kg/milvus_impl.py": "a1d491c90faf98ee9e0c6e0747c04f841aa0827a0169b2be0811f366f768a6d8",
++    "hypergraphrag/kg/mongo_impl.py": "c37b8ba5582216c3c3986eabe7bdc02e9b33f99e2f9de941523041323517c5bf",
++    "hypergraphrag/kg/neo4j_impl.py": "8c26260a07953da3387592b63b8049eb302a31845b75fae7ab27cff55f688078",
++    "hypergraphrag/kg/oracle_impl.py": "e44e57dfaa692f7583eda2dd6033006b4ec91fe30b7fc0493d29dc8666405ced",
++    "hypergraphrag/kg/tidb_impl.py": "fa9dd0fceab7e699facbb4c13f536267cff7acff751a9131d873203e7f75feb8",
++    "hypergraphrag/llm.py": "aa62c03e368aa5bfd8765820c12db7e3b0b3bf43d292a0c980af60cac74c44a3",
++    "hypergraphrag/operate.py": "2751b4c8f94da95918b6458635159fd8767e0e0ab2ce93b2a0cac4bd42f9faa3",
++    "hypergraphrag/prompt.py": "2730b18d849641d9dedafad2374034bd5ed90d403402a1991ea0596e869b085e",
++    "hypergraphrag/storage.py": "42c270938b33169cbacb85415a43dc32e0e3cf459e4485b5f09ff11fce5e4669",
++    "hypergraphrag/utils.py": "77fa3fdf368b7b3df1da3a5a6f88bdadb65a9265d8b2b50903d55a7889eb9eca"
+   },
+   "patch_sha256": "74972a0bd89768b728fcf2295b65e3346695d71b60155a9d653206b4a86d5a7a",
+   "prior_model_outputs_copied": false,
+   "prior_vectors_copied": false,
+   "credentials_copied_or_loaded": false,
+-  "reference_chat": "01a16c84-bb09-78b3-adde-be6601a96137",
+-  "upstream_reference_chat": "01a15ac7-0a19-7f51-88dd-fe73d6040d6f",
+   "source_notes": [
+     "Original tuple prompts, graph construction and hybrid ranking retained.",
+     "Existing instrumentation adds retrieval trace and exception-safe async scheduling.",
+--- a/code/hypergraphrag_deepseek/musique/experiment/capacity_recovery.py
++++ b/code/hypergraphrag_deepseek/musique/experiment/capacity_recovery.py
+@@ -23,20 +23,12 @@
+ 
+ 
+ def require_model_calls_allowed():
+-    """Fail before credential loading and before every physical request."""
+-    for parent in (ROOT, *ROOT.parents):
+-        coordination = parent / CAMPAIGN_NAME
+-        marker = coordination / "api_pause.json"
+-        if marker.is_file():
+-            pause = read_json(marker)
+-            campaign = read_json(coordination / "campaign.json")
+-            if pause.get("active") is not False or campaign.get("api_calls_paused"):
+-                raise RuntimeError(
+-                    "User paused campaign API calls; explicit user resume is required")
+-            from .resume_guard import require_conditional_release
+-            require_conditional_release(coordination)
+-            return
+-    raise RuntimeError("The campaign user-pause record is missing; calls remain disabled")
++    """Fresh public runs use explicit opt-in and a local stop marker."""
++    import os
++    if os.environ.get("SHGRAPHRAG_ALLOW_MODEL_API") != "1":
++        raise RuntimeError("Model calls require explicit opt-in for this fresh run")
++    if (ROOT / "STOP_MODEL_CALLS").exists():
++        raise RuntimeError("STOP_MODEL_CALLS exists; remove it only to resume intentionally")
+ 
+ 
+ def source_root_for(manifest):
+--- a/code/hypergraphrag_deepseek/musique/experiment/common.py
++++ b/code/hypergraphrag_deepseek/musique/experiment/common.py
+@@ -9,7 +9,7 @@
+ import time
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+-PROJECT = ROOT.parents[6]
++PROJECT = Path(os.environ.get("SHGRAPHRAG_DATA_ROOT", ROOT / "data")).resolve()
+ ITEM = contextvars.ContextVar("hypergraph_deepseek_item", default={})
+ 
+ 
+--- a/code/hypergraphrag_deepseek/musique/experiment/config.json
++++ b/code/hypergraphrag_deepseek/musique/experiment/config.json
+@@ -7,8 +7,7 @@
+   "allowed_returned_models": [
+     "deepseek-v4.1-flash"
+   ],
+-  "credential_id": "deepseek-relay-14ac1cd4ea79",
+-  "credential_file": "C:/Users/hd/.codex/secrets/shgraphrag/deepseek-relay-20261024.dpapi.json",
++  "credential_id": "user-supplied-DEEPSEEK_API_KEY",
+   "max_in_flight": 100,
+   "generation_parameters": {},
+   "generation_note": "Temperature, output caps and thinking controls are omitted unless explicitly supplied by the native method or confirmed for the chosen relay model.",
+@@ -34,6 +33,7 @@
+   "dataset": "MuSiQue-Ans v1.0 development",
+   "sample_seed": 42,
+   "sample_size": 1000,
+-  "reference_chat": "01a16c84-bb09-78b3-adde-be6601a96137",
+-  "authorization": "User explicitly authorized on 2026-10-25: after chat 01a16c84-bb09-78b3-adde-be6601a96137 completes its last dataset evaluation, resume this native HyperGraphRAG three-dataset experiment using the same DeepSeek relay/model/credential and local BGE-M3, with a combined physical request ceiling of 100. Preserve all reviewer evidence. No call is permitted before the saved completion condition."
++  "authorization": "Fresh runs require explicit local model API opt-in.",
++  "credential_environment": "DEEPSEEK_API_KEY",
++  "dataset_id": "musique"
+ }
+--- a/code/hypergraphrag_deepseek/musique/experiment/config.py
++++ b/code/hypergraphrag_deepseek/musique/experiment/config.py
+@@ -10,16 +10,13 @@
+ from .capacity_recovery import require_model_calls_allowed
+ 
+ CONFIG_PATH = ROOT / "experiment/config.json"
+-CREDENTIAL_ID = "deepseek-relay-14ac1cd4ea79"
+-CREDENTIAL_PATH = Path(
+-    "C:/Users/hd/.codex/secrets/shgraphrag/deepseek-relay-20261024.dpapi.json")
++CREDENTIAL_ID = "user-supplied-DEEPSEEK_API_KEY"
+ 
+ 
+ def validate(config, *, ready=True):
+     if config["provider"] != "deepseek-relay" or config["text_api"] != "openai-chat-completions":
+         raise ValueError("This run only authorizes the selected DeepSeek relay")
+-    if (config["credential_id"] != CREDENTIAL_ID
+-            or Path(config["credential_file"]).resolve() != CREDENTIAL_PATH.resolve()):
++    if config["credential_id"] != CREDENTIAL_ID:
+         raise ValueError("Credential identity changed")
+     if config["max_in_flight"] != 100:
+         raise ValueError("The shared request ceiling must remain 100")
+@@ -58,44 +55,12 @@
+ 
+ 
+ def read_authorized_key(config):
++    import os
+     validate(config)
+     require_model_calls_allowed()
+-    # This self-contained reader is copied from the referenced experiment.
+-    # Importing it reads no secret; decryption happens only below after validation.
+-    import ctypes
+-    from ctypes import wintypes
+-    import hashlib
+-    import os
+-    if os.name != "nt":
+-        raise RuntimeError("The selected credential uses Windows CurrentUser DPAPI")
+-    record = read_json(config["credential_file"])
+-    if record["credential_id"] != config["credential_id"]:
+-        raise ValueError("Saved credential identity differs")
+-
+-    class Blob(ctypes.Structure):
+-        _fields_ = [("cbData", wintypes.DWORD),
+-                    ("pbData", ctypes.POINTER(ctypes.c_ubyte))]
+-
+-    encrypted = bytes.fromhex(record["encrypted_key"])
+-    buffer = (ctypes.c_ubyte * len(encrypted)).from_buffer_copy(encrypted)
+-    source, destination = Blob(len(encrypted), buffer), Blob()
+-    crypt32 = ctypes.WinDLL("crypt32", use_last_error=True)
+-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+-    crypt32.CryptUnprotectData.argtypes = [
+-        ctypes.POINTER(Blob), ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p,
+-        ctypes.c_void_p, wintypes.DWORD, ctypes.POINTER(Blob)]
+-    crypt32.CryptUnprotectData.restype = wintypes.BOOL
+-    kernel32.LocalFree.argtypes = [ctypes.c_void_p]
+-    kernel32.LocalFree.restype = ctypes.c_void_p
+-    if not crypt32.CryptUnprotectData(
+-            ctypes.byref(source), None, None, None, None, 0, ctypes.byref(destination)):
+-        raise ctypes.WinError(ctypes.get_last_error())
+-    try:
+-        key = ctypes.string_at(destination.pbData, destination.cbData).decode("utf-16-le")
+-    finally:
+-        kernel32.LocalFree(destination.pbData)
+-    if not key or hashlib.sha256(key.encode()).hexdigest() != record["key_sha256"]:
+-        raise ValueError("Saved credential integrity check failed")
++    key = os.environ.get("DEEPSEEK_API_KEY", "").strip()
++    if not key:
++        raise RuntimeError("Set your own authorized DEEPSEEK_API_KEY in this process")
+     return key
+ 
+ 
+--- a/code/hypergraphrag_deepseek/musique/experiment/prepare.py
++++ b/code/hypergraphrag_deepseek/musique/experiment/prepare.py
+@@ -1,121 +1,49 @@
+-"""Offline sample validation and inference-only handoff, without model imports."""
++"""Use independently reconstructed, hash-checked seed42 inputs."""
+ from __future__ import annotations
+-
+-import argparse
+-from collections import Counter
+-import hashlib
+-import random
++import json
+ import shutil
+-
+-from .common import PROJECT, ROOT, file_hash, read_json, read_jsonl, write_json
+-
+-REFERENCE = PROJECT / "Edit/Repo/SHGraphRAG-upstream-deepseek-relay-20261024/reproduction/artifacts/musique_seed42_n1000"
+-OFFICIAL = PROJECT / "Edit/Repo/SHGraphRAG/dataset/raw_official/musique/release_v1/data/musique_ans_v1.0_dev.jsonl"
+-OFFICIAL_HASH = "15fa63794d18a94ce12411aca6e2327e65b6e83b0b1490efab3f1962e48abf3b"
+-
+-
+-def jsonl_bytes(rows):
+-    import json
+-    return "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows).encode("utf-8")
++from .common import PROJECT, ROOT, file_hash, read_json, write_json
++from .config import load_config
+ 
+ 
+ def prepare():
+-    if file_hash(OFFICIAL) != OFFICIAL_HASH:
+-        raise ValueError("Official MuSiQue release hash differs")
+-    official = read_jsonl(OFFICIAL)
+-    by_id = {row["id"]: row for row in official}
+-    if len(official) != len(by_id) or len(official) != 2417:
+-        raise ValueError("Official development count/IDs differ")
+-    ids = random.Random(42).sample(sorted(by_id), 1000)
+-    reference = read_json(REFERENCE / "manifest.json")
+-    if ids != read_json(REFERENCE / "ids.json"):
+-        raise ValueError("Reference seed42 frozen order differs")
+-    for name, record in reference["files"].items():
+-        if file_hash(REFERENCE / name) != record["sha256"]:
+-            raise ValueError("Reference artifact changed: " + name)
+-    queries = [{"id": qid, "question": by_id[qid]["question"]} for qid in ids]
+-    corpus, membership = {}, []
+-    for qid in ids:
+-        passage_ids = []
+-        for paragraph in by_id[qid]["paragraphs"]:
+-            text = paragraph["title"] + "\n" + paragraph["paragraph_text"]
+-            pid = hashlib.sha256(text.encode("utf-8")).hexdigest()
+-            value = {"id": pid, "title": paragraph["title"],
+-                     "sentences": [paragraph["paragraph_text"]], "text": text}
+-            if pid in corpus and corpus[pid] != value:
+-                raise ValueError("Passage content collision")
+-            corpus[pid] = value
+-            passage_ids.append(pid)
+-        membership.append({"question_id": qid, "passage_ids": passage_ids})
+-    if list(corpus.values()) != read_jsonl(REFERENCE / "candidate_corpus.jsonl"):
+-        raise ValueError("Official paragraph union differs from referenced corpus")
+-    if membership != read_jsonl(REFERENCE / "question_passages.jsonl"):
+-        raise ValueError("Official candidate membership differs")
++    dataset = load_config(ready=False)["dataset_id"]
++    source = PROJECT / "deepseek" / dataset
++    manifest = read_json(source / "manifest.json")
+     inputs = ROOT / "inputs"
+     inputs.mkdir(exist_ok=True)
+-    for name in ("ids.json", "source_indices.json", "questions.parquet", "gold.jsonl",
+-                 "candidate_corpus.jsonl", "question_passages.jsonl"):
+-        destination = inputs / name
+-        if destination.exists():
+-            if file_hash(destination) != reference["files"][name]["sha256"]:
+-                raise ValueError("Existing experiment input changed: " + name)
+-        else:
+-            shutil.copyfile(REFERENCE / name, destination)
+-    payload = jsonl_bytes(queries)
+-    query_path = inputs / "queries.jsonl"
+-    if query_path.exists() and query_path.read_bytes() != payload:
+-        raise ValueError("Inference query content changed")
+-    query_path.write_bytes(payload)
+-    manifest = {
+-        "dataset": "MuSiQue-Ans v1.0", "split": "development", "seed": 42,
+-        "count": len(ids), "source_count": len(official),
+-        "sampling": "random.Random(42).sample(sorted(unique_ids), 1000)",
+-        "order": "RNG draw order; identical to reference chat artifacts",
+-        "candidate_occurrences": sum(len(r["passage_ids"]) for r in membership),
+-        "unique_candidate_passages": len(corpus),
+-        "retrieval_scope": "global union of all selected candidate passages; no question ID filtering",
+-        "gold_policy": "evaluation only; model input is id/question and unlabeled passage text",
+-        "reference_artifact": str(REFERENCE),
+-        "official_gold_sha256": OFFICIAL_HASH,
+-        "hop_counts": dict(Counter(qid.split("__", 1)[0] for qid in ids)),
+-        "files": {p.name: {"sha256": file_hash(p), "bytes": p.stat().st_size}
+-                  for p in sorted(inputs.iterdir()) if p.is_file() and p.name != "manifest.json"},
+-        "status": "new_revision_sample_not_original_paper_sample",
+-        "model_api_requests": 0,
+-    }
++    for name, record in manifest["files"].items():
++        if file_hash(source / name) != record["sha256"]:
++            raise ValueError("Prepared data hash changed: " + name)
++        target = inputs / name
++        if target.exists() and file_hash(target) != record["sha256"]:
++            raise ValueError("Existing experiment input differs: " + name)
++        if not target.exists():
++            shutil.copyfile(source / name, target)
+     write_json(inputs / "manifest.json", manifest)
+     return validate_inputs()
+ 
+ 
+ def validate_inputs():
+-    root = ROOT / "inputs"
+-    manifest = read_json(root / "manifest.json")
+-    for name, expected in manifest["files"].items():
+-        if file_hash(root / name) != expected["sha256"]:
+-            raise ValueError("Experiment input changed: " + name)
+-    ids, queries = read_json(root / "ids.json"), read_jsonl(root / "queries.jsonl")
+-    if len(ids) != 1000 or len(set(ids)) != 1000 or [q["id"] for q in queries] != ids:
+-        raise ValueError("Expected exactly 1000 ID-aligned queries")
+-    if any(set(q) != {"id", "question"} for q in queries):
+-        raise ValueError("Inference queries expose an evaluation-only field")
+-    corpus = read_jsonl(root / "candidate_corpus.jsonl")
+-    if len(corpus) != 11835 or sum(
+-            len(r["passage_ids"]) for r in read_jsonl(root / "question_passages.jsonl")) != 19997:
+-        raise ValueError("Candidate corpus scope differs")
+-    return {"passed": True, "questions": len(ids), "passages": len(corpus),
+-            "candidate_occurrences": 19997, "seed": 42,
+-            "inputs_sha256": file_hash(root / "manifest.json"), "api_calls": 0}
+-
+-
+-def main():
+-    parser = argparse.ArgumentParser()
+-    parser.add_argument("--validate-only", action="store_true")
+-    args = parser.parse_args()
+-    report = validate_inputs() if args.validate_only else prepare()
+-    write_json(ROOT / "audit/input_validation.json", report)
+-    import json
+-    print(json.dumps(report, indent=2))
++    inputs = ROOT / "inputs"
++    manifest = read_json(inputs / "manifest.json")
++    dataset = load_config(ready=False)["dataset_id"]
++    if manifest["dataset_id"] != dataset or manifest["seed"] != 42 or manifest["count"] != 1000:
++        raise ValueError("Wrong dataset, seed, or evaluation denominator")
++    for name, record in manifest["files"].items():
++        if file_hash(inputs / name) != record["sha256"]:
++            raise ValueError("Frozen input hash differs: " + name)
++    ids = read_json(inputs / "ids.json")
++    queries = [json.loads(line) for line in (inputs / "queries.jsonl").read_text(encoding="utf-8").splitlines()]
++    if len(set(ids)) != 1000 or [row["id"] for row in queries] != ids or any(set(row) != {"id", "question"} for row in queries):
++        raise ValueError("Inference fields or ID alignment differ")
++    expected = read_json(ROOT.parents[2] / "protocols/seed42" / dataset / "ids.json")
++    if ids != expected:
++        raise ValueError("Question IDs differ from the completed experiment")
++    return {"passed": True, "dataset": dataset, "questions": 1000, "seed": 42,
++            "passages": manifest["unique_candidate_passages"],
++            "inputs_sha256": file_hash(inputs / "manifest.json"), "api_calls": 0}
+ 
+ 
+ if __name__ == "__main__":
+-    main()
++    print(json.dumps(prepare(), indent=2))
+--- a/code/hypergraphrag_deepseek/musique/experiment/run.py
++++ b/code/hypergraphrag_deepseek/musique/experiment/run.py
+@@ -20,7 +20,7 @@
+ from .config import load_config, read_authorized_key
+ from .prepare import validate_inputs
+ 
+-os.environ["TIKTOKEN_CACHE_DIR"] = str(ROOT / "tokenizer_cache")
++os.environ.setdefault("TIKTOKEN_CACHE_DIR", str(ROOT / "tokenizer_cache"))
+ for stream in (sys.stdout, sys.stderr):
+     if hasattr(stream, "reconfigure"):
+         stream.reconfigure(encoding="utf-8", errors="backslashreplace")
+@@ -105,7 +105,7 @@
+         "source_provenance": original,
+         "dependency_lock_sha256": file_hash(ROOT / "provenance/requirements.lock.txt"),
+         "python_hash_seed": os.environ.get("PYTHONHASHSEED"),
+-        "capacity_recovery_import": read_json(ROOT / "provenance/capacity_recovery.json"),
++        "capacity_recovery_import": None,  # Public fresh run; no private caches imported.
+     }
+ 
+ 
+--- a/code/hypergraphrag_deepseek/musique/experiment/test_experiment.py
++++ b/code/hypergraphrag_deepseek/musique/experiment/test_experiment.py
+@@ -410,7 +410,7 @@
+                                     "contract", "index", {"passage"})
+ 
+     def test_answer_metrics_match_supplied_musique_answer_metric(self):
+-        path = PROJECT / "Edit/Repo/SHGraphRAG/qa/musique_evaluate_v1.0.py"
++        path = ROOT.parents[2] / "code/shgraphrag_gpt4omini/qa/musique_evaluate_v1.0.py"
+         spec = importlib.util.spec_from_file_location("reference_musique_metric", path)
+         reference = importlib.util.module_from_spec(spec)
+         spec.loader.exec_module(reference)
+--- a/code/hypergraphrag_deepseek/musique/experiment/verify.py
++++ b/code/hypergraphrag_deepseek/musique/experiment/verify.py
+@@ -160,6 +160,10 @@
+     summary_audit = audit_summary_outputs(run, graph, index["directory"])
+     from .summary_reuse import audit_seeded_validation
+     validation_audit = audit_seeded_validation(run)
++    imported_timing = (capacity_import["timing"] if capacity_import is not None else {
++        "construction_wall_s_including_observed_upper_bounds": 0.0,
++        "invocation_wall_s_including_observed_upper_bounds": 0.0,
++    })  # A fresh run has no imported physical history.
+     report = {
+         "status": "verified_complete", "dataset": "musique", "questions": 1000,
+         "capacity_recovery_import_audit": capacity_import,
+@@ -170,10 +174,10 @@
+         "missing_or_failed_predictions": metrics["missing_or_failed"],
+         "native_alias_em": metrics["native_alias_em"], "native_alias_f1": metrics["native_alias_f1"],
+         "construction_wall_s_all_attempts": sum(a["wall_s"] for a in construction)
+-            + capacity_import["timing"]["construction_wall_s_including_observed_upper_bounds"],
++            + imported_timing["construction_wall_s_including_observed_upper_bounds"],
+         "construction_last_success_wall_s": index["wall_s"],
+         "execution_wall_s_all_invocations": sum(a["wall_s"] for a in invocations)
+-            + capacity_import["timing"]["invocation_wall_s_including_observed_upper_bounds"],
++            + imported_timing["invocation_wall_s_including_observed_upper_bounds"],
+         "query_phase_wall_s_all_attempts": sum(p["wall_s"] for p in phases if p["phase"] == "query_finished"),
+         "latency_s": {"mean": statistics.mean(latencies),
+                       "p50": float(np.percentile(latencies, 50)),
+--- a/code/hypergraphrag_deepseek/musique/launch.ps1
++++ b/code/hypergraphrag_deepseek/musique/launch.ps1
+@@ -1,85 +1,18 @@
+ [CmdletBinding()]
+ param(
+-    [ValidateSet('Check', 'Checks', 'Start', 'Status', 'Evaluate', 'Verify')]
+-    [string]$Action = 'Check'
++    [ValidateSet('plan','prepare','run','evaluate','verify')]
++    [string]$Action = 'plan',
++    [Parameter(Mandatory=$true)][string]$DataRoot,
++    [string]$Python = 'python',
++    [switch]$AllowModelApi
+ )
+-
+ $ErrorActionPreference = 'Stop'
+-$experimentRoot = $PSScriptRoot
+-$researchRoot = (Resolve-Path -LiteralPath (Join-Path $experimentRoot '../../../..')).Path
+-$experimentPython = Join-Path $researchRoot '.runtime/hypergraphrag-native-20261024/Scripts/python.exe'
+-if (-not (Test-Path -LiteralPath $experimentPython -PathType Leaf)) {
+-    throw 'The dedicated experiment interpreter is missing.'
+-}
+-
+-$previousDirectory = (Get-Location).Path
+-$previousUtf8 = $env:PYTHONUTF8
+-$previousHashSeed = $env:PYTHONHASHSEED
+-$previousIoEncoding = $env:PYTHONIOENCODING
+-try {
+-    Set-Location -LiteralPath $experimentRoot
+-    $env:PYTHONUTF8 = '1'
+-    $env:PYTHONHASHSEED = '42'
+-    $env:PYTHONIOENCODING = 'utf-8'
+-    switch ($Action) {
+-        'Check' {
+-            & $experimentPython -X utf8 -m experiment.run --check
+-            if ($LASTEXITCODE -ne 0) { throw 'Offline readiness check failed.' }
+-        }
+-        'Checks' {
+-            & $experimentPython -X utf8 -m experiment.offline_checks
+-            if ($LASTEXITCODE -ne 0) { throw 'Offline checks failed; inspect audit/offline_tests.log.' }
+-        }
+-        'Start' {
+-            & $experimentPython -X utf8 -m experiment.run --check
+-            if ($LASTEXITCODE -ne 0) { throw 'Offline readiness check failed.' }
+-            $readiness = Get-Content -LiteralPath (Join-Path $experimentRoot 'audit/readiness.json') -Raw |
+-                ConvertFrom-Json
+-            if ($readiness.status -ne 'ready_to_run') {
+-                throw 'Supply the confirmed DeepSeek relay Base URL and exact API model ID before starting.'
+-            }
+-            $launchDirectory = Join-Path $experimentRoot ('launches/' + (Get-Date -Format 'yyyyMMdd_HHmmss_fff'))
+-            [void](New-Item -ItemType Directory -Path $launchDirectory -Force)
+-            $stdoutPath = Join-Path $launchDirectory 'stdout.log'
+-            $stderrPath = Join-Path $launchDirectory 'stderr.log'
+-            $worker = Start-Process -FilePath $experimentPython `
+-                -ArgumentList @('-X', 'utf8', '-u', '-m', 'experiment.run') `
+-                -WorkingDirectory $experimentRoot -WindowStyle Hidden `
+-                -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath -PassThru
+-            $launchRecord = [ordered]@{
+-                pid = $worker.Id
+-                launched_at = (Get-Date -Format 'o')
+-                interpreter = $experimentPython
+-                stdout = $stdoutPath
+-                stderr = $stderrPath
+-                note = 'Launch is not completion; inspect run/status.json and run/verification.json.'
+-            }
+-            $recordPath = Join-Path $experimentRoot 'launcher.json'
+-            [System.IO.File]::WriteAllText(
+-                $recordPath, ($launchRecord | ConvertTo-Json -Depth 8),
+-                [System.Text.UTF8Encoding]::new($false))
+-            $launchRecord | ConvertTo-Json -Depth 8
+-        }
+-        'Status' {
+-            $statusPath = Join-Path $experimentRoot 'run/status.json'
+-            if (Test-Path -LiteralPath $statusPath) {
+-                Get-Content -LiteralPath $statusPath -Raw
+-            } else {
+-                '{"status":"not_started","full_experiment_completed":false}'
+-            }
+-        }
+-        'Evaluate' {
+-            & $experimentPython -X utf8 -m experiment.evaluate
+-            if ($LASTEXITCODE -ne 0) { throw 'Evaluation failed.' }
+-        }
+-        'Verify' {
+-            & $experimentPython -X utf8 -m experiment.verify
+-            if ($LASTEXITCODE -ne 0) { throw 'Completion verification failed.' }
+-        }
+-    }
+-} finally {
+-    Set-Location -LiteralPath $previousDirectory
+-    $env:PYTHONUTF8 = $previousUtf8
+-    $env:PYTHONHASHSEED = $previousHashSeed
+-    $env:PYTHONIOENCODING = $previousIoEncoding
+-}
++$supplement = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../../..')).Path
++$dataset = Split-Path -Leaf $PSScriptRoot
++$arguments = @((Join-Path $supplement 'tools/reproduce.py'),
++    '--profile','hyper-deepseek','--dataset',$dataset,'--data-root',$DataRoot,
++    '--phase',$Action)
++if ($Action -ne 'plan') { $arguments += '--execute' }
++if ($AllowModelApi) { $arguments += '--allow-model-api' }
++& $Python @arguments
++exit $LASTEXITCODE
+--- a/code/hypergraphrag_deepseek/musique/provenance/source.json
++++ b/code/hypergraphrag_deepseek/musique/provenance/source.json
+@@ -1,30 +1,28 @@
+ {
+   "official_repository": "https://github.com/LHRLAB/HyperGraphRAG",
+   "official_commit": "d587cdf8c3fe2be7719557f845324cb3a321f5e2",
+-  "copied_working_source": "D:\\Users\\hd\\Desktop\\2026-CommercialOrder\\OnGoingOrders\\Papers\\Paper_SHGraphRAG\\Edit\\Repo\\CompareMethods\\HyperGraphRAG",
++  "copied_working_source": "vendored HyperGraphRAG source in this directory",
+   "source_sha256": {
+-    "hypergraphrag\\__init__.py": "42db2a734b8c565ead8ea7d84f1422226dba430674d2e28e124b8656c8a02103",
+-    "hypergraphrag\\base.py": "2d9437b8c1c005c64902b04a4a978efa8d52395ee3703c363070ce9509ec6c68",
+-    "hypergraphrag\\hypergraphrag.py": "2b1c49dd201232706705526dfe16d55a451b7b8a63837aea8e9978a6b56cfc79",
+-    "hypergraphrag\\kg\\__init__.py": "fbd3eff0946b1cd66087d6a8ced0d073e050b053fa70e082af6769923565a202",
+-    "hypergraphrag\\kg\\chroma_impl.py": "b9aaf16bda1a7155c1ccc42e41439be3c0ff9edb81dd4e48f09a8be4a782774d",
+-    "hypergraphrag\\kg\\milvus_impl.py": "a1d491c90faf98ee9e0c6e0747c04f841aa0827a0169b2be0811f366f768a6d8",
+-    "hypergraphrag\\kg\\mongo_impl.py": "c37b8ba5582216c3c3986eabe7bdc02e9b33f99e2f9de941523041323517c5bf",
+-    "hypergraphrag\\kg\\neo4j_impl.py": "8c26260a07953da3387592b63b8049eb302a31845b75fae7ab27cff55f688078",
+-    "hypergraphrag\\kg\\oracle_impl.py": "e44e57dfaa692f7583eda2dd6033006b4ec91fe30b7fc0493d29dc8666405ced",
+-    "hypergraphrag\\kg\\tidb_impl.py": "fa9dd0fceab7e699facbb4c13f536267cff7acff751a9131d873203e7f75feb8",
+-    "hypergraphrag\\llm.py": "aa62c03e368aa5bfd8765820c12db7e3b0b3bf43d292a0c980af60cac74c44a3",
+-    "hypergraphrag\\operate.py": "2751b4c8f94da95918b6458635159fd8767e0e0ab2ce93b2a0cac4bd42f9faa3",
+-    "hypergraphrag\\prompt.py": "2730b18d849641d9dedafad2374034bd5ed90d403402a1991ea0596e869b085e",
+-    "hypergraphrag\\storage.py": "42c270938b33169cbacb85415a43dc32e0e3cf459e4485b5f09ff11fce5e4669",
+-    "hypergraphrag\\utils.py": "77fa3fdf368b7b3df1da3a5a6f88bdadb65a9265d8b2b50903d55a7889eb9eca"
++    "hypergraphrag/__init__.py": "42db2a734b8c565ead8ea7d84f1422226dba430674d2e28e124b8656c8a02103",
++    "hypergraphrag/base.py": "2d9437b8c1c005c64902b04a4a978efa8d52395ee3703c363070ce9509ec6c68",
++    "hypergraphrag/hypergraphrag.py": "2b1c49dd201232706705526dfe16d55a451b7b8a63837aea8e9978a6b56cfc79",
++    "hypergraphrag/kg/__init__.py": "fbd3eff0946b1cd66087d6a8ced0d073e050b053fa70e082af6769923565a202",
++    "hypergraphrag/kg/chroma_impl.py": "b9aaf16bda1a7155c1ccc42e41439be3c0ff9edb81dd4e48f09a8be4a782774d",
++    "hypergraphrag/kg/milvus_impl.py": "a1d491c90faf98ee9e0c6e0747c04f841aa0827a0169b2be0811f366f768a6d8",
++    "hypergraphrag/kg/mongo_impl.py": "c37b8ba5582216c3c3986eabe7bdc02e9b33f99e2f9de941523041323517c5bf",
++    "hypergraphrag/kg/neo4j_impl.py": "8c26260a07953da3387592b63b8049eb302a31845b75fae7ab27cff55f688078",
++    "hypergraphrag/kg/oracle_impl.py": "e44e57dfaa692f7583eda2dd6033006b4ec91fe30b7fc0493d29dc8666405ced",
++    "hypergraphrag/kg/tidb_impl.py": "fa9dd0fceab7e699facbb4c13f536267cff7acff751a9131d873203e7f75feb8",
++    "hypergraphrag/llm.py": "aa62c03e368aa5bfd8765820c12db7e3b0b3bf43d292a0c980af60cac74c44a3",
++    "hypergraphrag/operate.py": "2751b4c8f94da95918b6458635159fd8767e0e0ab2ce93b2a0cac4bd42f9faa3",
++    "hypergraphrag/prompt.py": "2730b18d849641d9dedafad2374034bd5ed90d403402a1991ea0596e869b085e",
++    "hypergraphrag/storage.py": "42c270938b33169cbacb85415a43dc32e0e3cf459e4485b5f09ff11fce5e4669",
++    "hypergraphrag/utils.py": "77fa3fdf368b7b3df1da3a5a6f88bdadb65a9265d8b2b50903d55a7889eb9eca"
+   },
+   "patch_sha256": "74972a0bd89768b728fcf2295b65e3346695d71b60155a9d653206b4a86d5a7a",
+   "prior_model_outputs_copied": false,
+   "prior_vectors_copied": false,
+   "credentials_copied_or_loaded": false,
+-  "reference_chat": "01a16c84-bb09-78b3-adde-be6601a96137",
+-  "upstream_reference_chat": "01a15ac7-0a19-7f51-88dd-fe73d6040d6f",
+   "source_notes": [
+     "Original tuple prompts, graph construction and hybrid ranking retained.",
+     "Existing instrumentation adds retrieval trace and exception-safe async scheduling.",
+--- a/code/hypergraphrag_gpt4omini/revision/transport.py
++++ b/code/hypergraphrag_gpt4omini/revision/transport.py
+@@ -17,7 +17,7 @@
+ 
+ MODEL = "gpt-6-luna"
+ BASE_URL = "https://www.fucheers.top/v1"
+-KEY_FILE = Path(r"D:\Users\hd\Desktop\2026-CommercialOrder\OnGoingOrders\api\fucheers\key.txt")
++KEY_FILE = None  # Legacy provider intentionally unavailable in this release.
+ EMBED_MODEL = "bge-m3:latest"
+ EMBED_DIGEST = "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab"
+ ITEM = contextvars.ContextVar("hypergraph_item", default={})
+@@ -86,7 +86,8 @@
+         self.semaphore = asyncio.Semaphore(workers)
+         self.embed_semaphore = asyncio.Semaphore(1)
+         self.locks = {}
+-        self._key = KEY_FILE.read_text(encoding="utf-8-sig").strip()
++        raise RuntimeError("Legacy provider is disabled; use revision_openrouter.Transport")
++        self._key = ""
+         if not self._key:
+             raise ProviderError("empty_shared_key")
+         self.db = sqlite3.connect(cache / "embeddings.sqlite")
+--- a/code/hypergraphrag_gpt4omini/revision_openrouter/evaluate.py
++++ b/code/hypergraphrag_gpt4omini/revision_openrouter/evaluate.py
+@@ -44,10 +44,10 @@
+         raise RuntimeError("Gold/frozen ID order mismatch")
+     aliases = {}
+     if entry["dataset"] == "2wiki":
+-        manifest = json.loads((project_root / "Edit/Repo/SHGraphRAG/dataset/"
++        manifest = json.loads((project_root / "dataset/"
+                                "paper_ready/manifest.json").read_text(encoding="utf-8"))
+         data = manifest["datasets"]["2wiki"]
+-        alias_path = project_root / "Edit/Repo/SHGraphRAG" / data["answer_aliases"]
++        alias_path = project_root / data["answer_aliases"]
+         if file_hash(alias_path) != data["answer_aliases_sha256"]:
+             raise RuntimeError("2Wiki alias hash mismatch")
+         aliases = {row["Q_id"]: row for row in map(json.loads,
+--- a/code/hypergraphrag_gpt4omini/revision_openrouter/launch.ps1
++++ b/code/hypergraphrag_gpt4omini/revision_openrouter/launch.ps1
+@@ -1,24 +1,18 @@
+ [CmdletBinding()]
+ param(
+-    [Parameter(Mandatory = $true)]
+-    [string]$Name,
+-    [int]$Limit = 1000,
+-    [int]$Workers = 32,
+-    [switch]$Supervise
++    [Parameter(Mandatory=$true)][string]$DataRoot,
++    [ValidateSet('hotpotqa','2wiki','musique','all')][string]$Dataset = 'all',
++    [string]$Name = 'public_reproduction',
++    [string]$Python = 'python',
++    [switch]$Execute,
++    [switch]$AllowModelApi
+ )
+-
+ $ErrorActionPreference = 'Stop'
+-$hyperRepo = Split-Path -Parent $PSScriptRoot
+-Set-Location -LiteralPath $hyperRepo
+-$env:PYTHONHASHSEED = '0'
+-$env:PYTHONUTF8 = '1'
+-$hyperPython = Join-Path $hyperRepo '.venv-revision/Scripts/python.exe'
+-$hyperModule = 'revision_openrouter.run'
+-if ($Supervise) { $hyperModule = 'revision_openrouter.supervise' }
+-
+-& 'C:/Users/hd/.codex/scripts/with-openrouter.ps1' `
+-    -Command $hyperPython `
+-    -CommandArgs @(
+-        '-X', 'utf8', '-u', '-m', $hyperModule,
+-        '--name', $Name, '--limit', "$Limit", '--workers', "$Workers"
+-    )
++$supplement = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../../..')).Path
++$arguments = @((Join-Path $supplement 'tools/reproduce.py'),
++    '--profile','hyper-gpt4omini','--dataset',$Dataset,'--data-root',$DataRoot,
++    '--run-name',$Name,'--phase','run')
++if ($Execute) { $arguments += '--execute' }
++if ($AllowModelApi) { $arguments += '--allow-model-api' }
++& $Python @arguments
++exit $LASTEXITCODE
+--- a/code/hypergraphrag_gpt4omini/revision_openrouter/run.py
++++ b/code/hypergraphrag_gpt4omini/revision_openrouter/run.py
+@@ -29,8 +29,8 @@
+ from .embedding_client import OVERFLOW_POLICY
+ 
+ BASE = Path(__file__).resolve().parents[1]
+-PROJECT = BASE.parents[3]
+-LOCK = BASE.parent / "_materials/datasets.lock.json"
++PROJECT = Path(os.environ["SHGRAPHRAG_DATA_ROOT"])
++LOCK = PROJECT / "gpt4omini/datasets.lock.json"
+ RESPONSE_TYPE = (
+     "A short answer for exact-match question answering. Return only a JSON object "
+     'with one key, "answer", whose value is the concise answer string. '
+@@ -194,8 +194,10 @@
+     git_head = subprocess.run(
+         ["git", "-C", str(BASE), "rev-parse", "HEAD"], check=True,
+         capture_output=True, text=True, encoding="utf-8", timeout=15).stdout.strip()
+-    if git_head != CONFIG["source_commit"]:
+-        raise RuntimeError("Official source commit changed")
++    pinned = read_json(BASE / "frozen_algorithm.json")
++    for relative, expected in pinned.items():
++        if file_hash(BASE / relative) != expected:
++            raise RuntimeError("Pinned algorithm file changed: " + relative)
+     source_patch = subprocess.run(
+         ["git", "-C", str(BASE), "diff", "--", "hypergraphrag", ".gitignore"],
+         check=True, capture_output=True, text=True, encoding="utf-8", timeout=15).stdout
+--- a/code/hypergraphrag_gpt4omini/revision_openrouter/test_evaluation.py
++++ b/code/hypergraphrag_gpt4omini/revision_openrouter/test_evaluation.py
+@@ -37,7 +37,7 @@
+                     evaluate_run(root, PROJECT, entry)
+ 
+     def test_primary_parity_with_official_metric_primitives(self):
+-        qa = PROJECT / "Edit/Repo/SHGraphRAG/qa"
++        qa = Path(__file__).resolve().parents[3] / "code/shgraphrag_gpt4omini/qa"
+         spec = importlib.util.spec_from_file_location("official_hotpot", qa / "hotpot_evaluate_v1.py")
+         module = importlib.util.module_from_spec(spec)
+         spec.loader.exec_module(module)
+--- a/code/hypergraphrag_gpt4omini/revision_openrouter/transport.py
++++ b/code/hypergraphrag_gpt4omini/revision_openrouter/transport.py
+@@ -27,7 +27,7 @@
+ PROVIDER = "openrouter"
+ REASONING_EFFORT = "not_applicable"
+ TEMPERATURE = 0
+-PROXY = "http://127.0.0.1:6789"
++PROXY = os.environ.get("OPENROUTER_PROXY") or None
+ 
+ 
+ class ProviderError(RuntimeError):
+@@ -69,15 +69,17 @@
+         self.cache_only = cache_only
+         self._key = ""
+         if not cache_only:
++            if os.environ.get("SHGRAPHRAG_ALLOW_MODEL_API") != "1":
++                raise ProviderError("explicit_model_api_opt_in_required")
+             self._key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+             if not self._key:
+-                raise ProviderError("missing_OpenRouter_key_use_shared_launcher")
++                raise ProviderError("missing_user_supplied_OPENROUTER_API_KEY")
+             if os.environ.get("OPENROUTER_BASE_URL", "").rstrip("/") != BASE_URL:
+                 raise ProviderError("OpenRouter_origin_mismatch")
+             if os.environ.get("OPENROUTER_MODEL") != MODEL:
+                 raise ProviderError("OpenRouter_model_mismatch")
+-            if os.environ.get("OPENROUTER_PROXY") != PROXY:
+-                raise ProviderError("OpenRouter_proxy_mismatch")
++            if (os.environ.get("OPENROUTER_PROXY") or None) != PROXY:
++                raise ProviderError("OpenRouter_proxy_changed_after_import")
+         capacity = int(os.environ.get("OPENROUTER_MAX_CONCURRENCY", "32"))
+         if not 1 <= workers <= min(32, capacity):
+             raise ProviderError("OpenRouter_concurrency_exceeds_shared_setting")
+--- a/code/shgraphrag_deepseek/2wiki/config/settings.py
++++ b/code/shgraphrag_deepseek/2wiki/config/settings.py
+@@ -1,9 +1,10 @@
+ from pathlib import Path
++import os
+ 
+ # 基础路径设置
+ BASE_DIR = Path(__file__).resolve().parent.parent
+ FILES_DIR = BASE_DIR / 'files'
+-DATASET_DIR = BASE_DIR / 'dataset/2wiki/dev.parquet'
++DATASET_DIR = Path(os.environ.get("SHGRAPH_FULL_DEV_PARQUET", BASE_DIR / 'dataset/2wiki/dev.parquet'))
+ 
+ # User-approved reproduction sample; all stages must use the frozen IDs.
+ SAMPLE_SIZE = 1000
+--- a/code/shgraphrag_deepseek/2wiki/qa/benchmark_evaluate.py
++++ b/code/shgraphrag_deepseek/2wiki/qa/benchmark_evaluate.py
+@@ -3,6 +3,7 @@
+ import ast
+ from collections import Counter
+ import json
++import os
+ from pathlib import Path
+ import re
+ import string
+@@ -40,7 +41,7 @@
+ 
+ 
+ def evaluate(filepath_with_predictions, filepath_with_ground_truths, qid=None):
+-    benchmark = json.loads((ROOT / "reproduction/benchmark.json").read_text(encoding="utf-8"))
++    benchmark = json.loads(Path(os.environ.get("SHGRAPH_BENCHMARK_CONFIG", ROOT / "reproduction/benchmark.json")).read_text(encoding="utf-8"))
+     dataset = benchmark["id"]
+     exact_match, native_f1 = native_answer_functions(dataset)
+     predictions = json.loads(Path(filepath_with_predictions).read_text(encoding="utf-8"))
+--- a/code/shgraphrag_deepseek/2wiki/reproduction/campaign.py
++++ b/code/shgraphrag_deepseek/2wiki/reproduction/campaign.py
+@@ -44,15 +44,15 @@
+ 
+ 
+ def source_files():
+-    tracked = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT).decode().rstrip("\0").split("\0")
+-    extra = []
+-    for folder in ("reproduction", "qa", "model", "processor"):
+-        extra.extend(str(path.relative_to(ROOT)).replace("\\", "/") for path in (ROOT / folder).glob("*.py"))
+-    return sorted({
+-        name for name in tracked + extra
+-        if not name.startswith(("reproduction/artifacts/", "reproduction/audit/"))
+-        and Path(name).name != ".env"
+-    })
++    """Capture only this exported implementation, independent of outer Git layout."""
++    excluded = {"runs", "artifacts", "audit", "__pycache__", ".runtime", ".cache"}
++    result = []
++    for folder in ("build", "community", "config", "graph", "model", "processor", "qa", "reproduction"):
++        for path in (ROOT / folder).rglob("*"):
++            if (path.is_file() and path.suffix in (".py", ".txt", ".json")
++                    and not excluded.intersection(path.relative_to(ROOT).parts)):
++                result.append(path.relative_to(ROOT).as_posix())
++    return sorted(result)
+ 
+ 
+ def snapshot_source(root):
+--- a/code/shgraphrag_deepseek/2wiki/reproduction/database.py
++++ b/code/shgraphrag_deepseek/2wiki/reproduction/database.py
+@@ -16,7 +16,7 @@
+ HTTP_PORT = 22474
+ BOLT_PORT = 22887
+ OWNER_FILE = ROOT / ".runtime/neo4j-instance.json"
+-JAVA_HOME = Path(r"C:\Program Files\Microsoft\jdk-17.0.20.101-hotspot")
++JAVA_HOME = Path(os.environ.get("JAVA_HOME", ""))
+ 
+ 
+ def listening_pid():
+--- a/code/shgraphrag_deepseek/2wiki/reproduction/freeze_benchmark.py
++++ b/code/shgraphrag_deepseek/2wiki/reproduction/freeze_benchmark.py
+@@ -1,6 +1,7 @@
+ """Freeze the configured native benchmark with the approved seed42 selector."""
+ 
+ import argparse
++import os
+ from collections import Counter
+ from datetime import datetime, timezone
+ import hashlib
+@@ -17,7 +18,9 @@
+ from processor.sample_selection import sample_indices
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+-BENCHMARK = json.loads((ROOT / "reproduction/benchmark.json").read_text(encoding="utf-8"))
++BENCHMARK_PATH = Path(os.environ.get("SHGRAPH_BENCHMARK_CONFIG",
++    ROOT / "reproduction/benchmark.json"))
++BENCHMARK = json.loads(BENCHMARK_PATH.read_text(encoding="utf-8"))
+ DEFAULT_SOURCE = ROOT / BENCHMARK["source"]
+ DEFAULT_GOLD = ROOT / BENCHMARK["native_gold"]
+ DESTINATION = ROOT / f"reproduction/artifacts/{BENCHMARK['id']}_seed42_n1000"
+@@ -142,7 +145,7 @@
+         "packages": {name: importlib.metadata.version(name) for name in ("datasets", "numpy", "pyarrow")},
+         "selection_source_sha256": sha256(ROOT / "processor/sample_selection.py"),
+         "preparation_script_sha256": sha256(Path(__file__)),
+-        "benchmark_config_sha256": sha256(ROOT / "reproduction/benchmark.json"),
++        "benchmark_config_sha256": sha256(BENCHMARK_PATH),
+         "files": files, "llm_calls_for_preparation": 0,
+     }
+     write_json(destination / "manifest.json", manifest)
+@@ -161,7 +164,7 @@
+     for path, field in (
+         (ROOT / "processor/sample_selection.py", "selection_source_sha256"),
+         (Path(__file__), "preparation_script_sha256"),
+-        (ROOT / "reproduction/benchmark.json", "benchmark_config_sha256"),
++        (BENCHMARK_PATH, "benchmark_config_sha256"),
+     ):
+         require(sha256(path) == manifest[field], f"Preparation source changed: {path.name}")
+     indices = sample_indices([row["id"] for row in rows], SAMPLE_SIZE, SAMPLE_SEED)
+--- a/code/shgraphrag_deepseek/2wiki/reproduction/prepare_services.py
++++ b/code/shgraphrag_deepseek/2wiki/reproduction/prepare_services.py
+@@ -2,6 +2,7 @@
+ 
+ import hashlib
+ import json
++import os
+ from pathlib import Path
+ import shutil
+ import time
+@@ -28,7 +29,8 @@
+ 
+ def opener(proxy):
+     # Only the public Neo4j CDN needs this command-scoped route.
+-    proxies = {"http": "http://127.0.0.1:6789", "https": "http://127.0.0.1:6789"} if proxy else {}
++    selected = os.environ.get("SHGRAPHRAG_DOWNLOAD_PROXY") if proxy else None
++    proxies = {"http": selected, "https": selected} if selected else {}
+     return urllib.request.build_opener(urllib.request.ProxyHandler(proxies))
+ 
+ 
+--- a/code/shgraphrag_deepseek/2wiki/reproduction/relay_config.json
++++ b/code/shgraphrag_deepseek/2wiki/reproduction/relay_config.json
+@@ -7,11 +7,10 @@
+   "allowed_returned_models": [
+     "deepseek-v4.1-flash"
+   ],
+-  "credential_id": "deepseek-relay-14ac1cd4ea79",
+-  "credential_file": "C:/Users/hd/.codex/secrets/shgraphrag/deepseek-relay-20261024.dpapi.json",
++  "credential_id": "user-supplied-DEEPSEEK_API_KEY",
+   "max_in_flight": 100,
+   "generation_parameters": {},
+   "request_timeout_seconds": 600,
+-  "reference_chat": "01a15ac7-0a19-7f51-88dd-fe73d6040d6f",
+-  "authorization": "User expanded the current DeepSeek relay SHGraphRAG task to include the other two paper benchmarks: this checkout is 2WikiMultiHopQA IDs release 2021-04-07, seed42 n1000. No other Key or provider."
++  "authorization": "Fresh runs require SHGRAPHRAG_ALLOW_MODEL_API=1 and the reader's own authorized credential.",
++  "credential_environment": "DEEPSEEK_API_KEY"
+ }
+--- a/code/shgraphrag_deepseek/2wiki/reproduction/relay_config.py
++++ b/code/shgraphrag_deepseek/2wiki/reproduction/relay_config.py
+@@ -1,7 +1,4 @@
+-"""Read only this experiment's public contract and explicitly selected secret."""
+-
+-import ctypes
+-from ctypes import wintypes
++"""Public reproduction configuration; explicit environment credential only."""
+ import hashlib
+ import json
+ import os
+@@ -10,46 +7,40 @@
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+ CONFIG_FILE = ROOT / "reproduction/relay_config.json"
+-EXPECTED_CREDENTIAL_ID = "deepseek-relay-14ac1cd4ea79"
+-EXPECTED_CREDENTIAL_FILE = Path(
+-    "C:/Users/hd/.codex/secrets/shgraphrag/deepseek-relay-20261024.dpapi.json"
+-)
++EXPECTED_CREDENTIAL_ID = "user-supplied-DEEPSEEK_API_KEY"
+ 
+ 
+ def load_relay_config(require_ready=True):
+     config = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
+-    if config["provider"] != "deepseek-relay":
+-        raise ValueError("A different provider is outside this run's authorization")
+-    if config["credential_id"] != EXPECTED_CREDENTIAL_ID:
+-        raise ValueError("Relay credential identity changed")
+-    if Path(config["credential_file"]).resolve() != EXPECTED_CREDENTIAL_FILE.resolve():
+-        raise ValueError("Relay credential path changed")
+-    if config["max_in_flight"] != 100:
+-        raise ValueError("This run has a user-authorized 100-request upper bound")
++    if config["provider"] != "deepseek-relay" or config["credential_id"] != EXPECTED_CREDENTIAL_ID:
++        raise ValueError("Configured provider identity differs")
++    if config["max_in_flight"] not in (64, 100):
++        raise ValueError("Unexpected historical request ceiling")
+     if require_ready:
+         if config["status"] != "ready" or not config.get("base_url") or not config.get("model"):
+-            raise RuntimeError(
+-                "Relay Base URL and exact model ID are missing; no credential was loaded "
+-                "and no model request can be sent"
+-            )
+-        parsed = urlsplit(config["base_url"])
+-        if (
+-            parsed.scheme != "https" or not parsed.hostname
+-            or parsed.username or parsed.password or parsed.query or parsed.fragment
+-            or parsed.hostname in ("localhost", "127.0.0.1", "::1")
+-        ):
+-            raise ValueError("Relay requires an explicitly configured HTTPS Base URL")
+-        model = config["model"]
+-        if not isinstance(model, str) or not model or any(c.isspace() for c in model):
+-            raise ValueError("An exact API model ID is required")
+-        if model not in config["allowed_returned_models"]:
+-            raise ValueError("Requested model must be in the explicit returned-model allowlist")
++            raise RuntimeError("Provide a ready Base URL and exact model before running")
++        url = urlsplit(config["base_url"])
++        if (config["status"] != "ready" or url.scheme != "https"
++                or url.username or url.password or url.query or url.fragment):
++            raise ValueError("An explicit HTTPS provider is required")
++        if config["model"] not in config["allowed_returned_models"]:
++            raise ValueError("Model must be in the returned-model allowlist")
+     return config
+ 
+ 
+ def config_identity(config):
+     public = {key: value for key, value in config.items() if key != "authorization"}
+     return hashlib.sha256(json.dumps(public, sort_keys=True).encode()).hexdigest()
++
++
++def read_authorized_key(config):
++    if os.environ.get("SHGRAPHRAG_ALLOW_MODEL_API") != "1":
++        raise RuntimeError("Model calls require explicit opt-in for this fresh run")
++    load_relay_config()
++    key = os.environ.get("DEEPSEEK_API_KEY", "").strip()
++    if not key:
++        raise RuntimeError("Set your own authorized DEEPSEEK_API_KEY in this process")
++    return key
+ 
+ 
+ def resume_config_variants(config):
+@@ -61,44 +52,3 @@
+             "user-approved-request-capacity64-to100-20261025",
+         ))
+     return variants
+-
+-
+-def read_authorized_key(config):
+-    """Decrypt only the task credential; do not inspect process API variables."""
+-    if os.name != "nt":
+-        raise RuntimeError("This saved credential uses Windows CurrentUser DPAPI")
+-    record = json.loads(Path(config["credential_file"]).read_text(encoding="utf-8"))
+-    if record["credential_id"] != config["credential_id"]:
+-        raise ValueError("Saved credential belongs to a different experiment")
+-
+-    class Blob(ctypes.Structure):
+-        _fields_ = [
+-            ("cbData", wintypes.DWORD),
+-            ("pbData", ctypes.POINTER(ctypes.c_ubyte)),
+-        ]
+-
+-    encrypted = bytes.fromhex(record["encrypted_key"])
+-    buffer = (ctypes.c_ubyte * len(encrypted)).from_buffer_copy(encrypted)
+-    source = Blob(len(encrypted), buffer)
+-    destination = Blob()
+-    crypt32 = ctypes.WinDLL("crypt32", use_last_error=True)
+-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+-    crypt32.CryptUnprotectData.argtypes = [
+-        ctypes.POINTER(Blob), ctypes.c_void_p, ctypes.c_void_p,
+-        ctypes.c_void_p, ctypes.c_void_p, wintypes.DWORD, ctypes.POINTER(Blob),
+-    ]
+-    crypt32.CryptUnprotectData.restype = wintypes.BOOL
+-    kernel32.LocalFree.argtypes = [ctypes.c_void_p]
+-    kernel32.LocalFree.restype = ctypes.c_void_p
+-    if not crypt32.CryptUnprotectData(
+-        ctypes.byref(source), None, None, None, None, 0, ctypes.byref(destination)
+-    ):
+-        raise ctypes.WinError(ctypes.get_last_error())
+-    try:
+-        key = ctypes.string_at(destination.pbData, destination.cbData).decode("utf-16-le")
+-    finally:
+-        kernel32.LocalFree(destination.pbData)
+-    digest = hashlib.sha256(key.encode()).hexdigest()
+-    if digest != record["key_sha256"] or not key:
+-        raise ValueError("Saved relay credential failed identity verification")
+-    return key
+--- a/code/shgraphrag_deepseek/2wiki/reproduction/verify_completed_run.py
++++ b/code/shgraphrag_deepseek/2wiki/reproduction/verify_completed_run.py
+@@ -4,6 +4,7 @@
+ from collections import Counter
+ import hashlib
+ import json
++import os
+ from pathlib import Path
+ import zipfile
+ 
+@@ -37,7 +38,8 @@
+     predictions = read(root / "qa/predictions_with_supporting_facts.json")
+     answers = read(root / "qa/predictions.json")["answer"]
+     ids = read(DESTINATION / "ids.json")
+-    benchmark = read(ROOT / "reproduction/benchmark.json")
++    benchmark = read(Path(os.environ.get("SHGRAPH_BENCHMARK_CONFIG",
++        ROOT / "reproduction/benchmark.json")))
+     if benchmark.get("aliases"):
+         check("native_alias_hash", sha256(ROOT / benchmark["aliases"]) == benchmark["aliases_sha256"])
+     manifest = read(DESTINATION / "manifest.json")
+--- a/code/shgraphrag_deepseek/hotpotqa/config/settings.py
++++ b/code/shgraphrag_deepseek/hotpotqa/config/settings.py
+@@ -1,9 +1,10 @@
+ from pathlib import Path
++import os
+ 
+ # 基础路径设置
+ BASE_DIR = Path(__file__).resolve().parent.parent
+ FILES_DIR = BASE_DIR / 'files'
+-DATASET_DIR = BASE_DIR / 'dataset/hotpotqa/dev.parquet'
++DATASET_DIR = Path(os.environ.get("SHGRAPH_FULL_DEV_PARQUET", BASE_DIR / 'dataset/hotpotqa/dev.parquet'))
+ 
+ # User-approved reproduction sample; all stages must use the frozen IDs.
+ SAMPLE_SIZE = 1000
+--- a/code/shgraphrag_deepseek/hotpotqa/qa/benchmark_evaluate.py
++++ b/code/shgraphrag_deepseek/hotpotqa/qa/benchmark_evaluate.py
+@@ -3,6 +3,7 @@
+ import ast
+ from collections import Counter
+ import json
++import os
+ from pathlib import Path
+ import re
+ import string
+@@ -40,7 +41,7 @@
+ 
+ 
+ def evaluate(filepath_with_predictions, filepath_with_ground_truths, qid=None):
+-    benchmark = json.loads((ROOT / "reproduction/benchmark.json").read_text(encoding="utf-8"))
++    benchmark = json.loads(Path(os.environ.get("SHGRAPH_BENCHMARK_CONFIG", ROOT / "reproduction/benchmark.json")).read_text(encoding="utf-8"))
+     dataset = benchmark["id"]
+     exact_match, native_f1 = native_answer_functions(dataset)
+     predictions = json.loads(Path(filepath_with_predictions).read_text(encoding="utf-8"))
+--- a/code/shgraphrag_deepseek/hotpotqa/reproduction/campaign.py
++++ b/code/shgraphrag_deepseek/hotpotqa/reproduction/campaign.py
+@@ -43,15 +43,15 @@
+ 
+ 
+ def source_files():
+-    tracked = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT).decode().rstrip("\0").split("\0")
+-    extra = []
+-    for folder in ("reproduction", "qa", "model", "processor"):
+-        extra.extend(str(path.relative_to(ROOT)).replace("\\", "/") for path in (ROOT / folder).glob("*.py"))
+-    return sorted({
+-        name for name in tracked + extra
+-        if not name.startswith(("reproduction/artifacts/", "reproduction/audit/"))
+-        and Path(name).name != ".env"
+-    })
++    """Capture only this exported implementation, independent of outer Git layout."""
++    excluded = {"runs", "artifacts", "audit", "__pycache__", ".runtime", ".cache"}
++    result = []
++    for folder in ("build", "community", "config", "graph", "model", "processor", "qa", "reproduction"):
++        for path in (ROOT / folder).rglob("*"):
++            if (path.is_file() and path.suffix in (".py", ".txt", ".json")
++                    and not excluded.intersection(path.relative_to(ROOT).parts)):
++                result.append(path.relative_to(ROOT).as_posix())
++    return sorted(result)
+ 
+ 
+ def snapshot_source(root):
+--- a/code/shgraphrag_deepseek/hotpotqa/reproduction/database.py
++++ b/code/shgraphrag_deepseek/hotpotqa/reproduction/database.py
+@@ -16,7 +16,7 @@
+ HTTP_PORT = 21474
+ BOLT_PORT = 21887
+ OWNER_FILE = ROOT / ".runtime/neo4j-instance.json"
+-JAVA_HOME = Path(r"C:\Program Files\Microsoft\jdk-17.0.20.101-hotspot")
++JAVA_HOME = Path(os.environ.get("JAVA_HOME", ""))
+ 
+ 
+ def listening_pid():
+--- a/code/shgraphrag_deepseek/hotpotqa/reproduction/freeze_benchmark.py
++++ b/code/shgraphrag_deepseek/hotpotqa/reproduction/freeze_benchmark.py
+@@ -1,6 +1,7 @@
+ """Freeze the configured native benchmark with the approved seed42 selector."""
+ 
+ import argparse
++import os
+ from collections import Counter
+ from datetime import datetime, timezone
+ import hashlib
+@@ -17,7 +18,9 @@
+ from processor.sample_selection import sample_indices
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+-BENCHMARK = json.loads((ROOT / "reproduction/benchmark.json").read_text(encoding="utf-8"))
++BENCHMARK_PATH = Path(os.environ.get("SHGRAPH_BENCHMARK_CONFIG",
++    ROOT / "reproduction/benchmark.json"))
++BENCHMARK = json.loads(BENCHMARK_PATH.read_text(encoding="utf-8"))
+ DEFAULT_SOURCE = ROOT / BENCHMARK["source"]
+ DEFAULT_GOLD = ROOT / BENCHMARK["native_gold"]
+ DESTINATION = ROOT / f"reproduction/artifacts/{BENCHMARK['id']}_seed42_n1000"
+@@ -142,7 +145,7 @@
+         "packages": {name: importlib.metadata.version(name) for name in ("datasets", "numpy", "pyarrow")},
+         "selection_source_sha256": sha256(ROOT / "processor/sample_selection.py"),
+         "preparation_script_sha256": sha256(Path(__file__)),
+-        "benchmark_config_sha256": sha256(ROOT / "reproduction/benchmark.json"),
++        "benchmark_config_sha256": sha256(BENCHMARK_PATH),
+         "files": files, "llm_calls_for_preparation": 0,
+     }
+     write_json(destination / "manifest.json", manifest)
+@@ -161,7 +164,7 @@
+     for path, field in (
+         (ROOT / "processor/sample_selection.py", "selection_source_sha256"),
+         (Path(__file__), "preparation_script_sha256"),
+-        (ROOT / "reproduction/benchmark.json", "benchmark_config_sha256"),
++        (BENCHMARK_PATH, "benchmark_config_sha256"),
+     ):
+         require(sha256(path) == manifest[field], f"Preparation source changed: {path.name}")
+     indices = sample_indices([row["id"] for row in rows], SAMPLE_SIZE, SAMPLE_SEED)
+--- a/code/shgraphrag_deepseek/hotpotqa/reproduction/prepare_services.py
++++ b/code/shgraphrag_deepseek/hotpotqa/reproduction/prepare_services.py
+@@ -2,6 +2,7 @@
+ 
+ import hashlib
+ import json
++import os
+ from pathlib import Path
+ import shutil
+ import time
+@@ -28,7 +29,8 @@
+ 
+ def opener(proxy):
+     # Only the public Neo4j CDN needs this command-scoped route.
+-    proxies = {"http": "http://127.0.0.1:6789", "https": "http://127.0.0.1:6789"} if proxy else {}
++    selected = os.environ.get("SHGRAPHRAG_DOWNLOAD_PROXY") if proxy else None
++    proxies = {"http": selected, "https": selected} if selected else {}
+     return urllib.request.build_opener(urllib.request.ProxyHandler(proxies))
+ 
+ 
+--- a/code/shgraphrag_deepseek/hotpotqa/reproduction/relay_config.json
++++ b/code/shgraphrag_deepseek/hotpotqa/reproduction/relay_config.json
+@@ -7,11 +7,10 @@
+   "allowed_returned_models": [
+     "deepseek-v4.1-flash"
+   ],
+-  "credential_id": "deepseek-relay-14ac1cd4ea79",
+-  "credential_file": "C:/Users/hd/.codex/secrets/shgraphrag/deepseek-relay-20261024.dpapi.json",
++  "credential_id": "user-supplied-DEEPSEEK_API_KEY",
+   "max_in_flight": 64,
+   "generation_parameters": {},
+   "request_timeout_seconds": 600,
+-  "reference_chat": "01a15ac7-0a19-7f51-88dd-fe73d6040d6f",
+-  "authorization": "User expanded the current DeepSeek relay SHGraphRAG task to include the other two paper benchmarks: this checkout is HotpotQA distractor, seed42 n1000. No other Key or provider."
++  "authorization": "Fresh runs require SHGRAPHRAG_ALLOW_MODEL_API=1 and the reader's own authorized credential.",
++  "credential_environment": "DEEPSEEK_API_KEY"
+ }
+--- a/code/shgraphrag_deepseek/hotpotqa/reproduction/relay_config.py
++++ b/code/shgraphrag_deepseek/hotpotqa/reproduction/relay_config.py
+@@ -1,7 +1,4 @@
+-"""Read only this experiment's public contract and explicitly selected secret."""
+-
+-import ctypes
+-from ctypes import wintypes
++"""Public reproduction configuration; explicit environment credential only."""
+ import hashlib
+ import json
+ import os
+@@ -10,40 +7,24 @@
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+ CONFIG_FILE = ROOT / "reproduction/relay_config.json"
+-EXPECTED_CREDENTIAL_ID = "deepseek-relay-14ac1cd4ea79"
+-EXPECTED_CREDENTIAL_FILE = Path(
+-    "C:/Users/hd/.codex/secrets/shgraphrag/deepseek-relay-20261024.dpapi.json"
+-)
++EXPECTED_CREDENTIAL_ID = "user-supplied-DEEPSEEK_API_KEY"
+ 
+ 
+ def load_relay_config(require_ready=True):
+     config = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
+-    if config["provider"] != "deepseek-relay":
+-        raise ValueError("A different provider is outside this run's authorization")
+-    if config["credential_id"] != EXPECTED_CREDENTIAL_ID:
+-        raise ValueError("Relay credential identity changed")
+-    if Path(config["credential_file"]).resolve() != EXPECTED_CREDENTIAL_FILE.resolve():
+-        raise ValueError("Relay credential path changed")
+-    if config["max_in_flight"] != 64:
+-        raise ValueError("This run has a 64-request upper bound")
++    if config["provider"] != "deepseek-relay" or config["credential_id"] != EXPECTED_CREDENTIAL_ID:
++        raise ValueError("Configured provider identity differs")
++    if config["max_in_flight"] not in (64, 100):
++        raise ValueError("Unexpected historical request ceiling")
+     if require_ready:
+         if config["status"] != "ready" or not config.get("base_url") or not config.get("model"):
+-            raise RuntimeError(
+-                "Relay Base URL and exact model ID are missing; no credential was loaded "
+-                "and no model request can be sent"
+-            )
+-        parsed = urlsplit(config["base_url"])
+-        if (
+-            parsed.scheme != "https" or not parsed.hostname
+-            or parsed.username or parsed.password or parsed.query or parsed.fragment
+-            or parsed.hostname in ("localhost", "127.0.0.1", "::1")
+-        ):
+-            raise ValueError("Relay requires an explicitly configured HTTPS Base URL")
+-        model = config["model"]
+-        if not isinstance(model, str) or not model or any(c.isspace() for c in model):
+-            raise ValueError("An exact API model ID is required")
+-        if model not in config["allowed_returned_models"]:
+-            raise ValueError("Requested model must be in the explicit returned-model allowlist")
++            raise RuntimeError("Provide a ready Base URL and exact model before running")
++        url = urlsplit(config["base_url"])
++        if (config["status"] != "ready" or url.scheme != "https"
++                or url.username or url.password or url.query or url.fragment):
++            raise ValueError("An explicit HTTPS provider is required")
++        if config["model"] not in config["allowed_returned_models"]:
++            raise ValueError("Model must be in the returned-model allowlist")
+     return config
+ 
+ 
+@@ -53,41 +34,10 @@
+ 
+ 
+ def read_authorized_key(config):
+-    """Decrypt only the task credential; do not inspect process API variables."""
+-    if os.name != "nt":
+-        raise RuntimeError("This saved credential uses Windows CurrentUser DPAPI")
+-    record = json.loads(Path(config["credential_file"]).read_text(encoding="utf-8"))
+-    if record["credential_id"] != config["credential_id"]:
+-        raise ValueError("Saved credential belongs to a different experiment")
+-
+-    class Blob(ctypes.Structure):
+-        _fields_ = [
+-            ("cbData", wintypes.DWORD),
+-            ("pbData", ctypes.POINTER(ctypes.c_ubyte)),
+-        ]
+-
+-    encrypted = bytes.fromhex(record["encrypted_key"])
+-    buffer = (ctypes.c_ubyte * len(encrypted)).from_buffer_copy(encrypted)
+-    source = Blob(len(encrypted), buffer)
+-    destination = Blob()
+-    crypt32 = ctypes.WinDLL("crypt32", use_last_error=True)
+-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+-    crypt32.CryptUnprotectData.argtypes = [
+-        ctypes.POINTER(Blob), ctypes.c_void_p, ctypes.c_void_p,
+-        ctypes.c_void_p, ctypes.c_void_p, wintypes.DWORD, ctypes.POINTER(Blob),
+-    ]
+-    crypt32.CryptUnprotectData.restype = wintypes.BOOL
+-    kernel32.LocalFree.argtypes = [ctypes.c_void_p]
+-    kernel32.LocalFree.restype = ctypes.c_void_p
+-    if not crypt32.CryptUnprotectData(
+-        ctypes.byref(source), None, None, None, None, 0, ctypes.byref(destination)
+-    ):
+-        raise ctypes.WinError(ctypes.get_last_error())
+-    try:
+-        key = ctypes.string_at(destination.pbData, destination.cbData).decode("utf-16-le")
+-    finally:
+-        kernel32.LocalFree(destination.pbData)
+-    digest = hashlib.sha256(key.encode()).hexdigest()
+-    if digest != record["key_sha256"] or not key:
+-        raise ValueError("Saved relay credential failed identity verification")
++    if os.environ.get("SHGRAPHRAG_ALLOW_MODEL_API") != "1":
++        raise RuntimeError("Model calls require explicit opt-in for this fresh run")
++    load_relay_config()
++    key = os.environ.get("DEEPSEEK_API_KEY", "").strip()
++    if not key:
++        raise RuntimeError("Set your own authorized DEEPSEEK_API_KEY in this process")
+     return key
+--- a/code/shgraphrag_deepseek/hotpotqa/reproduction/verify_completed_run.py
++++ b/code/shgraphrag_deepseek/hotpotqa/reproduction/verify_completed_run.py
+@@ -4,6 +4,7 @@
+ from collections import Counter
+ import hashlib
+ import json
++import os
+ from pathlib import Path
+ import zipfile
+ 
+@@ -37,7 +38,8 @@
+     predictions = read(root / "qa/predictions_with_supporting_facts.json")
+     answers = read(root / "qa/predictions.json")["answer"]
+     ids = read(DESTINATION / "ids.json")
+-    benchmark = read(ROOT / "reproduction/benchmark.json")
++    benchmark = read(Path(os.environ.get("SHGRAPH_BENCHMARK_CONFIG",
++        ROOT / "reproduction/benchmark.json")))
+     if benchmark.get("aliases"):
+         check("native_alias_hash", sha256(ROOT / benchmark["aliases"]) == benchmark["aliases_sha256"])
+     manifest = read(DESTINATION / "manifest.json")
+--- a/code/shgraphrag_deepseek/musique/config/settings.py
++++ b/code/shgraphrag_deepseek/musique/config/settings.py
+@@ -1,9 +1,10 @@
+ from pathlib import Path
++import os
+ 
+ # 基础路径设置
+ BASE_DIR = Path(__file__).resolve().parent.parent
+ FILES_DIR = BASE_DIR / 'files'
+-DATASET_DIR = BASE_DIR / 'dataset/musique/musique_ans_dev.parquet'
++DATASET_DIR = Path(os.environ.get("SHGRAPH_FULL_DEV_PARQUET", BASE_DIR / 'dataset/musique/musique_ans_dev.parquet'))
+ 
+ # User-approved reproduction sample; all stages must use the frozen IDs.
+ SAMPLE_SIZE = 1000
+--- a/code/shgraphrag_deepseek/musique/reproduction/campaign.py
++++ b/code/shgraphrag_deepseek/musique/reproduction/campaign.py
+@@ -43,15 +43,15 @@
+ 
+ 
+ def source_files():
+-    tracked = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT).decode().rstrip("\0").split("\0")
+-    extra = []
+-    for folder in ("reproduction", "qa", "model", "processor"):
+-        extra.extend(str(path.relative_to(ROOT)).replace("\\", "/") for path in (ROOT / folder).glob("*.py"))
+-    return sorted({
+-        name for name in tracked + extra
+-        if not name.startswith(("reproduction/artifacts/", "reproduction/audit/"))
+-        and Path(name).name != ".env"
+-    })
++    """Capture only this exported implementation, independent of outer Git layout."""
++    excluded = {"runs", "artifacts", "audit", "__pycache__", ".runtime", ".cache"}
++    result = []
++    for folder in ("build", "community", "config", "graph", "model", "processor", "qa", "reproduction"):
++        for path in (ROOT / folder).rglob("*"):
++            if (path.is_file() and path.suffix in (".py", ".txt", ".json")
++                    and not excluded.intersection(path.relative_to(ROOT).parts)):
++                result.append(path.relative_to(ROOT).as_posix())
++    return sorted(result)
+ 
+ 
+ def snapshot_source(root):
+--- a/code/shgraphrag_deepseek/musique/reproduction/database.py
++++ b/code/shgraphrag_deepseek/musique/reproduction/database.py
+@@ -16,7 +16,7 @@
+ HTTP_PORT = 20474
+ BOLT_PORT = 20887
+ OWNER_FILE = ROOT / ".runtime/neo4j-instance.json"
+-JAVA_HOME = Path(r"C:\Program Files\Microsoft\jdk-17.0.20.101-hotspot")
++JAVA_HOME = Path(os.environ.get("JAVA_HOME", ""))
+ 
+ 
+ def listening_pid():
+--- a/code/shgraphrag_deepseek/musique/reproduction/freeze_musique_sample.py
++++ b/code/shgraphrag_deepseek/musique/reproduction/freeze_musique_sample.py
+@@ -11,6 +11,7 @@
+ """
+ 
+ import argparse
++import os
+ from collections import Counter
+ from datetime import datetime, timezone
+ import hashlib
+@@ -28,8 +29,8 @@
+ from processor.sample_selection import sample_indices
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+-SUPPLIED = ROOT.parent / "SHGraphRAG"
+-DEFAULT_SOURCE = SUPPLIED / "dataset/musique/musique_ans_dev.parquet"
++SUPPLIED = Path(os.environ["SHGRAPHRAG_DATA_ROOT"])
++DEFAULT_SOURCE = SUPPLIED / "normalized/musique.parquet"
+ DEFAULT_GOLD = (
+     SUPPLIED / "dataset/raw_official/musique/release_v1/data/musique_ans_v1.0_dev.jsonl"
+ )
+--- a/code/shgraphrag_deepseek/musique/reproduction/prepare_services.py
++++ b/code/shgraphrag_deepseek/musique/reproduction/prepare_services.py
+@@ -2,6 +2,7 @@
+ 
+ import hashlib
+ import json
++import os
+ from pathlib import Path
+ import shutil
+ import time
+@@ -28,7 +29,8 @@
+ 
+ def opener(proxy):
+     # Only the public Neo4j CDN needs this command-scoped route.
+-    proxies = {"http": "http://127.0.0.1:6789", "https": "http://127.0.0.1:6789"} if proxy else {}
++    selected = os.environ.get("SHGRAPHRAG_DOWNLOAD_PROXY") if proxy else None
++    proxies = {"http": selected, "https": selected} if selected else {}
+     return urllib.request.build_opener(urllib.request.ProxyHandler(proxies))
+ 
+ 
+--- a/code/shgraphrag_deepseek/musique/reproduction/relay_config.json
++++ b/code/shgraphrag_deepseek/musique/reproduction/relay_config.json
+@@ -7,11 +7,10 @@
+   "allowed_returned_models": [
+     "deepseek-v4.1-flash"
+   ],
+-  "credential_id": "deepseek-relay-14ac1cd4ea79",
+-  "credential_file": "C:/Users/hd/.codex/secrets/shgraphrag/deepseek-relay-20261024.dpapi.json",
++  "credential_id": "user-supplied-DEEPSEEK_API_KEY",
+   "max_in_flight": 64,
+   "generation_parameters": {},
+   "request_timeout_seconds": 600,
+-  "reference_chat": "01a15ac7-0a19-7f51-88dd-fe73d6040d6f",
+-  "authorization": "User supplied this relay credential for this isolated MuSiQue seed42 n1000 SHGraphRAG rerun. No other provider credentials or unrelated API tests are authorized."
++  "authorization": "Fresh runs require SHGRAPHRAG_ALLOW_MODEL_API=1 and the reader's own authorized credential.",
++  "credential_environment": "DEEPSEEK_API_KEY"
+ }
+--- a/code/shgraphrag_deepseek/musique/reproduction/relay_config.py
++++ b/code/shgraphrag_deepseek/musique/reproduction/relay_config.py
+@@ -1,7 +1,4 @@
+-"""Read only this experiment's public contract and explicitly selected secret."""
+-
+-import ctypes
+-from ctypes import wintypes
++"""Public reproduction configuration; explicit environment credential only."""
+ import hashlib
+ import json
+ import os
+@@ -10,40 +7,24 @@
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+ CONFIG_FILE = ROOT / "reproduction/relay_config.json"
+-EXPECTED_CREDENTIAL_ID = "deepseek-relay-14ac1cd4ea79"
+-EXPECTED_CREDENTIAL_FILE = Path(
+-    "C:/Users/hd/.codex/secrets/shgraphrag/deepseek-relay-20261024.dpapi.json"
+-)
++EXPECTED_CREDENTIAL_ID = "user-supplied-DEEPSEEK_API_KEY"
+ 
+ 
+ def load_relay_config(require_ready=True):
+     config = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
+-    if config["provider"] != "deepseek-relay":
+-        raise ValueError("A different provider is outside this run's authorization")
+-    if config["credential_id"] != EXPECTED_CREDENTIAL_ID:
+-        raise ValueError("Relay credential identity changed")
+-    if Path(config["credential_file"]).resolve() != EXPECTED_CREDENTIAL_FILE.resolve():
+-        raise ValueError("Relay credential path changed")
+-    if config["max_in_flight"] != 64:
+-        raise ValueError("This run has a 64-request upper bound")
++    if config["provider"] != "deepseek-relay" or config["credential_id"] != EXPECTED_CREDENTIAL_ID:
++        raise ValueError("Configured provider identity differs")
++    if config["max_in_flight"] not in (64, 100):
++        raise ValueError("Unexpected historical request ceiling")
+     if require_ready:
+         if config["status"] != "ready" or not config.get("base_url") or not config.get("model"):
+-            raise RuntimeError(
+-                "Relay Base URL and exact model ID are missing; no credential was loaded "
+-                "and no model request can be sent"
+-            )
+-        parsed = urlsplit(config["base_url"])
+-        if (
+-            parsed.scheme != "https" or not parsed.hostname
+-            or parsed.username or parsed.password or parsed.query or parsed.fragment
+-            or parsed.hostname in ("localhost", "127.0.0.1", "::1")
+-        ):
+-            raise ValueError("Relay requires an explicitly configured HTTPS Base URL")
+-        model = config["model"]
+-        if not isinstance(model, str) or not model or any(c.isspace() for c in model):
+-            raise ValueError("An exact API model ID is required")
+-        if model not in config["allowed_returned_models"]:
+-            raise ValueError("Requested model must be in the explicit returned-model allowlist")
++            raise RuntimeError("Provide a ready Base URL and exact model before running")
++        url = urlsplit(config["base_url"])
++        if (config["status"] != "ready" or url.scheme != "https"
++                or url.username or url.password or url.query or url.fragment):
++            raise ValueError("An explicit HTTPS provider is required")
++        if config["model"] not in config["allowed_returned_models"]:
++            raise ValueError("Model must be in the returned-model allowlist")
+     return config
+ 
+ 
+@@ -53,41 +34,10 @@
+ 
+ 
+ def read_authorized_key(config):
+-    """Decrypt only the task credential; do not inspect process API variables."""
+-    if os.name != "nt":
+-        raise RuntimeError("This saved credential uses Windows CurrentUser DPAPI")
+-    record = json.loads(Path(config["credential_file"]).read_text(encoding="utf-8"))
+-    if record["credential_id"] != config["credential_id"]:
+-        raise ValueError("Saved credential belongs to a different experiment")
+-
+-    class Blob(ctypes.Structure):
+-        _fields_ = [
+-            ("cbData", wintypes.DWORD),
+-            ("pbData", ctypes.POINTER(ctypes.c_ubyte)),
+-        ]
+-
+-    encrypted = bytes.fromhex(record["encrypted_key"])
+-    buffer = (ctypes.c_ubyte * len(encrypted)).from_buffer_copy(encrypted)
+-    source = Blob(len(encrypted), buffer)
+-    destination = Blob()
+-    crypt32 = ctypes.WinDLL("crypt32", use_last_error=True)
+-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+-    crypt32.CryptUnprotectData.argtypes = [
+-        ctypes.POINTER(Blob), ctypes.c_void_p, ctypes.c_void_p,
+-        ctypes.c_void_p, ctypes.c_void_p, wintypes.DWORD, ctypes.POINTER(Blob),
+-    ]
+-    crypt32.CryptUnprotectData.restype = wintypes.BOOL
+-    kernel32.LocalFree.argtypes = [ctypes.c_void_p]
+-    kernel32.LocalFree.restype = ctypes.c_void_p
+-    if not crypt32.CryptUnprotectData(
+-        ctypes.byref(source), None, None, None, None, 0, ctypes.byref(destination)
+-    ):
+-        raise ctypes.WinError(ctypes.get_last_error())
+-    try:
+-        key = ctypes.string_at(destination.pbData, destination.cbData).decode("utf-16-le")
+-    finally:
+-        kernel32.LocalFree(destination.pbData)
+-    digest = hashlib.sha256(key.encode()).hexdigest()
+-    if digest != record["key_sha256"] or not key:
+-        raise ValueError("Saved relay credential failed identity verification")
++    if os.environ.get("SHGRAPHRAG_ALLOW_MODEL_API") != "1":
++        raise RuntimeError("Model calls require explicit opt-in for this fresh run")
++    load_relay_config()
++    key = os.environ.get("DEEPSEEK_API_KEY", "").strip()
++    if not key:
++        raise RuntimeError("Set your own authorized DEEPSEEK_API_KEY in this process")
+     return key
+--- a/code/shgraphrag_gpt4omini/reproduction/client.py
++++ b/code/shgraphrag_gpt4omini/reproduction/client.py
+@@ -101,16 +101,16 @@
+         self._active = 0
+         self._active_lock = threading.Lock()
+         self._local = threading.local()
++        if os.environ.get("SHGRAPHRAG_ALLOW_MODEL_API") != "1":
++            raise ProviderError("explicit_model_api_opt_in_required")
+         self._key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+         if not self._key:
+-            raise ProviderError("missing_openrouter_key_use_shared_launcher")
++            raise ProviderError("missing_user_supplied_OPENROUTER_API_KEY")
+         if os.environ.get("OPENROUTER_BASE_URL", BASE_URL).rstrip("/") != BASE_URL:
+             raise ProviderError("unexpected_openrouter_origin")
+         if os.environ.get("OPENROUTER_MODEL", MODEL) != MODEL:
+             raise ProviderError("unexpected_openrouter_model")
+-        self.proxy = os.environ.get("OPENROUTER_PROXY", "http://127.0.0.1:6789")
+-        if self.proxy != "http://127.0.0.1:6789":
+-            raise ProviderError("unexpected_openrouter_proxy")
++        self.proxy = os.environ.get("OPENROUTER_PROXY") or None
+ 
+     def session(self) -> requests.Session:
+         if not hasattr(self._local, "session"):
+--- a/code/shgraphrag_gpt4omini/reproduction/preflight.py
++++ b/code/shgraphrag_gpt4omini/reproduction/preflight.py
+@@ -14,23 +14,18 @@
+ 
+ 
+ def check_original() -> dict:
+-    root = Path(__file__).resolve().parent
+-    manifest = json.loads((root / "provenance/original_checkout.json")
+-                          .read_text(encoding="utf-8"))
+-    source = Path(manifest["source_root"])
++    root = Path(__file__).resolve().parents[3]
++    manifest = json.loads((root / "provenance/source_manifest.json").read_text(encoding="utf-8"))
+     changed = []
+-    for item in manifest["snapshot_files"]:
+-        file = source / item["path"]
+-        if file.exists() != item["exists"] or (
+-            file.exists() and hashlib.sha256(file.read_bytes()).hexdigest()
+-            != item["sha256"]
+-        ):
+-            changed.append(item["path"])
+-    status = subprocess.check_output(
+-        ["git", "status", "--porcelain=v1"], cwd=source, text=True)
+-    return {"source_root": str(source), "source_files_changed": changed,
+-            "working_tree_status_unchanged": status == manifest["original_status"],
+-            "checked_files": len(manifest["snapshot_files"])}
++    prefix = "code/shgraphrag_gpt4omini/"
++    for name, record in manifest["files"].items():
++        if name.startswith(prefix):
++            path = root / name
++            if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != record["published_sha256"]:
++                changed.append(name)
++    return {"source_root": str(root), "source_files_changed": changed,
++            "working_tree_status_unchanged": not changed,
++            "checked_files": sum(name.startswith(prefix) for name in manifest["files"])}
+ 
+ 
+ def main() -> None:

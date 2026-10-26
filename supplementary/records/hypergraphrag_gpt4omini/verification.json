@@ -1,0 +1,664 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/CompareMethods/HyperGraphRAG/revision_openrouter/runs/full1000_gpt4omini_20261022_overflow1/verification.json",
+  "original_file_sha256": "e30261d43ececc55704278964387b3906488c9b062c268747cc76391aa288bd3",
+  "content": {
+    "status": "verified_complete",
+    "full_benchmark": true,
+    "datasets": [
+      {
+        "dataset": "hotpotqa",
+        "expected": 1000,
+        "completed": 1000,
+        "missing_or_failed": 0,
+        "primary_protocol": "HotpotQA_single_reference_answer_EM_token_F1",
+        "primary_em": 53.1,
+        "primary_f1": 69.12998127662406,
+        "native_alias_em": 53.1,
+        "native_alias_f1": 69.12998127662406,
+        "nonempty_answers": 972,
+        "retrieval_order": "global_branch_sources_then_local_deduplicated",
+        "passage_recall_at_2": 59.8,
+        "all_supports_at_2": 28.9,
+        "passage_recall_at_5": 78.75,
+        "all_supports_at_5": 60.2,
+        "passage_recall_at_10": 86.3,
+        "all_supports_at_10": 73.4,
+        "graph": {
+          "directory": "index_20261021_152255",
+          "elapsed_s": 4336.2766533000395,
+          "new_llm_calls": 0,
+          "cached_llm_calls": 29799,
+          "full_docs": 9800,
+          "chunks": 9801,
+          "entity_nodes": 108237,
+          "hyperedge_nodes": 75979,
+          "incidence_edges": 182045,
+          "nodes_without_role": 0
+        },
+        "index_storage_bytes": 1222648360,
+        "index_files_bytes": {
+          "graph_chunk_entity_relation.graphml": 124157910,
+          "kv_store_full_docs.json": 6307486,
+          "kv_store_text_chunks.json": 7392209,
+          "vdb_chunks.json": 54055829,
+          "vdb_entities.json": 601053951,
+          "vdb_hyperedges.json": 429680975
+        },
+        "api": {
+          "attempts": 32063,
+          "completed": 31772,
+          "failed": 291,
+          "provider_filtered_responses": 1,
+          "truncated_output_responses": 26,
+          "incomplete_output_responses": 0,
+          "failed_attempts_without_reported_usage": 264,
+          "input_tokens": 159600247,
+          "output_tokens": 13205156,
+          "total_tokens": 172805403,
+          "cached_input_tokens": 105367424,
+          "calls_with_reasoning_usage": 31799,
+          "reasoning_tokens": 0
+        },
+        "api_by_stage": {
+          "extract": {
+            "attempts": 10022,
+            "input_tokens": 37961177,
+            "output_tokens": 6306879
+          },
+          "glean": {
+            "attempts": 9986,
+            "input_tokens": 45412780,
+            "output_tokens": 6610401
+          },
+          "coverage": {
+            "attempts": 9796,
+            "input_tokens": 51390168,
+            "output_tokens": 9795
+          },
+          "summarize": {
+            "attempts": 245,
+            "input_tokens": 254274,
+            "output_tokens": 94964
+          },
+          "query_extract": {
+            "attempts": 1007,
+            "input_tokens": 3765210,
+            "output_tokens": 173891
+          },
+          "answer": {
+            "attempts": 1007,
+            "input_tokens": 20816638,
+            "output_tokens": 9226
+          }
+        },
+        "cached_calls": 110691,
+        "cached_response_usage_from_prior_paid_work": {
+          "input_tokens": 488467020,
+          "output_tokens": 52753343,
+          "total_tokens": 541220363
+        },
+        "logical_llm_calls_including_cache": 142463,
+        "embedding_requests": 18286,
+        "query_latency": {
+          "mean_s": 12.8784866422005,
+          "p50_s": 12.782814800040796,
+          "p95_s": 16.814963564951903
+        },
+        "query_count_with_cached_calls": 24,
+        "construction_attempts": [
+          {
+            "cached_llm_calls": 0,
+            "directory": "index_20261021_122037",
+            "elapsed_s": 988.3279217998497,
+            "error_type": "ProviderError",
+            "finished_unix": 1792557425.8440607,
+            "new_llm_calls": 254,
+            "started_unix": 1792556437.489673,
+            "status": "failed"
+          },
+          {
+            "cached_llm_calls": 0,
+            "directory": "index_20261021_123743",
+            "elapsed_s": 864.7516644001007,
+            "finished_unix": 1792558327.7769911,
+            "new_llm_calls": 311,
+            "origin_campaign": "<LOCAL_WORKSPACE>\\Edit\\Repo\\CompareMethods\\HyperGraphRAG\\revision_openrouter\\runs\\full1000_gpt4omini_20261021",
+            "started_unix": 1792557463.0253267,
+            "status": "interrupted_for_transport_repair"
+          },
+          {
+            "cached_llm_calls": 565,
+            "directory": "index_20261021_125625",
+            "elapsed_s": 1705.6333975000307,
+            "error_type": "ProviderError",
+            "finished_unix": 1792560291.1825626,
+            "new_llm_calls": 8977,
+            "started_unix": 1792558585.5029068,
+            "status": "failed"
+          },
+          {
+            "cached_llm_calls": 9545,
+            "directory": "index_20261021_133419",
+            "elapsed_s": 555.580347500043,
+            "error_type": "ProviderError",
+            "finished_unix": 1792561414.9648998,
+            "new_llm_calls": 1610,
+            "started_unix": 1792560859.369353,
+            "status": "failed"
+          },
+          {
+            "cached_llm_calls": 11160,
+            "directory": "index_20261021_134956",
+            "elapsed_s": 2738.077440700028,
+            "error_type": "HTTPStatusError",
+            "finished_unix": 1792564535.1542459,
+            "new_llm_calls": 18614,
+            "started_unix": 1792561797.001105,
+            "status": "failed"
+          },
+          {
+            "cached_llm_calls": 29799,
+            "directory": "index_20261021_144657",
+            "elapsed_s": 319.99018001556396,
+            "error_type": "ControlledStop",
+            "finished_unix": 1792565537.8447092,
+            "new_llm_calls": 0,
+            "started_unix": 1792565217.8545291,
+            "status": "stopped_for_embedding_batch_pin",
+            "timing_note": "External wall time from recorded construction_start to confirmed process stop; heartbeat counters may lag."
+          },
+          {
+            "cached_llm_calls": 29799,
+            "directory": "index_20261021_145456",
+            "elapsed_s": 1310.408282995224,
+            "error_type": "ControlledStop",
+            "finished_unix": 1792567007.2951448,
+            "new_llm_calls": 0,
+            "started_unix": 1792565696.8868618,
+            "status": "stopped_for_embedding_service_isolation",
+            "timing_note": "Recorded construction start to confirmed external stop. Exact raw call history retained."
+          },
+          {
+            "cached_llm_calls": 29799,
+            "chunks": 9801,
+            "directory": "index_20261021_152255",
+            "elapsed_s": 4336.2766533000395,
+            "entity_nodes": 108237,
+            "finished_unix": 1792571711.6160185,
+            "full_docs": 9800,
+            "hyperedge_nodes": 75979,
+            "incidence_edges": 182045,
+            "new_llm_calls": 0,
+            "nodes_without_role": 0,
+            "started_unix": 1792567375.2036,
+            "status": "completed"
+          }
+        ],
+        "total_construction_attempt_elapsed_s": 12819.04588821088,
+        "concurrent_query_workers": 32,
+        "provider_refusals": {
+          "unique_requests": 1,
+          "initially_filtered_chunks": 1,
+          "empty_answer_questions": 0,
+          "policy": {
+            "explicit_content_filter_or_refusal": "terminal_unavailable_output_no_retry",
+            "initial_extraction": "retain_corpus_and_vector_no_facts_from_filtered_output",
+            "glean_or_coverage": "stop_chunk_generation_keep_prior_complete_facts",
+            "summary": "retain_existing_description_without_generated_summary",
+            "query_extraction_or_answer": "empty_answer_scored_in_full_frozen_denominator",
+            "partial_filtered_text": "provenance_only_never_used_as_evidence_or_answer"
+          }
+        },
+        "output_truncations": {
+          "unique_requests": 26,
+          "initially_truncated_chunks": 0,
+          "empty_answer_questions": 0,
+          "policy": {
+            "finish_reason_length": "terminal_unavailable_output_no_retry",
+            "output_token_caps": "unchanged",
+            "initial_extraction": "retain_corpus_and_vector_no_facts_from_truncated_output",
+            "glean_or_coverage": "stop_chunk_generation_keep_prior_complete_facts",
+            "summary": "retain_existing_description_without_generated_summary",
+            "query_extraction_or_answer": "empty_answer_scored_in_full_frozen_denominator",
+            "partial_truncated_text": "provenance_only_never_used_as_evidence_or_answer"
+          }
+        },
+        "incomplete_outputs": {
+          "unique_requests": 0,
+          "initially_incomplete_chunks": 0,
+          "empty_answer_questions": 0,
+          "policy": {
+            "missing_or_null_finish_reason": "terminal_unavailable_output_no_retry",
+            "cause": "unknown_not_classified_as_filtering_or_token_cap",
+            "initial_extraction": "retain_corpus_and_vector_no_facts_from_incomplete_output",
+            "glean_or_coverage": "stop_chunk_generation_keep_prior_complete_facts",
+            "summary": "retain_existing_description_without_generated_summary",
+            "query_extraction_or_answer": "empty_answer_scored_in_full_frozen_denominator",
+            "partial_text": "provenance_only_never_used_as_evidence_or_answer"
+          }
+        },
+        "invalid_answer_schema_questions": 0
+      },
+      {
+        "dataset": "2wiki",
+        "expected": 1000,
+        "completed": 1000,
+        "missing_or_failed": 0,
+        "primary_protocol": "HotpotQA_single_reference_answer_EM_token_F1",
+        "primary_em": 42.6,
+        "primary_f1": 48.51798701298703,
+        "native_alias_em": 45.9,
+        "native_alias_f1": 51.56004773004774,
+        "nonempty_answers": 843,
+        "retrieval_order": "global_branch_sources_then_local_deduplicated",
+        "passage_recall_at_2": 52.025,
+        "all_supports_at_2": 20.8,
+        "passage_recall_at_5": 63.75,
+        "all_supports_at_5": 32.7,
+        "passage_recall_at_10": 68.825,
+        "all_supports_at_10": 39.1,
+        "graph": {
+          "directory": "index_20261021_230240",
+          "elapsed_s": 2485.667673500022,
+          "new_llm_calls": 10032,
+          "cached_llm_calls": 9092,
+          "full_docs": 6293,
+          "chunks": 6293,
+          "entity_nodes": 57836,
+          "hyperedge_nodes": 48384,
+          "incidence_edges": 102044,
+          "nodes_without_role": 0
+        },
+        "index_storage_bytes": 704141961,
+        "index_files_bytes": {
+          "graph_chunk_entity_relation.graphml": 67988993,
+          "kv_store_full_docs.json": 3299399,
+          "kv_store_text_chunks.json": 3993759,
+          "vdb_chunks.json": 34708041,
+          "vdb_entities.json": 321147695,
+          "vdb_hyperedges.json": 273004074
+        },
+        "api": {
+          "attempts": 21227,
+          "completed": 21113,
+          "failed": 114,
+          "provider_filtered_responses": 6,
+          "truncated_output_responses": 33,
+          "incomplete_output_responses": 2,
+          "failed_attempts_without_reported_usage": 71,
+          "input_tokens": 109430187,
+          "output_tokens": 6951880,
+          "total_tokens": 116382067,
+          "cached_input_tokens": 71040896,
+          "calls_with_reasoning_usage": 21156,
+          "reasoning_tokens": 0
+        },
+        "api_by_stage": {
+          "extract": {
+            "attempts": 6327,
+            "input_tokens": 24257457,
+            "output_tokens": 3324839
+          },
+          "glean": {
+            "attempts": 6485,
+            "input_tokens": 28555784,
+            "output_tokens": 3409417
+          },
+          "coverage": {
+            "attempts": 6282,
+            "input_tokens": 31232123,
+            "output_tokens": 6279
+          },
+          "summarize": {
+            "attempts": 130,
+            "input_tokens": 147522,
+            "output_tokens": 50484
+          },
+          "query_extract": {
+            "attempts": 1003,
+            "input_tokens": 3761269,
+            "output_tokens": 152181
+          },
+          "answer": {
+            "attempts": 1000,
+            "input_tokens": 21476032,
+            "output_tokens": 8680
+          }
+        },
+        "cached_calls": 19370,
+        "cached_response_usage_from_prior_paid_work": {
+          "input_tokens": 76291763,
+          "output_tokens": 10188896,
+          "total_tokens": 86480659
+        },
+        "logical_llm_calls_including_cache": 40483,
+        "embedding_requests": 9033,
+        "query_latency": {
+          "mean_s": 6.732301961201709,
+          "p50_s": 6.279145349981263,
+          "p95_s": 10.275968765001744
+        },
+        "query_count_with_cached_calls": 0,
+        "construction_attempts": [
+          {
+            "cached_llm_calls": 0,
+            "directory": "index_20261021_170043",
+            "elapsed_s": 1024.0548213000875,
+            "error_type": "ProviderError",
+            "finished_unix": 1792574268.0157268,
+            "new_llm_calls": 2385,
+            "started_unix": 1792573243.9221933,
+            "status": "failed"
+          },
+          {
+            "cached_llm_calls": 301,
+            "directory": "index_20261021_174529",
+            "elapsed_s": 150.52963249990717,
+            "error_type": "ProviderError",
+            "finished_unix": 1792576080.3913858,
+            "new_llm_calls": 603,
+            "started_unix": 1792575929.8571975,
+            "status": "failed"
+          },
+          {
+            "cached_llm_calls": 180,
+            "directory": "index_20261021_175615",
+            "elapsed_s": 80.01374089997262,
+            "error_type": "ProviderError",
+            "finished_unix": 1792576655.3612828,
+            "new_llm_calls": 387,
+            "started_unix": 1792576575.3450487,
+            "status": "failed"
+          },
+          {
+            "cached_llm_calls": 3360,
+            "directory": "index_20261021_221338",
+            "elapsed_s": 1101.1628510998562,
+            "error_type": "ProviderError",
+            "finished_unix": 1792593119.8616307,
+            "new_llm_calls": 5012,
+            "started_unix": 1792592018.6671917,
+            "status": "failed"
+          },
+          {
+            "cached_llm_calls": 6435,
+            "directory": "index_20261021_223516",
+            "elapsed_s": 171.3053381999489,
+            "error_type": "ProviderError",
+            "finished_unix": 1792593487.982396,
+            "new_llm_calls": 691,
+            "started_unix": 1792593316.6720483,
+            "status": "failed"
+          },
+          {
+            "cached_llm_calls": 9092,
+            "chunks": 6293,
+            "directory": "index_20261021_230240",
+            "elapsed_s": 2485.667673500022,
+            "entity_nodes": 57836,
+            "finished_unix": 1792597445.983427,
+            "full_docs": 6293,
+            "hyperedge_nodes": 48384,
+            "incidence_edges": 102044,
+            "new_llm_calls": 10032,
+            "nodes_without_role": 0,
+            "started_unix": 1792594960.2466333,
+            "status": "completed"
+          }
+        ],
+        "total_construction_attempt_elapsed_s": 5012.734057499794,
+        "concurrent_query_workers": 32,
+        "provider_refusals": {
+          "unique_requests": 6,
+          "initially_filtered_chunks": 6,
+          "empty_answer_questions": 0,
+          "policy": {
+            "explicit_content_filter_or_refusal": "terminal_unavailable_output_no_retry",
+            "initial_extraction": "retain_corpus_and_vector_no_facts_from_filtered_output",
+            "glean_or_coverage": "stop_chunk_generation_keep_prior_complete_facts",
+            "summary": "retain_existing_description_without_generated_summary",
+            "query_extraction_or_answer": "empty_answer_scored_in_full_frozen_denominator",
+            "partial_filtered_text": "provenance_only_never_used_as_evidence_or_answer"
+          }
+        },
+        "output_truncations": {
+          "unique_requests": 33,
+          "initially_truncated_chunks": 0,
+          "empty_answer_questions": 0,
+          "policy": {
+            "finish_reason_length": "terminal_unavailable_output_no_retry",
+            "output_token_caps": "unchanged",
+            "initial_extraction": "retain_corpus_and_vector_no_facts_from_truncated_output",
+            "glean_or_coverage": "stop_chunk_generation_keep_prior_complete_facts",
+            "summary": "retain_existing_description_without_generated_summary",
+            "query_extraction_or_answer": "empty_answer_scored_in_full_frozen_denominator",
+            "partial_truncated_text": "provenance_only_never_used_as_evidence_or_answer"
+          }
+        },
+        "incomplete_outputs": {
+          "unique_requests": 2,
+          "initially_incomplete_chunks": 2,
+          "empty_answer_questions": 0,
+          "policy": {
+            "missing_or_null_finish_reason": "terminal_unavailable_output_no_retry",
+            "cause": "unknown_not_classified_as_filtering_or_token_cap",
+            "initial_extraction": "retain_corpus_and_vector_no_facts_from_incomplete_output",
+            "glean_or_coverage": "stop_chunk_generation_keep_prior_complete_facts",
+            "summary": "retain_existing_description_without_generated_summary",
+            "query_extraction_or_answer": "empty_answer_scored_in_full_frozen_denominator",
+            "partial_text": "provenance_only_never_used_as_evidence_or_answer"
+          }
+        },
+        "invalid_answer_schema_questions": 0
+      },
+      {
+        "dataset": "musique",
+        "expected": 1000,
+        "completed": 1000,
+        "missing_or_failed": 0,
+        "primary_protocol": "HotpotQA_single_reference_answer_EM_token_F1",
+        "primary_em": 22.7,
+        "primary_f1": 33.7914554623742,
+        "native_alias_em": 25.3,
+        "native_alias_f1": 35.16922103013976,
+        "nonempty_answers": 795,
+        "retrieval_order": "global_branch_sources_then_local_deduplicated",
+        "passage_recall_at_2": 31.358333333333313,
+        "all_supports_at_2": 4.6,
+        "passage_recall_at_5": 42.76666666666664,
+        "all_supports_at_5": 11.5,
+        "passage_recall_at_10": 51.48333333333333,
+        "all_supports_at_10": 19.1,
+        "graph": {
+          "directory": "index_20261022_061906",
+          "elapsed_s": 349.0273456000723,
+          "new_llm_calls": 0,
+          "cached_llm_calls": 35178,
+          "full_docs": 11524,
+          "chunks": 11524,
+          "entity_nodes": 115345,
+          "hyperedge_nodes": 89079,
+          "incidence_edges": 205480,
+          "nodes_without_role": 0
+        },
+        "index_storage_bytes": 1359919224,
+        "index_files_bytes": {
+          "graph_chunk_entity_relation.graphml": 138044944,
+          "kv_store_full_docs.json": 6625395,
+          "kv_store_text_chunks.json": 7898726,
+          "vdb_chunks.json": 63558751,
+          "vdb_entities.json": 640490675,
+          "vdb_hyperedges.json": 503300733
+        },
+        "api": {
+          "attempts": 37218,
+          "completed": 37134,
+          "failed": 84,
+          "provider_filtered_responses": 1,
+          "truncated_output_responses": 32,
+          "incomplete_output_responses": 0,
+          "failed_attempts_without_reported_usage": 50,
+          "input_tokens": 181375600,
+          "output_tokens": 14144951,
+          "total_tokens": 195520551,
+          "cached_input_tokens": 121019904,
+          "calls_with_reasoning_usage": 37168,
+          "reasoning_tokens": 0
+        },
+        "api_by_stage": {
+          "extract": {
+            "attempts": 11539,
+            "input_tokens": 44450573,
+            "output_tokens": 6737291
+          },
+          "glean": {
+            "attempts": 11824,
+            "input_tokens": 52872326,
+            "output_tokens": 7055779
+          },
+          "coverage": {
+            "attempts": 11512,
+            "input_tokens": 58803624,
+            "output_tokens": 11512
+          },
+          "summarize": {
+            "attempts": 345,
+            "input_tokens": 370836,
+            "output_tokens": 134483
+          },
+          "query_extract": {
+            "attempts": 999,
+            "input_tokens": 3762705,
+            "output_tokens": 196036
+          },
+          "answer": {
+            "attempts": 999,
+            "input_tokens": 21115536,
+            "output_tokens": 9850
+          }
+        },
+        "cached_calls": 47538,
+        "cached_response_usage_from_prior_paid_work": {
+          "input_tokens": 204256971,
+          "output_tokens": 21171543,
+          "total_tokens": 225428514
+        },
+        "logical_llm_calls_including_cache": 84672,
+        "embedding_requests": 15495,
+        "query_latency": {
+          "mean_s": 6.143615162300877,
+          "p50_s": 5.8983414500253275,
+          "p95_s": 9.318005135108251
+        },
+        "query_count_with_cached_calls": 1,
+        "construction_attempts": [
+          {
+            "cached_llm_calls": 1,
+            "directory": "index_20261021_234752",
+            "elapsed_s": 2367.77636680007,
+            "error_type": "ProviderError",
+            "finished_unix": 1792600040.2621112,
+            "new_llm_calls": 9876,
+            "started_unix": 1792597672.4202049,
+            "status": "failed"
+          },
+          {
+            "cached_llm_calls": 1991,
+            "directory": "index_20261022_003108",
+            "elapsed_s": 96.2543174000457,
+            "error_type": "ProviderError",
+            "finished_unix": 1792600364.8121703,
+            "new_llm_calls": 398,
+            "started_unix": 1792600268.5564747,
+            "status": "failed"
+          },
+          {
+            "cached_llm_calls": 10288,
+            "directory": "index_20261022_005616",
+            "elapsed_s": 7291.487619899912,
+            "error_type": "HTTPStatusError",
+            "finished_unix": 1792609067.7440543,
+            "new_llm_calls": 24857,
+            "started_unix": 1792601776.0429075,
+            "status": "failed"
+          },
+          {
+            "cached_llm_calls": 35178,
+            "chunks": 11524,
+            "directory": "index_20261022_061906",
+            "elapsed_s": 349.0273456000723,
+            "entity_nodes": 115345,
+            "finished_unix": 1792621495.8720636,
+            "full_docs": 11524,
+            "hyperedge_nodes": 89079,
+            "incidence_edges": 205480,
+            "new_llm_calls": 0,
+            "nodes_without_role": 0,
+            "started_unix": 1792621146.8331518,
+            "status": "completed"
+          }
+        ],
+        "total_construction_attempt_elapsed_s": 10104.5456497001,
+        "concurrent_query_workers": 32,
+        "provider_refusals": {
+          "unique_requests": 1,
+          "initially_filtered_chunks": 0,
+          "empty_answer_questions": 0,
+          "policy": {
+            "explicit_content_filter_or_refusal": "terminal_unavailable_output_no_retry",
+            "initial_extraction": "retain_corpus_and_vector_no_facts_from_filtered_output",
+            "glean_or_coverage": "stop_chunk_generation_keep_prior_complete_facts",
+            "summary": "retain_existing_description_without_generated_summary",
+            "query_extraction_or_answer": "empty_answer_scored_in_full_frozen_denominator",
+            "partial_filtered_text": "provenance_only_never_used_as_evidence_or_answer"
+          }
+        },
+        "output_truncations": {
+          "unique_requests": 32,
+          "initially_truncated_chunks": 0,
+          "empty_answer_questions": 0,
+          "policy": {
+            "finish_reason_length": "terminal_unavailable_output_no_retry",
+            "output_token_caps": "unchanged",
+            "initial_extraction": "retain_corpus_and_vector_no_facts_from_truncated_output",
+            "glean_or_coverage": "stop_chunk_generation_keep_prior_complete_facts",
+            "summary": "retain_existing_description_without_generated_summary",
+            "query_extraction_or_answer": "empty_answer_scored_in_full_frozen_denominator",
+            "partial_truncated_text": "provenance_only_never_used_as_evidence_or_answer"
+          }
+        },
+        "incomplete_outputs": {
+          "unique_requests": 0,
+          "initially_incomplete_chunks": 0,
+          "empty_answer_questions": 0,
+          "policy": {
+            "missing_or_null_finish_reason": "terminal_unavailable_output_no_retry",
+            "cause": "unknown_not_classified_as_filtering_or_token_cap",
+            "initial_extraction": "retain_corpus_and_vector_no_facts_from_incomplete_output",
+            "glean_or_coverage": "stop_chunk_generation_keep_prior_complete_facts",
+            "summary": "retain_existing_description_without_generated_summary",
+            "query_extraction_or_answer": "empty_answer_scored_in_full_frozen_denominator",
+            "partial_text": "provenance_only_never_used_as_evidence_or_answer"
+          }
+        },
+        "invalid_answer_schema_questions": 0
+      }
+    ],
+    "verifier_sha256": "d7634451f45a905c1bbac66f34787588bcd66aacf5c5a255afc133efb174d715",
+    "config_sha256": "94ae3ab19001610fb6d100943f1591270a76f44cf00739f0e36bc34e55d5667d",
+    "average_em": 39.46666666666667,
+    "average_f1": 50.47980791732843,
+    "average_native_em": 41.43333333333334,
+    "average_native_f1": 51.95308334560386,
+    "limitations": [
+      "New frozen development samples and pooled candidate corpus, not full Wikipedia.",
+      "LLM/embedding substitution; not a claim to match original paper scores.",
+      "Shared remote API/local GPU load affects wall-clock latency.",
+      "Construction/query times include recorded response and embedding cache reuse.",
+      "Source-section ordering defines passage recall diagnostics; no gold reranking.",
+      "No cost in currency inferred without a verified provider price.",
+      "Timeout attempts may incur unreported server-side tokens; reported usage is a lower bound."
+    ]
+  }
+}

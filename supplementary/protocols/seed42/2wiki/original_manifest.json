@@ -1,0 +1,78 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-upstream-deepseek-relay-2wiki-20261024/reproduction/artifacts/2wiki_seed42_n1000/manifest.json",
+  "original_file_sha256": "0a4cf84f766978690b5c0f896c259669ea3be4ee436414aeb3020f20f9e2ba10",
+  "content": {
+    "created_at": "2026-10-24T08:32:25.711030+00:00",
+    "dataset": "2WikiMultiHopQA IDs release 2021-04-07",
+    "dataset_id": "2wiki",
+    "split": "development",
+    "status": "new_user_approved_sample_not_original_paper_sample",
+    "upstream_commit": "3ed1685fefb1295c43c7fca0bb306e4d5fd08e77",
+    "seed": 42,
+    "sample_size": 1000,
+    "source_rows": 12576,
+    "sampling": "Python random.Random(seed).sample(sorted unique question IDs, sample_size)",
+    "order": "RNG draw order shared by construction, QA and evaluation",
+    "source_parquet": {
+      "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG-upstream-deepseek-relay-2wiki-20261024\\dataset\\2wiki\\dev.parquet",
+      "sha256": "fd4cece6f7dfd7e57ca015d39d7e431cf22208f7892b1d205c5b9e87146d2d0d"
+    },
+    "native_gold_source": {
+      "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG-upstream-deepseek-relay-2wiki-20261024\\dataset\\2wiki\\dev.native.json",
+      "sha256": "79f77ae104088ea8e25b1a65dbece768d45771194663bc5660ec9a98070dadf5"
+    },
+    "full_development_parquet": {
+      "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG-upstream-deepseek-relay-2wiki-20261024\\dataset\\2wiki\\dev.parquet",
+      "sha256": "fd4cece6f7dfd7e57ca015d39d7e431cf22208f7892b1d205c5b9e87146d2d0d",
+      "role": "Full source sampled exactly once by DatasetProcessor"
+    },
+    "scope": "All original candidate paragraphs of the frozen development questions",
+    "candidate_occurrences": 10000,
+    "unique_candidate_passages": 6361,
+    "candidate_deduplication": "Exact extraction reuse; question memberships retained",
+    "question_types": {
+      "bridge_comparison": 214,
+      "compositional": 438,
+      "inference": 120,
+      "comparison": 228
+    },
+    "python": "3.12.13 (main, May 10 2026, 19:35:37) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26100-SP0",
+    "packages": {
+      "datasets": "3.4.1",
+      "numpy": "1.26.2",
+      "pyarrow": "16.1.0"
+    },
+    "selection_source_sha256": "4f0961eed7b5d37a86c44a89de5de51b33848b35be86d9a45c5e60c10b2876b5",
+    "preparation_script_sha256": "ff79fcffff2820e2a2a1f11493c601e8cf1c0ae21245bd6b6bb963afb8f2d4bc",
+    "benchmark_config_sha256": "e8fabbfaa0355039af1b7ad67fee830a4ae8c3b5141db6920cf1e8ac8d4cb324",
+    "files": {
+      "ids.json": {
+        "sha256": "5026c5965fcaeec8e1308991e9774e28dff9a8d10b6946f0864a3bb86d14445e",
+        "bytes": 39005
+      },
+      "source_indices.json": {
+        "sha256": "5b63e9b6dd530b0b460afe003da8f3163d31c864ebcf0b88db5b52b68964a0cd",
+        "bytes": 9139
+      },
+      "questions.parquet": {
+        "sha256": "775d0ab0faf41a86f9bead293d00be3a19a2ff82823ff278b4f1c52bf884ae2c",
+        "bytes": 2372625
+      },
+      "gold.jsonl": {
+        "sha256": "d8c8a73ea1b9a51d2fcc2e94d6429acc8cb0ba84fff747dd3592119020b0fbad",
+        "bytes": 4598731
+      },
+      "candidate_corpus.jsonl": {
+        "sha256": "6bed8f2975975694e55702dd3fea215e78e899df6a44689c985861d6a3125958",
+        "bytes": 6483773
+      },
+      "question_passages.jsonl": {
+        "sha256": "9c34f0bc3e18bf3efc02b30f2c20eb1aa2fd08835c24a70e18774c72f4831018",
+        "bytes": 749000
+      }
+    },
+    "llm_calls_for_preparation": 0
+  }
+}

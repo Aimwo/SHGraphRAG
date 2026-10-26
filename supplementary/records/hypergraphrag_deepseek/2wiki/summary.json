@@ -1,0 +1,436 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG/output/paper_revision/2026-10-24/hypergraphrag_deepseek_bge_2wiki_seed42_n1000_c100_summary500_budget8192/run/summary.json",
+  "original_file_sha256": "366b49acabd6821a9e5dc29f418b3a51d0de0355e1a27d766de2b428a90d916c",
+  "content": {
+    "status": "completed",
+    "metrics": {
+      "dataset": "2wiki",
+      "denominator": 1000,
+      "single_reference_em": 66.8,
+      "single_reference_f1": 72.97075396825394,
+      "native_alias_em": 72.6,
+      "native_alias_f1": 76.99742063492063,
+      "passage_recall_at_2": 55.25,
+      "all_supports_at_2": 22.3,
+      "passage_recall_at_5": 65.05,
+      "all_supports_at_5": 33.2,
+      "passage_recall_at_10": 69.6,
+      "all_supports_at_10": 39.1,
+      "completed": 1000,
+      "missing_or_failed": 0,
+      "nonempty_answers": 839,
+      "native_protocol": "Native Hotpot/2Wiki boolean-aware EM/token-F1; 2Wiki official answer-ID aliases/demonyms",
+      "retrieval_order": "global branch sources then local branch sources, deduplicated",
+      "retrieval_gold_scope": "official supporting titles present in native candidate contexts",
+      "hop_groups": {
+        "bridge_comparison": {
+          "denominator": 214,
+          "single_reference_em": 97.66355140186916,
+          "single_reference_f1": 97.66355140186916,
+          "native_alias_em": 97.66355140186916,
+          "native_alias_f1": 97.66355140186916,
+          "passage_recall_at_2": 44.1588785046729,
+          "all_supports_at_2": 0.0,
+          "passage_recall_at_5": 53.97196261682243,
+          "all_supports_at_5": 0.9345794392523364,
+          "passage_recall_at_10": 57.00934579439252,
+          "all_supports_at_10": 2.336448598130841
+        },
+        "compositional": {
+          "denominator": 438,
+          "single_reference_em": 38.58447488584475,
+          "single_reference_f1": 49.314796694933676,
+          "native_alias_em": 50.91324200913242,
+          "native_alias_f1": 57.99929332463579,
+          "passage_recall_at_2": 46.68949771689498,
+          "all_supports_at_2": 9.360730593607306,
+          "passage_recall_at_5": 54.5662100456621,
+          "all_supports_at_5": 18.036529680365298,
+          "passage_recall_at_10": 61.757990867579906,
+          "all_supports_at_10": 27.625570776255707
+        },
+        "inference": {
+          "denominator": 120,
+          "single_reference_em": 60.833333333333336,
+          "single_reference_f1": 72.61441798941797,
+          "native_alias_em": 64.16666666666667,
+          "native_alias_f1": 74.47156084656085,
+          "passage_recall_at_2": 46.25,
+          "all_supports_at_2": 10.0,
+          "passage_recall_at_5": 60.0,
+          "all_supports_at_5": 25.833333333333332,
+          "passage_recall_at_10": 64.58333333333333,
+          "all_supports_at_10": 34.166666666666664
+        },
+        "comparison": {
+          "denominator": 228,
+          "single_reference_em": 95.17543859649123,
+          "single_reference_f1": 95.42606516290726,
+          "native_alias_em": 95.17543859649123,
+          "native_alias_f1": 95.42606516290726,
+          "passage_recall_at_2": 86.84210526315789,
+          "all_supports_at_2": 74.56140350877193,
+          "passage_recall_at_5": 98.24561403508773,
+          "all_supports_at_5": 96.49122807017544,
+          "passage_recall_at_10": 99.12280701754386,
+          "all_supports_at_10": 98.24561403508773
+        }
+      },
+      "answer_outcomes": {
+        "completed": 1000
+      }
+    },
+    "invocation_wall_s": 8806.80192149998,
+    "verification": {
+      "status": "verified_complete",
+      "dataset": "2wiki",
+      "questions": 1000,
+      "capacity_recovery_import_audit": {
+        "source_directory": "hypergraphrag_deepseek_bge_2wiki_seed42_n1000_c32",
+        "prior_runtime_history_import_audit": null,
+        "original_physical_attempts": {
+          "text": 0,
+          "embedding": 0
+        },
+        "original_attempt_outcomes": {
+          "text": {},
+          "embedding": {}
+        },
+        "imported_terminal_text_caches": 0,
+        "imported_vectors": 0,
+        "unknown_interrupted_outcomes": 0,
+        "timing": {
+          "completed_construction_attempt_wall_s": 0,
+          "completed_invocation_wall_s": 0,
+          "observed_interrupted_construction_wall_s_upper_bound": 0,
+          "observed_interrupted_invocation_wall_s_upper_bound": 0,
+          "construction_wall_s_including_observed_upper_bounds": 0,
+          "invocation_wall_s_including_observed_upper_bounds": 0
+        },
+        "history_scope_note": "Original physical identities, input/response evidence and usage are audited under the original embedding scope. Cache lookup keys alone use the new scope. Unknown interrupted outcomes and usage remain unknown; client stop observations bound their client intervals."
+      },
+      "summary_policy_audit": {
+        "policy": {
+          "name": "user_approved_bounded_visible_summary_20261025",
+          "visible_target_tokens": 500,
+          "visible_tokenizer": "gpt-4o-mini/o200k_base",
+          "physical_generation_budget_tokens": 8192,
+          "length_constraint": "\n\nLength constraint: The final summary must be no more than 500 tokens. Return only that concise final summary.",
+          "nonempty_provider_length_output": "use, label provider truncation",
+          "visible_text_over_target": "use prefix of at most 500 native tokenizer tokens, label local truncation",
+          "empty_or_filtered_output": "unavailable; retain original extracted description through the existing explicit fallback",
+          "legacy_summary": "reuse exact original completed or nonempty length-terminated output",
+          "other_stages": "unchanged"
+        },
+        "all_build_summary_outcomes": {
+          "used": 840,
+          "unavailable": 34
+        },
+        "final_build_summary_outcomes": {
+          "used": 840,
+          "unavailable": 34
+        },
+        "final_build_used_summaries": 840,
+        "final_build_untruncated_used": 592,
+        "final_build_truncated_used": 248,
+        "final_build_provider_truncated_used": 13,
+        "final_build_locally_truncated_used": 238,
+        "final_build_unavailable_summaries": 34,
+        "final_build_summary_source_variants": {
+          "bounded_visible_summary": 840
+        },
+        "summary_outputs_file_sha256": "5dddfa23c5eef0110b2d96aee720bb2ad7c63de7bf801709a852d3f2bac2cd2e"
+      },
+      "preloaded_summary_validation_audit": null,
+      "historical_physical_attempts_file": {
+        "path": "capacity_history_reporting_rows.jsonl",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "missing_or_failed_predictions": 0,
+      "native_alias_em": 72.6,
+      "native_alias_f1": 76.99742063492063,
+      "construction_wall_s_all_attempts": 8487.627235799999,
+      "construction_last_success_wall_s": 8487.627235799999,
+      "execution_wall_s_all_invocations": 8806.80344399999,
+      "query_phase_wall_s_all_attempts": 317.83750220001093,
+      "latency_s": {
+        "mean": 24.400250495300046,
+        "p50": 23.281039000008604,
+        "p95": 35.678344589984036
+      },
+      "latency_note": "Per-question observed latency includes request queue time, cache effects and shared-host contention.",
+      "query_attempts_including_resumes": 1000,
+      "query_attempt_latency_sum_s": 24400.250495300046,
+      "graph": {
+        "full_docs": 6361,
+        "chunks": 6366,
+        "entity_nodes": 96229,
+        "hyperedge_nodes": 72998,
+        "incidence_edges": 293818,
+        "nodes_without_role": 0
+      },
+      "storage_bytes_by_directory": {
+        ".worker.lock": 1,
+        "api_calls.jsonl": 37647604,
+        "cache_hits.jsonl": 1283082,
+        "campaign_attempts.jsonl": 284,
+        "capacity_history_reporting_rows.jsonl": 0,
+        "construction_attempts.jsonl": 1194,
+        "document_passage_map.json": 763323,
+        "embedding_calls.jsonl": 8811791,
+        "environment.json": 1561,
+        "expected_chunks.json": 280107,
+        "index": 1140430948,
+        "phase_events.jsonl": 1726,
+        "prompts.json": 28265,
+        "provenance.json": 21450,
+        "query_attempts.jsonl": 360561,
+        "request_started.jsonl": 22674466,
+        "resource_samples.jsonl": 394065,
+        "retry_events.jsonl": 11610,
+        "status.json": 392,
+        "summary.json": 3122,
+        "summary_outputs.jsonl": 9390289,
+        "cache": 8756528008,
+        "evaluation": 806851,
+        "predictions": 143011803,
+        "query_attempts": 143011803,
+        "source_snapshot": 402347
+      },
+      "active_index_storage_bytes": 1140429505,
+      "text_physical_attempts": 24600,
+      "embedding_physical_attempts": 7489,
+      "text_attempt_outcomes": {
+        "completed": 24493,
+        "provider_filtered": 4,
+        "failed": 45,
+        "output_truncated": 58
+      },
+      "embedding_attempt_outcomes": {
+        "completed": 7489
+      },
+      "text_usage_all_attempts": {
+        "input_tokens": {
+          "known_sum": 149874795,
+          "attempts_with_value": 24555,
+          "attempts_without_value": 45
+        },
+        "output_tokens": {
+          "known_sum": 115595771,
+          "attempts_with_value": 24555,
+          "attempts_without_value": 45
+        },
+        "total_tokens": {
+          "known_sum": 265470566,
+          "attempts_with_value": 24555,
+          "attempts_without_value": 45
+        },
+        "cached_input_tokens": {
+          "known_sum": 0,
+          "attempts_with_value": 24555,
+          "attempts_without_value": 45
+        },
+        "reasoning_output_tokens": {
+          "known_sum": 0,
+          "attempts_with_value": 24555,
+          "attempts_without_value": 45
+        }
+      },
+      "text_usage_by_stage": {
+        "extract": {
+          "input_tokens": {
+            "known_sum": 28039639,
+            "attempts_with_value": 6366,
+            "attempts_without_value": 6
+          },
+          "output_tokens": {
+            "known_sum": 37777420,
+            "attempts_with_value": 6366,
+            "attempts_without_value": 6
+          },
+          "total_tokens": {
+            "known_sum": 65817059,
+            "attempts_with_value": 6366,
+            "attempts_without_value": 6
+          },
+          "cached_input_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 6366,
+            "attempts_without_value": 6
+          },
+          "reasoning_output_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 6366,
+            "attempts_without_value": 6
+          }
+        },
+        "glean": {
+          "input_tokens": {
+            "known_sum": 50053244,
+            "attempts_with_value": 8959,
+            "attempts_without_value": 2
+          },
+          "output_tokens": {
+            "known_sum": 62648141,
+            "attempts_with_value": 8959,
+            "attempts_without_value": 2
+          },
+          "total_tokens": {
+            "known_sum": 112701385,
+            "attempts_with_value": 8959,
+            "attempts_without_value": 2
+          },
+          "cached_input_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 8959,
+            "attempts_without_value": 2
+          },
+          "reasoning_output_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 8959,
+            "attempts_without_value": 2
+          }
+        },
+        "coverage": {
+          "input_tokens": {
+            "known_sum": 39599510,
+            "attempts_with_value": 6356,
+            "attempts_without_value": 37
+          },
+          "output_tokens": {
+            "known_sum": 10409711,
+            "attempts_with_value": 6356,
+            "attempts_without_value": 37
+          },
+          "total_tokens": {
+            "known_sum": 50009221,
+            "attempts_with_value": 6356,
+            "attempts_without_value": 37
+          },
+          "cached_input_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 6356,
+            "attempts_without_value": 37
+          },
+          "reasoning_output_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 6356,
+            "attempts_without_value": 37
+          }
+        },
+        "summary": {
+          "input_tokens": {
+            "known_sum": 1530077,
+            "attempts_with_value": 874,
+            "attempts_without_value": 0
+          },
+          "output_tokens": {
+            "known_sum": 2610832,
+            "attempts_with_value": 874,
+            "attempts_without_value": 0
+          },
+          "total_tokens": {
+            "known_sum": 4140909,
+            "attempts_with_value": 874,
+            "attempts_without_value": 0
+          },
+          "cached_input_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 874,
+            "attempts_without_value": 0
+          },
+          "reasoning_output_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 874,
+            "attempts_without_value": 0
+          }
+        },
+        "query_extract": {
+          "input_tokens": {
+            "known_sum": 4307210,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          },
+          "output_tokens": {
+            "known_sum": 1938460,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          },
+          "total_tokens": {
+            "known_sum": 6245670,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          },
+          "cached_input_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          },
+          "reasoning_output_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          }
+        },
+        "answer": {
+          "input_tokens": {
+            "known_sum": 26345115,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          },
+          "output_tokens": {
+            "known_sum": 211207,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          },
+          "total_tokens": {
+            "known_sum": 26556322,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          },
+          "cached_input_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          },
+          "reasoning_output_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          }
+        }
+      },
+      "embedding_native_usage_aggregate": {
+        "omitted_attempt_rows": 7489,
+        "native_field_totals": {
+          "load_duration": 59399344000,
+          "prompt_eval_count": 9243576,
+          "total_duration": 7415851662300
+        },
+        "rows_reporting_each_field": {
+          "load_duration": 7489,
+          "prompt_eval_count": 7489,
+          "total_duration": 7489
+        },
+        "note": "Sums retain original provider-native units; no per-attempt rows published."
+      },
+      "path_question_repository": {
+        "applicable": false,
+        "count": 0,
+        "reason": "Not a component of this native HyperGraphRAG implementation"
+      },
+      "peak_combined_requests": 100,
+      "peak_embedding_requests": 4,
+      "text_cache_hits": 0,
+      "raw_inputs_and_responses": "one sanitized artifact for every physical attempt",
+      "monetary_cost": null,
+      "monetary_cost_note": "No verified relay tariff was provided; token counts are not a settled charge.",
+      "embedding_runtime_digest": null,
+      "embedding_runtime_digest_note": "Null means the actual runtime model digest was not verified."
+    }
+  },
+  "publication_omitted_per_attempt_fields": [
+    "embedding_native_usage"
+  ]
+}

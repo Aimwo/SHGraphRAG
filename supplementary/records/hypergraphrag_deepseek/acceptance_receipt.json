@@ -1,0 +1,38 @@
+{
+  "record_kind": "historical_acceptance_receipt",
+  "source_file": "Edit/Repo/SHGraphRAG/output/paper_revision/2026-10-24/hypergraphrag_three_datasets_seed42_n1000_c32/final_acceptance.json",
+  "original_file_sha256": "6f264893a5c05aa394b2d293aecd55ca34e65e9d74a4bb2733cf05aec30f10da",
+  "status": "verified_complete",
+  "top_level_fields": [
+    "api_group_note",
+    "combined_physical_request_peak_from_intervals",
+    "concurrency_configuration_history",
+    "cost_note",
+    "datasets",
+    "deliverable_sha256",
+    "effective_embedding_config",
+    "effective_summary_policy",
+    "embedding_physical_request_peak_from_intervals",
+    "evidenced_local_embedding_recovery_events",
+    "final_consistency_policy",
+    "poll_seconds",
+    "request_interval_scope",
+    "sample_seed",
+    "scope",
+    "separate_local_diagnostic_evidence",
+    "serial_dataset_request_intervals_verified",
+    "simultaneously_active_datasets_from_intervals",
+    "status",
+    "summary_compatibility_diagnostics",
+    "summary_repair_authorization",
+    "time",
+    "total_questions",
+    "user_reported_api_group_adjustments",
+    "user_reported_network_recovery_resumes"
+  ],
+  "accepted_datasets": [
+    "hotpotqa",
+    "2wiki",
+    "musique"
+  ]
+}

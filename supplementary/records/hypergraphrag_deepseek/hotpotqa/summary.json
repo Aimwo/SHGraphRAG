@@ -1,0 +1,539 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG/output/paper_revision/2026-10-24/hypergraphrag_deepseek_bge_hotpotqa_seed42_n1000_c100_summary500_budget8192/run/summary.json",
+  "original_file_sha256": "a0c0d3e45cf8bf68d124b59fcac641701b031d84d4afba5816647b9c4d81b877",
+  "content": {
+    "status": "completed",
+    "metrics": {
+      "dataset": "hotpotqa",
+      "denominator": 1000,
+      "single_reference_em": 64.7,
+      "single_reference_f1": 79.46157235041555,
+      "native_alias_em": 64.7,
+      "native_alias_f1": 79.46157235041555,
+      "passage_recall_at_2": 58.8,
+      "all_supports_at_2": 28.6,
+      "passage_recall_at_5": 79.55,
+      "all_supports_at_5": 62.6,
+      "passage_recall_at_10": 87.05,
+      "all_supports_at_10": 75.3,
+      "completed": 1000,
+      "missing_or_failed": 0,
+      "nonempty_answers": 981,
+      "native_protocol": "Native Hotpot/2Wiki boolean-aware EM/token-F1; 2Wiki official answer-ID aliases/demonyms",
+      "retrieval_order": "global branch sources then local branch sources, deduplicated",
+      "retrieval_gold_scope": "official supporting titles present in native candidate contexts",
+      "hop_groups": {
+        "comparison": {
+          "denominator": 225,
+          "single_reference_em": 73.33333333333333,
+          "single_reference_f1": 82.89977079450762,
+          "native_alias_em": 73.33333333333333,
+          "native_alias_f1": 82.89977079450762,
+          "passage_recall_at_2": 65.55555555555556,
+          "all_supports_at_2": 40.888888888888886,
+          "passage_recall_at_5": 93.77777777777777,
+          "all_supports_at_5": 88.0,
+          "passage_recall_at_10": 98.44444444444444,
+          "all_supports_at_10": 96.88888888888889
+        },
+        "bridge": {
+          "denominator": 775,
+          "single_reference_em": 62.193548387096776,
+          "single_reference_f1": 78.46338570535679,
+          "native_alias_em": 62.193548387096776,
+          "native_alias_f1": 78.46338570535679,
+          "passage_recall_at_2": 56.83870967741935,
+          "all_supports_at_2": 25.032258064516128,
+          "passage_recall_at_5": 75.41935483870968,
+          "all_supports_at_5": 55.225806451612904,
+          "passage_recall_at_10": 83.74193548387096,
+          "all_supports_at_10": 69.03225806451613
+        }
+      },
+      "answer_outcomes": {
+        "completed": 1000
+      }
+    },
+    "invocation_wall_s": 1985.8901737999986,
+    "verification": {
+      "status": "verified_complete",
+      "dataset": "hotpotqa",
+      "questions": 1000,
+      "capacity_recovery_import_audit": {
+        "source_directory": "hypergraphrag_deepseek_bge_hotpotqa_seed42_n1000_c100_capacity8192",
+        "recovery_kind": "summary_visible_limit_repair",
+        "history_sources": [
+          {
+            "source_directory": "hypergraphrag_deepseek_bge_hotpotqa_seed42_n1000_c32",
+            "source_evidence_sha256": {
+              "experiment/config.json": "90a12fed53e44f424bb3f1fc561a4ee0355b48c8aeeb6dd2bd78eba29065a42e",
+              "inputs/manifest.json": "1d6e39f09b4bac350f3193c4579fdfbfb0e20846348898c81fd92d77f24d7a48",
+              "run/provenance.json": "89999341c3141efb2b1f435e5c2090551b470362f0cf98ab528d2be6e874ee73",
+              "run/status.json": "e4f9d01f4678c7f89ed6b7a61c263038421dc0c13c7350ce2bf17f795d90da0f",
+              "run/api_calls.jsonl": "aa03eef26ff19ba675bb7e08c106aba2717cb953adac0963eddaf956ac883dfc",
+              "run/embedding_calls.jsonl": "215d2e5ee9e25ca216b22a86f399073880c0bcabcda207a647a87ea1eaa1d638",
+              "run/request_started.jsonl": "e7f06f391405a9846c4b1b2d31cfb99676e01a52cb4b87ac6c6e01c49adce23d",
+              "run/construction_attempts.jsonl": "e0b805e94cdcc306e5ed32ed156b697faf065e681e7e736bfca2817a8abd43a8",
+              "run/campaign_attempts.jsonl": "7e7a48e3cff24ac12429cfaedd6007e1a7bbd566f885633b6b671c819ff12703",
+              "run/phase_events.jsonl": "f55b24957b42efd1b06261b9ecbc3da78c04a8bef07d5892a6c2a2348ada0986",
+              "run/cache_hits.jsonl": "c3fd5e0cde8221f9bb72004878fb907b01ead240d6e46a9eda6dcfd151224bab",
+              "run/resource_samples.jsonl": "0e8da20a448d90258a78f06b3b2b9e4fd5f379a39591964a3e20cbb4aae9963a",
+              "run/environment.json": "8899491ef1e1bdb804a5d18dccabc30f590a9567aaabba9d153ed61179e54c1c",
+              "run/expected_chunks.json": "723189698fc611fd10d610a04395e8c8a462b0100c0ace4f04bc1ddcfae4853b",
+              "run/prompts.json": "8ab8395bfae35a76069c2c7ae31a953bc692333c8a6c8dd736dc964b256adf48"
+            },
+            "user_interruption": {
+              "snapshot_relative_to_parent": "hypergraphrag_three_datasets_seed42_n1000_c32/user_api_pause/20261025_110342/hotpotqa_interruption_snapshot.json",
+              "snapshot_sha256": "835948f4f8152537360d47bf3ad4d5f9be3396279a4996e1df0e86540d5da8bf",
+              "client_stop_observed_unix": 1792897423.214742,
+              "attempt_ids": [
+                "07cf71035b304bbd8b6ae119cea1db8b",
+                "1a2d61e613334a47929ec024cf5a4f52",
+                "1bebe5bd1ff644a9b566260b71f9bb2f",
+                "1f4bc48d6bcc4084a088d33831ab590e",
+                "20989a67283d4c43a7481c31961ed15f",
+                "2c5533eaef1f4780b6278a5d76d7f67b",
+                "30acabb02e02417d93895fa24b998bef",
+                "3c4e60ab55f141e483a3631259520bb4",
+                "4b41fd91252f4c76a54e4ce02be3983f",
+                "4f3e77642ba441bdbfab9f87cfaca74a",
+                "57b7343895e646a0b3dc6e276b3f7557",
+                "64f80fa4bc3e4e799e7667e2a74b4f0e",
+                "657db59beecf4c5fbbae4cae3ca47689",
+                "6ecb26d3659b484aab5ac962a4868471",
+                "704c0b89f26048e8aa43472a3d5ad639",
+                "7261ffe8ac6d4641a531a56f5d4250db",
+                "72f19030d72442da815540c3f6685f89",
+                "799fe3e2c95e4f2992dee71876e46047",
+                "7cb0f92fdc724005ba89feb37a75efc4",
+                "7ee0bb2817b34b378e1b98a0b4d72948",
+                "91909d919a804613a501b30c3238e7f0",
+                "9387b92864064211b7831e5a9efa417f",
+                "99bf7047d8b9461e982a11048785ca58",
+                "9cdd39f87e824e7a91894c28b6246abf",
+                "a0fcf8fd58e242e5943264bd22830024",
+                "b8d629755ab24900b2b523a2fbb17704",
+                "c1d5bb1a2cdb4ab2aa1dfae068ce14f4",
+                "c45065ef58e747969ab00dabb8b469c4",
+                "dd435d7345ac4d318d10aea3fa45cee4",
+                "df5cd1e889e54c71868caa32873f35cf",
+                "f551e9060506412b969a7548a1f68521",
+                "f5fc4a595196403a8f969a0cd9011bb2"
+              ],
+              "client_stop_observation_source": "interruption_snapshot.time",
+              "pause_requested_at": "2026-10-25T11:02:15.404033+08:00"
+            },
+            "original_physical_attempts": {
+              "text": 16248,
+              "embedding": 306
+            }
+          },
+          {
+            "source_directory": "hypergraphrag_deepseek_bge_hotpotqa_seed42_n1000_c100_capacity8192",
+            "source_evidence_sha256": {
+              "experiment/config.json": "36c6aabbcddb042eecefd7483da6199d90eae200aa87c387ce6f8a9b56507465",
+              "inputs/manifest.json": "1d6e39f09b4bac350f3193c4579fdfbfb0e20846348898c81fd92d77f24d7a48",
+              "run/provenance.json": "7a25eace3d3cd7f6b18088855c602e9358edbf8bd38df8cac78ebc7e5c322d33",
+              "provenance/capacity_recovery.json": "785896b904bdc805912b0abac8ae1d49c927acde7910f9e5dee83297221b53ae",
+              "run/api_calls.jsonl": "3fabe0c14edb36e2a099c2f33f5188e7ba56a6ef0d8ae146020bb59767a033a7",
+              "run/embedding_calls.jsonl": "0717f995f2f30507195b8fe738a0ef484bd087e4ab51e6bf70e79b43ca4d4482",
+              "run/request_started.jsonl": "40c0e79126dbf55920296700d248caf38a574f11ecf646ed019dfcf953229789",
+              "run/construction_attempts.jsonl": "67657d1032df421f8742cbe0a9f2f0b2c14341837ee6eae87c66521db63910e7",
+              "run/campaign_attempts.jsonl": "3e5b8589a6ae778bdeb30d6920fa7719cbb7e60713482726ec2b1c3156e0c7de",
+              "run/phase_events.jsonl": "2aa8001b2cb7f08e4abecfec0f9b163a3dff3a0bb871343c812c9c0f1e8dd29d"
+            },
+            "user_interruption": null,
+            "original_physical_attempts": {
+              "text": 19127,
+              "embedding": 6892
+            }
+          }
+        ],
+        "prior_capacity_import_audit": {
+          "source_directory": "hypergraphrag_deepseek_bge_hotpotqa_seed42_n1000_c32",
+          "prior_runtime_history_import_audit": null,
+          "original_physical_attempts": {
+            "text": 16248,
+            "embedding": 306
+          },
+          "original_attempt_outcomes": {
+            "text": {
+              "completed": 16156,
+              "failed": 17,
+              "cancelled": 29,
+              "output_truncated": 14,
+              "interrupted_outcome_unknown": 32
+            },
+            "embedding": {
+              "completed": 306
+            }
+          },
+          "imported_terminal_text_caches": 16170,
+          "imported_vectors": 0,
+          "unknown_interrupted_outcomes": 32,
+          "timing": {
+            "completed_construction_attempt_wall_s": 9965.528300399994,
+            "completed_invocation_wall_s": 9966.976211200003,
+            "observed_interrupted_construction_wall_s_upper_bound": 9086.991310119629,
+            "observed_interrupted_invocation_wall_s_upper_bound": 9087.756812810898,
+            "construction_wall_s_including_observed_upper_bounds": 19052.519610519623,
+            "invocation_wall_s_including_observed_upper_bounds": 19054.7330240109
+          },
+          "history_scope_note": "Original physical identities, input/response evidence and usage are audited under the original embedding scope. Cache lookup keys alone use the new scope. Unknown interrupted outcomes and usage remain unknown; client stop observations bound their client intervals."
+        },
+        "original_physical_attempts": {
+          "text": 35375,
+          "embedding": 7198
+        },
+        "imported_terminal_text_caches": 35065,
+        "imported_vectors": 220421,
+        "timing": {
+          "observed_interrupted_construction_wall_s_upper_bound": 9086.991310119629,
+          "construction_wall_s_including_observed_upper_bounds": 26485.66937021962,
+          "observed_interrupted_invocation_wall_s_upper_bound": 9087.756812810898,
+          "completed_invocation_wall_s": 17403.448672800005,
+          "invocation_wall_s_including_observed_upper_bounds": 26491.205485610903,
+          "completed_construction_attempt_wall_s": 17398.678060099992
+        },
+        "unknown_interrupted_outcomes": 32,
+        "history_scope_note": "Original c32 and c100 attempts retain their distinct actual inputs, responses, timing and usage. Exact same-input BGE vectors are reused; changed summary descriptions generate new embeddings."
+      },
+      "summary_policy_audit": {
+        "policy": {
+          "name": "user_approved_bounded_visible_summary_20261025",
+          "visible_target_tokens": 500,
+          "visible_tokenizer": "gpt-4o-mini/o200k_base",
+          "physical_generation_budget_tokens": 8192,
+          "length_constraint": "\n\nLength constraint: The final summary must be no more than 500 tokens. Return only that concise final summary.",
+          "nonempty_provider_length_output": "use, label provider truncation",
+          "visible_text_over_target": "use prefix of at most 500 native tokenizer tokens, label local truncation",
+          "empty_or_filtered_output": "unavailable; retain original extracted description through the existing explicit fallback",
+          "legacy_summary": "reuse exact original completed or nonempty length-terminated output",
+          "other_stages": "unchanged"
+        },
+        "all_build_summary_outcomes": {
+          "used": 1582,
+          "unavailable": 72
+        },
+        "final_build_summary_outcomes": {
+          "used": 1579,
+          "unavailable": 72
+        },
+        "final_build_used_summaries": 1579,
+        "final_build_untruncated_used": 1078,
+        "final_build_truncated_used": 501,
+        "final_build_provider_truncated_used": 45,
+        "final_build_locally_truncated_used": 458,
+        "final_build_unavailable_summaries": 72,
+        "final_build_summary_source_variants": {
+          "legacy_exact_summary": 41,
+          "bounded_visible_summary": 1538
+        },
+        "summary_outputs_file_sha256": "ed52d1adb302f92ca0201ec55c4d46d98010e8f1c3dced13110eaca9b48f6f2f"
+      },
+      "preloaded_summary_validation_audit": {
+        "physical_attempts": 3,
+        "physical_attempt_ids": [
+          "22afdd33b87f474ba87767f24d7d9718",
+          "fceb67f171154cc38400277b289818db",
+          "f25267edfabf4baa8beb045db194a3a0"
+        ],
+        "source_relative_to_day": "hypergraphrag_three_datasets_seed42_n1000_c32/summary_compatibility_validation/20261025T143709_009149",
+        "manifest_sha256": "f2181e8b7f0b03382202d47a4be0877a59bd0003569b417c58669139f497087c",
+        "counted_as_preserved_physical_attempts_not_new_requests": true
+      },
+      "historical_physical_attempts_file": {
+        "path": "capacity_history_reporting_rows.jsonl",
+        "sha256": "1dca1e86a05b2a4d616e537d97c15e0885479888a6546f620326b771d58afccc"
+      },
+      "missing_or_failed_predictions": 0,
+      "native_alias_em": 64.7,
+      "native_alias_f1": 79.46157235041555,
+      "construction_wall_s_all_attempts": 28233.656672319616,
+      "construction_last_success_wall_s": 1702.3806146999996,
+      "execution_wall_s_all_invocations": 28524.506938510924,
+      "query_phase_wall_s_all_attempts": 278.23181170001044,
+      "latency_s": {
+        "mean": 24.82162470749952,
+        "p50": 23.52584945000126,
+        "p95": 37.77396855501719
+      },
+      "latency_note": "Per-question observed latency includes request queue time, cache effects and shared-host contention.",
+      "query_attempts_including_resumes": 1000,
+      "query_attempt_latency_sum_s": 24821.62470749952,
+      "graph": {
+        "full_docs": 9773,
+        "chunks": 9776,
+        "entity_nodes": 186811,
+        "hyperedge_nodes": 138869,
+        "incidence_edges": 554444,
+        "nodes_without_role": 0
+      },
+      "storage_bytes_by_directory": {
+        ".worker.lock": 1,
+        "api_calls.jsonl": 5858099,
+        "cache_hits.jsonl": 14543632,
+        "campaign_attempts.jsonl": 536,
+        "capacity_history_reporting_rows.jsonl": 64649083,
+        "construction_attempts.jsonl": 1552,
+        "document_passage_map.json": 1172763,
+        "embedding_calls.jsonl": 9226490,
+        "environment.json": 1561,
+        "expected_chunks.json": 430147,
+        "failure.json": 291,
+        "index": 2360542809,
+        "phase_events.jsonl": 2341,
+        "prompts.json": 28265,
+        "provenance.json": 19769,
+        "query_attempts.jsonl": 344565,
+        "request_started.jsonl": 8153362,
+        "resource_samples.jsonl": 90007,
+        "retry_events.jsonl": 54533,
+        "status.json": 397,
+        "summary.json": 2060,
+        "summary_outputs.jsonl": 17772846,
+        "cache": 6045715996,
+        "evaluation": 722112,
+        "predictions": 143856615,
+        "query_attempts": 143856615,
+        "source_snapshot": 402343
+      },
+      "active_index_storage_bytes": 2185559029,
+      "text_physical_attempts": 39299,
+      "embedding_physical_attempts": 15036,
+      "text_attempt_outcomes": {
+        "completed": 36926,
+        "failed": 356,
+        "cancelled": 236,
+        "output_truncated": 1749,
+        "interrupted_outcome_unknown": 32
+      },
+      "embedding_attempt_outcomes": {
+        "completed": 15033,
+        "cancelled": 3
+      },
+      "text_usage_all_attempts": {
+        "input_tokens": {
+          "known_sum": 226240865,
+          "attempts_with_value": 38676,
+          "attempts_without_value": 623
+        },
+        "output_tokens": {
+          "known_sum": 210304181,
+          "attempts_with_value": 38676,
+          "attempts_without_value": 623
+        },
+        "total_tokens": {
+          "known_sum": 436545046,
+          "attempts_with_value": 38676,
+          "attempts_without_value": 623
+        },
+        "cached_input_tokens": {
+          "known_sum": 0,
+          "attempts_with_value": 38676,
+          "attempts_without_value": 623
+        },
+        "reasoning_output_tokens": {
+          "known_sum": 0,
+          "attempts_with_value": 38676,
+          "attempts_without_value": 623
+        }
+      },
+      "text_usage_by_stage": {
+        "extract": {
+          "input_tokens": {
+            "known_sum": 43371494,
+            "attempts_with_value": 9776,
+            "attempts_without_value": 41
+          },
+          "output_tokens": {
+            "known_sum": 69874853,
+            "attempts_with_value": 9776,
+            "attempts_without_value": 41
+          },
+          "total_tokens": {
+            "known_sum": 113246347,
+            "attempts_with_value": 9776,
+            "attempts_without_value": 41
+          },
+          "cached_input_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 9776,
+            "attempts_without_value": 41
+          },
+          "reasoning_output_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 9776,
+            "attempts_without_value": 41
+          }
+        },
+        "glean": {
+          "input_tokens": {
+            "known_sum": 81939188,
+            "attempts_with_value": 13880,
+            "attempts_without_value": 268
+          },
+          "output_tokens": {
+            "known_sum": 114754318,
+            "attempts_with_value": 13880,
+            "attempts_without_value": 268
+          },
+          "total_tokens": {
+            "known_sum": 196693506,
+            "attempts_with_value": 13880,
+            "attempts_without_value": 268
+          },
+          "cached_input_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 13880,
+            "attempts_without_value": 268
+          },
+          "reasoning_output_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 13880,
+            "attempts_without_value": 268
+          }
+        },
+        "coverage": {
+          "input_tokens": {
+            "known_sum": 65306922,
+            "attempts_with_value": 9759,
+            "attempts_without_value": 0
+          },
+          "output_tokens": {
+            "known_sum": 17122726,
+            "attempts_with_value": 9759,
+            "attempts_without_value": 0
+          },
+          "total_tokens": {
+            "known_sum": 82429648,
+            "attempts_with_value": 9759,
+            "attempts_without_value": 0
+          },
+          "cached_input_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 9759,
+            "attempts_without_value": 0
+          },
+          "reasoning_output_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 9759,
+            "attempts_without_value": 0
+          }
+        },
+        "summary": {
+          "input_tokens": {
+            "known_sum": 5538712,
+            "attempts_with_value": 3261,
+            "attempts_without_value": 313
+          },
+          "output_tokens": {
+            "known_sum": 6081903,
+            "attempts_with_value": 3261,
+            "attempts_without_value": 313
+          },
+          "total_tokens": {
+            "known_sum": 11620615,
+            "attempts_with_value": 3261,
+            "attempts_without_value": 313
+          },
+          "cached_input_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 3261,
+            "attempts_without_value": 313
+          },
+          "reasoning_output_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 3261,
+            "attempts_without_value": 313
+          }
+        },
+        "query_extract": {
+          "input_tokens": {
+            "known_sum": 4312602,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 1
+          },
+          "output_tokens": {
+            "known_sum": 2275020,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 1
+          },
+          "total_tokens": {
+            "known_sum": 6587622,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 1
+          },
+          "cached_input_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 1
+          },
+          "reasoning_output_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 1
+          }
+        },
+        "answer": {
+          "input_tokens": {
+            "known_sum": 25771947,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          },
+          "output_tokens": {
+            "known_sum": 195361,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          },
+          "total_tokens": {
+            "known_sum": 25967308,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          },
+          "cached_input_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          },
+          "reasoning_output_tokens": {
+            "known_sum": 0,
+            "attempts_with_value": 1000,
+            "attempts_without_value": 0
+          }
+        }
+      },
+      "embedding_native_usage_aggregate": {
+        "omitted_attempt_rows": 15036,
+        "native_field_totals": {
+          "load_duration": 101545043100,
+          "prompt_eval_count": 19094528,
+          "total_duration": 15283328723000
+        },
+        "rows_reporting_each_field": {
+          "load_duration": 15033,
+          "prompt_eval_count": 15033,
+          "total_duration": 15033
+        },
+        "note": "Sums retain original provider-native units; no per-attempt rows published."
+      },
+      "path_question_repository": {
+        "applicable": false,
+        "count": 0,
+        "reason": "Not a component of this native HyperGraphRAG implementation"
+      },
+      "peak_combined_requests": 100,
+      "peak_embedding_requests": 4,
+      "text_cache_hits": 68599,
+      "raw_inputs_and_responses": "one sanitized artifact for every physical attempt",
+      "monetary_cost": null,
+      "monetary_cost_note": "No verified relay tariff was provided; token counts are not a settled charge.",
+      "embedding_runtime_digest": null,
+      "embedding_runtime_digest_note": "Null means the actual runtime model digest was not verified."
+    }
+  },
+  "publication_omitted_per_attempt_fields": [
+    "embedding_native_usage"
+  ]
+}

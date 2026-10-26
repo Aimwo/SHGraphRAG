@@ -1,0 +1,43 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/CompareMethods/HyperGraphRAG/revision_openrouter/runs/full1000_gpt4omini_20261022_overflow1/hotpotqa/summary.json",
+  "original_file_sha256": "a452dd6304ab0d6100325c3bd6eb62d0bc530c4b6b0f6bebbcb936d0c360f2d0",
+  "content": {
+    "dataset": "hotpotqa",
+    "expected": 1000,
+    "completed": 1000,
+    "missing_or_failed": 0,
+    "primary_protocol": "HotpotQA_single_reference_answer_EM_token_F1",
+    "primary_em": 53.1,
+    "primary_f1": 69.12998127662406,
+    "native_alias_em": 53.1,
+    "native_alias_f1": 69.12998127662406,
+    "nonempty_answers": 972,
+    "retrieval_order": "global_branch_sources_then_local_deduplicated",
+    "passage_recall_at_2": 59.8,
+    "all_supports_at_2": 28.9,
+    "passage_recall_at_5": 78.75,
+    "all_supports_at_5": 60.2,
+    "passage_recall_at_10": 86.3,
+    "all_supports_at_10": 73.4,
+    "index": {
+      "directory": "index_20261021_152255",
+      "elapsed_s": 4336.2766533000395,
+      "new_llm_calls": 0,
+      "cached_llm_calls": 29799,
+      "full_docs": 9800,
+      "chunks": 9801,
+      "entity_nodes": 108237,
+      "hyperedge_nodes": 75979,
+      "incidence_edges": 182045,
+      "nodes_without_role": 0
+    },
+    "latency": {
+      "mean_s": 12.8784866422005,
+      "p50_s": 12.782814800040796,
+      "p95_s": 16.814963564951903,
+      "concurrent_query_workers": 32,
+      "note": "Shared provider/GPU contention; record cache hits separately"
+    }
+  }
+}

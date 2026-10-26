@@ -1,0 +1,28 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-4omini-repro-20261021/reproduction/runs/full1000_4omini_v2_20261021/musique/verification.json",
+  "original_file_sha256": "21dabc9dbb54b17b63e4716c7a177eb4a87710ed73343e4642c9d28702765279",
+  "content": {
+    "status": "passed",
+    "questions": 1000,
+    "passages": 11524,
+    "paths": 1249734,
+    "path_questions": 2499468,
+    "api_attempts": 61989,
+    "checks": [
+      "source_and_input_hashes",
+      "label_free_inference_questions",
+      "exact_id_alignment",
+      "full_extraction_coverage",
+      "complete_uncapped_path_repository",
+      "normalized_1024d_BGE_M3_indexes",
+      "prediction_evidence_boundaries",
+      "4omini_no_reasoning_tokens",
+      "full_evaluation_denominator",
+      "unlabelled_construction_groups",
+      "complete_LLM_alias_confirmation",
+      "graph_rebuilt_from_confirmed_mapping",
+      "frozen_implementation_hashes"
+    ]
+  }
+}

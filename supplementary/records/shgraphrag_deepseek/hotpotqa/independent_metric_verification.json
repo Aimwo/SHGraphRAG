@@ -1,0 +1,13 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-upstream-deepseek-relay-hotpotqa-20261024/reproduction/runs/hotpotqa1000_seed42_deepseek-relay-14ac1cd4ea79_20261024/independent_metric_verification.json",
+  "original_file_sha256": "464e97725cffd2d91e1787bb95be8abad10003d84c56c2fb92f9da2a80632fc2",
+  "content": {
+    "passed": true,
+    "native_source_sha256": "d35fc91a6db21d791dbdda11daf3856e9359f5701d54e3eefba20d88fecc02c0",
+    "questions": 1000,
+    "answer_em": 0.608,
+    "answer_f1": 0.7621963174390857,
+    "new_model_api_requests": 0
+  }
+}

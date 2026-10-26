@@ -1,0 +1,259 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "output/paper_revision/2026-10-25/reviewer_data_audit/success_once_summary.json",
+  "original_file_sha256": "3acf64ddff9ab7f28ba52257c77840a00d7bb869e070c9ae538cc0dfab5adbc8",
+  "content": {
+    "datasets": {
+      "musique": {
+        "dataset": "musique",
+        "n": 1000,
+        "seed": 42,
+        "extraction": {
+          "calls": 11835,
+          "status": {
+            "completed": 11832,
+            "refused": 3
+          },
+          "missing_usage": 0,
+          "tokens": {
+            "input_tokens": 19936324,
+            "output_tokens": 88409389,
+            "total_tokens": 108345713
+          },
+          "successful_response_service_seconds": 444782.93472019956,
+          "call_ids_omitted_count": 11835
+        },
+        "merge": {
+          "calls": 2847,
+          "status": {
+            "completed": 2847
+          },
+          "missing_usage": 0,
+          "tokens": {
+            "input_tokens": 3148936,
+            "output_tokens": 4969207,
+            "total_tokens": 8118143
+          },
+          "successful_response_service_seconds": 38190.16834319959,
+          "call_ids_omitted_count": 2847
+        },
+        "qa": {
+          "calls": 6453,
+          "status": {
+            "completed": 6453
+          },
+          "missing_usage": 0,
+          "tokens": {
+            "input_tokens": 5488692,
+            "output_tokens": 14773718,
+            "total_tokens": 20262410
+          },
+          "successful_response_service_seconds": 96798.53933440043,
+          "call_ids_omitted_count": 6453
+        },
+        "total": {
+          "calls": 21135,
+          "status": {
+            "completed": 21132,
+            "refused": 3
+          },
+          "missing_usage": 0,
+          "tokens": {
+            "input_tokens": 28573952,
+            "output_tokens": 108152314,
+            "total_tokens": 136726266
+          },
+          "successful_response_service_seconds": 579771.6423977995,
+          "call_ids_omitted_count": 21135
+        },
+        "removed_physical_records": 569,
+        "retry_free_query_seconds": {
+          "n": 1000,
+          "mean": 99.10074027869999,
+          "p50": 83.60284039999533,
+          "p95": 227.35684834000125,
+          "sum": 99100.74027869999
+        },
+        "index_build_seconds": 317.13342666625977,
+        "full_build_once_wall_seconds": null,
+        "hyperedges": {
+          "context_hyperedges": 11835,
+          "without_entity_incidence": 3891,
+          "with_entity_incidence": 7944,
+          "with_at_least_two_entities": 5584,
+          "entity_hyperedge_incidences": 42064,
+          "mean_cardinality": 3.5542036332910834,
+          "maximum_cardinality": 238
+        }
+      },
+      "hotpotqa": {
+        "dataset": "hotpotqa",
+        "n": 1000,
+        "seed": 42,
+        "extraction": {
+          "calls": 9773,
+          "status": {
+            "completed": 9773
+          },
+          "missing_usage": 0,
+          "tokens": {
+            "input_tokens": 16651653,
+            "output_tokens": 76999259,
+            "total_tokens": 93650912
+          },
+          "successful_response_service_seconds": 358795.4354834003,
+          "call_ids_omitted_count": 9773
+        },
+        "merge": {
+          "calls": 1431,
+          "status": {
+            "completed": 1431
+          },
+          "missing_usage": 0,
+          "tokens": {
+            "input_tokens": 1384298,
+            "output_tokens": 2144819,
+            "total_tokens": 3529117
+          },
+          "successful_response_service_seconds": 15009.35811589977,
+          "call_ids_omitted_count": 1431
+        },
+        "qa": {
+          "calls": 5225,
+          "status": {
+            "completed": 5225
+          },
+          "missing_usage": 0,
+          "tokens": {
+            "input_tokens": 4311224,
+            "output_tokens": 7735203,
+            "total_tokens": 12046427
+          },
+          "successful_response_service_seconds": 54563.96287480004,
+          "call_ids_omitted_count": 5225
+        },
+        "total": {
+          "calls": 16429,
+          "status": {
+            "completed": 16429
+          },
+          "missing_usage": 0,
+          "tokens": {
+            "input_tokens": 22347175,
+            "output_tokens": 86879281,
+            "total_tokens": 109226456
+          },
+          "successful_response_service_seconds": 428368.7564741001,
+          "call_ids_omitted_count": 16429
+        },
+        "removed_physical_records": 71,
+        "retry_free_query_seconds": {
+          "n": 999,
+          "mean": 57.998689034134365,
+          "p50": 53.17640250000113,
+          "p95": 120.77640886000297,
+          "sum": 57940.69034510023
+        },
+        "index_build_seconds": 347.0261619091034,
+        "full_build_once_wall_seconds": null,
+        "hyperedges": {
+          "context_hyperedges": 9773,
+          "without_entity_incidence": 1978,
+          "with_entity_incidence": 7795,
+          "with_at_least_two_entities": 5776,
+          "entity_hyperedge_incidences": 25425,
+          "mean_cardinality": 2.6015553054333505,
+          "maximum_cardinality": 25
+        }
+      },
+      "2wiki": {
+        "dataset": "2wiki",
+        "n": 1000,
+        "seed": 42,
+        "extraction": {
+          "calls": 6361,
+          "status": {
+            "completed": 6360,
+            "refused": 1
+          },
+          "missing_usage": 0,
+          "tokens": {
+            "input_tokens": 10635140,
+            "output_tokens": 42307625,
+            "total_tokens": 52942765
+          },
+          "successful_response_service_seconds": 208871.71031499963,
+          "call_ids_omitted_count": 6361
+        },
+        "merge": {
+          "calls": 1557,
+          "status": {
+            "completed": 1557
+          },
+          "missing_usage": 0,
+          "tokens": {
+            "input_tokens": 1497289,
+            "output_tokens": 2345142,
+            "total_tokens": 3842431
+          },
+          "successful_response_service_seconds": 17453.948919800372,
+          "call_ids_omitted_count": 1557
+        },
+        "qa": {
+          "calls": 5723,
+          "status": {
+            "completed": 5723
+          },
+          "missing_usage": 0,
+          "tokens": {
+            "input_tokens": 4985386,
+            "output_tokens": 5741015,
+            "total_tokens": 10726401
+          },
+          "successful_response_service_seconds": 51792.19892399985,
+          "call_ids_omitted_count": 5723
+        },
+        "total": {
+          "calls": 13641,
+          "status": {
+            "completed": 13640,
+            "refused": 1
+          },
+          "missing_usage": 0,
+          "tokens": {
+            "input_tokens": 17117815,
+            "output_tokens": 50393782,
+            "total_tokens": 67511597
+          },
+          "successful_response_service_seconds": 278117.8581587998,
+          "call_ids_omitted_count": 13641
+        },
+        "removed_physical_records": 796,
+        "retry_free_query_seconds": {
+          "n": 998,
+          "mean": 114.24395451432848,
+          "p50": 117.21229159999348,
+          "p95": 245.02246244998824,
+          "sum": 114015.46660529982
+        },
+        "index_build_seconds": 148.3346652984619,
+        "full_build_once_wall_seconds": null,
+        "hyperedges": {
+          "context_hyperedges": 6361,
+          "without_entity_incidence": 1875,
+          "with_entity_incidence": 4486,
+          "with_at_least_two_entities": 2999,
+          "entity_hyperedge_incidences": 15396,
+          "mean_cardinality": 2.420374155007066,
+          "maximum_cardinality": 471
+        }
+      }
+    },
+    "new_model_api_requests": 0,
+    "new_embedding_requests": 0,
+    "graph_writes": 0
+  },
+  "publication_omitted_per_attempt_fields": [
+    "call_ids"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "recorded_at": "2026-10-24T09:25:12.197041+00:00",
+  "change": "Explicit HTTP200 content_filter outcomes remain refusals; preserve exact text for original downstream parsing",
+  "reason": "Two MuSiQue passages each returned content_filter on all three original retries",
+  "normal_completed_answer_requires_finish_reason_stop": true,
+  "refusal_request_status": "refused",
+  "no_refusal_prompt_rewriting": true,
+  "no_replacement_provider": true,
+  "generation_parameters_changed": false,
+  "scientific_prompts_changed": false,
+  "original_tuple_parser_changed": false,
+  "frozen_candidates_and_ids_changed": false,
+  "earlier_failed_records_rewritten": false,
+  "old_refusals": "Materialize exact final saved refusal text once, with raw-response identity and cache hashes",
+  "new_refusals": "One physical attempt; exact refusal returned and separately accounted without repeated retries",
+  "reporting": "Full pipeline completion does not mean every passage produced entities; report all refused chunks and QA outcomes"
+}

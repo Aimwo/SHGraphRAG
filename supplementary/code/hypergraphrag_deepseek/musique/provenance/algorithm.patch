@@ -1,0 +1,228 @@
+diff --git a/hypergraphrag/base.py b/hypergraphrag/base.py
+index b4f31bf..5135d27 100644
+--- a/hypergraphrag/base.py
++++ b/hypergraphrag/base.py
+@@ -30,6 +30,8 @@ class QueryParam:
+     max_token_for_global_context: int = 4000
+     # Number of tokens for the entity descriptions
+     max_token_for_local_context: int = 4000
++    # Optional instrumentation; does not alter ranking or selected evidence.
++    retrieval_trace: dict = field(default_factory=dict, repr=False)
+ 
+ 
+ @dataclass
+diff --git a/hypergraphrag/llm.py b/hypergraphrag/llm.py
+index e29fe2a..754308b 100644
+--- a/hypergraphrag/llm.py
++++ b/hypergraphrag/llm.py
+@@ -6,11 +6,9 @@ import re
+ import struct
+ from functools import lru_cache
+ from typing import List, Dict, Callable, Any, Union, Optional
+-import aioboto3
+ import aiohttp
+ import numpy as np
+ import ollama
+-import torch
+ from openai import (
+     AsyncOpenAI,
+     APIConnectionError,
+@@ -25,7 +23,6 @@ from tenacity import (
+     wait_exponential,
+     retry_if_exception_type,
+ )
+-from transformers import AutoTokenizer, AutoModelForCausalLM
+ 
+ from .utils import (
+     wrap_embedding_func_with_attrs,
+@@ -210,6 +207,7 @@ async def bedrock_complete_if_cache(
+             )
+ 
+     # Call model via Converse API
++    import aioboto3
+     session = aioboto3.Session()
+     async with session.client("bedrock-runtime") as bedrock_async_client:
+         try:
+@@ -222,6 +220,8 @@ async def bedrock_complete_if_cache(
+ 
+ @lru_cache(maxsize=1)
+ def initialize_hf_model(model_name):
++    from transformers import AutoTokenizer, AutoModelForCausalLM
++
+     hf_tokenizer = AutoTokenizer.from_pretrained(
+         model_name, device_map="auto", trust_remote_code=True
+     )
+@@ -944,6 +944,7 @@ async def bedrock_embedding(
+         "AWS_SESSION_TOKEN", aws_session_token
+     )
+ 
++    import aioboto3
+     session = aioboto3.Session()
+     async with session.client("bedrock-runtime") as bedrock_async_client:
+         if (model_provider := model.split(".")[0]) == "amazon":
+@@ -994,6 +995,8 @@ async def bedrock_embedding(
+ 
+ 
+ async def hf_embedding(texts: list[str], tokenizer, embed_model) -> np.ndarray:
++    import torch
++
+     device = next(embed_model.parameters()).device
+     input_ids = tokenizer(
+         texts, return_tensors="pt", padding=True, truncation=True
+diff --git a/hypergraphrag/operate.py b/hypergraphrag/operate.py
+index 7269146..4981842 100644
+--- a/hypergraphrag/operate.py
++++ b/hypergraphrag/operate.py
+@@ -21,6 +21,7 @@ from .utils import (
+     handle_cache,
+     save_to_cache,
+     CacheData,
++    LLMUnavailableError,
+ )
+ from .base import (
+     BaseGraphStorage,
+@@ -80,7 +81,12 @@ async def _handle_entity_relation_summary(
+     )
+     use_prompt = prompt_template.format(**context_base)
+     logger.debug(f"Trigger summary: {entity_or_relation_name}")
+-    summary = await use_llm_func(use_prompt, max_tokens=summary_max_tokens)
++    try:
++        summary = await use_llm_func(use_prompt, max_tokens=summary_max_tokens)
++    except LLMUnavailableError:
++        # Existing extracted descriptions remain evidence. A filtered summary
++        # adds no generated text and is never retried with a changed prompt.
++        return description
+     return summary
+ 
+ 
+@@ -321,19 +327,30 @@ async def extract_entities(
+             **context_base, input_text="{input_text}"
+         ).format(**context_base, input_text=content)
+ 
+-        final_result = await use_llm_func(hint_prompt)
++        try:
++            final_result = await use_llm_func(hint_prompt)
++        except LLMUnavailableError:
++            # Keep the document, chunk and dense vector, but invent no facts
++            # from an unavailable extraction or its partial filtered output.
++            return {}, {}
+         history = pack_user_ass_to_openai_messages(hint_prompt, final_result)
+         for now_glean_index in range(entity_extract_max_gleaning):
+-            glean_result = await use_llm_func(continue_prompt, history_messages=history)
++            try:
++                glean_result = await use_llm_func(continue_prompt, history_messages=history)
++            except LLMUnavailableError:
++                break
+ 
+             history += pack_user_ass_to_openai_messages(continue_prompt, glean_result)
+             final_result += glean_result
+             if now_glean_index == entity_extract_max_gleaning - 1:
+                 break
+ 
+-            if_loop_result: str = await use_llm_func(
+-                if_loop_prompt, history_messages=history
+-            )
++            try:
++                if_loop_result: str = await use_llm_func(
++                    if_loop_prompt, history_messages=history
++                )
++            except LLMUnavailableError:
++                break
+             if_loop_result = if_loop_result.strip().strip('"').strip("'").lower()
+             if if_loop_result != "yes":
+                 break
+@@ -801,6 +818,12 @@ async def _get_node_data(
+     for i, t in enumerate(use_text_units):
+         text_units_section_list.append([i, t["content"]])
+     text_units_context = list_of_list_to_csv(text_units_section_list)
++    query_param.retrieval_trace["local"] = {
++        "entities": [n["entity_name"] for n in node_datas],
++        "hyperedges": [e["description"] for e in use_relations],
++        "chunks": [{"chunk_id": compute_mdhash_id(t["content"], prefix="chunk-"),
++                    "full_doc_id": t.get("full_doc_id")} for t in use_text_units],
++    }
+     return entities_context, relations_context, text_units_context
+ 
+ 
+@@ -1012,6 +1035,12 @@ async def _get_edge_data(
+     for i, t in enumerate(use_text_units):
+         text_units_section_list.append([i, t["content"]])
+     text_units_context = list_of_list_to_csv(text_units_section_list)
++    query_param.retrieval_trace["global"] = {
++        "entities": [n["entity_name"] for n in use_entities],
++        "hyperedges": [e["hyperedge"] for e in edge_datas],
++        "chunks": [{"chunk_id": compute_mdhash_id(t["content"], prefix="chunk-"),
++                    "full_doc_id": t.get("full_doc_id")} for t in use_text_units],
++    }
+     return entities_context, relations_context, text_units_context
+ 
+ 
+@@ -1121,4 +1150,4 @@ def combine_contexts(entities, relationships, sources):
+     # Combine and deduplicate the sources
+     combined_sources = process_combine_contexts(hl_sources, ll_sources)
+ 
+-    return combined_entities, combined_relationships, combined_sources
+\ No newline at end of file
++    return combined_entities, combined_relationships, combined_sources
+diff --git a/hypergraphrag/utils.py b/hypergraphrag/utils.py
+index ed55a1d..1425a5c 100644
+--- a/hypergraphrag/utils.py
++++ b/hypergraphrag/utils.py
+@@ -18,6 +18,36 @@ import tiktoken
+ from hypergraphrag.prompt import PROMPTS
+ 
+ 
++class LLMUnavailableError(RuntimeError):
++    """A terminal unusable output, retained without using its partial text."""
++
++    outcome = "unavailable_output"
++
++    def __init__(self, reason, request_sha256, raw_text="", response_id=None):
++        super().__init__(reason)
++        self.request_sha256 = request_sha256
++        self.raw_text = raw_text
++        self.response_id = response_id
++
++
++class LLMRefusalError(LLMUnavailableError):
++    """An explicit provider content filter/refusal."""
++
++    outcome = "provider_filtered"
++
++
++class LLMTruncationError(LLMUnavailableError):
++    """An output that reached its recorded token cap."""
++
++    outcome = "output_truncated"
++
++
++class LLMIncompleteError(LLMUnavailableError):
++    """An output with no reported completion boundary; cause is unknown."""
++
++    outcome = "output_incomplete"
++
++
+ class UnlimitedSemaphore:
+     """A context manager that allows unlimited access."""
+ 
+@@ -116,17 +146,12 @@ def limit_async_func_call(max_size: int, waitting_time: float = 0.0001):
+ 
+     def final_decro(func):
+         """Not using async.Semaphore to aovid use nest-asyncio"""
+-        __current_size = 0
++        semaphore = asyncio.Semaphore(max_size)
+ 
+         @wraps(func)
+         async def wait_func(*args, **kwargs):
+-            nonlocal __current_size
+-            while __current_size >= max_size:
+-                await asyncio.sleep(waitting_time)
+-            __current_size += 1
+-            result = await func(*args, **kwargs)
+-            __current_size -= 1
+-            return result
++            async with semaphore:
++                return await func(*args, **kwargs)
+ 
+         return wait_func
+ 

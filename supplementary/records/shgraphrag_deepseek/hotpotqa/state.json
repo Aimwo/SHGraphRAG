@@ -1,0 +1,14 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-upstream-deepseek-relay-hotpotqa-20261024/reproduction/runs/hotpotqa1000_seed42_deepseek-relay-14ac1cd4ea79_20261024/state.json",
+  "original_file_sha256": "e42640cb98810bd09831bd7da2f5b183876cacb1993679c8ffda4250d55a2fea",
+  "content": {
+    "status": "completed",
+    "stage": "evaluation",
+    "started_at": "2026-10-24T21:29:50.695817+00:00",
+    "source_bundle_sha256": "ad52b94b6effd9bd1e4ffc9bd810f5028c39f013e17609fb7f6c5c05cad43daf",
+    "full_reproduction_completed": true,
+    "updated_at": "2026-10-24T22:11:57.272421+00:00",
+    "finished_at": "2026-10-24T22:12:01.396245+00:00"
+  }
+}

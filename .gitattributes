@@ -1,0 +1,7 @@
+# SHA-256 manifests refer to literal exported bytes on every platform.
+supplementary/** -text
+/README.md -text
+/README.zh-CN.md -text
+/.gitignore -text
+/.gitattributes -text
+/LICENSE -text

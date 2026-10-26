@@ -1,0 +1,13 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-upstream-deepseek-relay-2wiki-20261024/reproduction/runs/2wiki1000_seed42_deepseek-relay-14ac1cd4ea79_20261024/independent_metric_verification.json",
+  "original_file_sha256": "ebb22324302b12417ad1085af7d7d2daa3ddf9c4e19a111f7e5c8d14be00bb19",
+  "content": {
+    "passed": true,
+    "native_source_sha256": "7c09ee2ec98c7ecb57df79eb68dba22eb381ab58d50e730dfcefafb4dda31458",
+    "questions": 1000,
+    "answer_em": 0.755,
+    "answer_f1": 0.8274813686313686,
+    "new_model_api_requests": 0
+  }
+}

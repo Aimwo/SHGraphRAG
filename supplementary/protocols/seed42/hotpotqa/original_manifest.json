@@ -1,0 +1,76 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-upstream-deepseek-relay-hotpotqa-20261024/reproduction/artifacts/hotpotqa_seed42_n1000/manifest.json",
+  "original_file_sha256": "1ab2d2a80f35c0eb21313854cbc10a57d73dcb7009625b23269d1c1bc8f4c656",
+  "content": {
+    "created_at": "2026-10-24T08:32:25.317461+00:00",
+    "dataset": "HotpotQA distractor",
+    "dataset_id": "hotpotqa",
+    "split": "development",
+    "status": "new_user_approved_sample_not_original_paper_sample",
+    "upstream_commit": "3ed1685fefb1295c43c7fca0bb306e4d5fd08e77",
+    "seed": 42,
+    "sample_size": 1000,
+    "source_rows": 7405,
+    "sampling": "Python random.Random(seed).sample(sorted unique question IDs, sample_size)",
+    "order": "RNG draw order shared by construction, QA and evaluation",
+    "source_parquet": {
+      "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG-upstream-deepseek-relay-hotpotqa-20261024\\dataset\\hotpotqa\\dev.parquet",
+      "sha256": "c20b638ca82b21d04fe12e14ff417ad05153d4d215a65de54497fca4e972f7c6"
+    },
+    "native_gold_source": {
+      "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG-upstream-deepseek-relay-hotpotqa-20261024\\dataset\\hotpotqa\\dev.native.json",
+      "sha256": "f0563a3933cee21a0657fd8add8296116d0b04d02623f9b5f1b7f36f8a6f0299"
+    },
+    "full_development_parquet": {
+      "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG-upstream-deepseek-relay-hotpotqa-20261024\\dataset\\hotpotqa\\dev.parquet",
+      "sha256": "c20b638ca82b21d04fe12e14ff417ad05153d4d215a65de54497fca4e972f7c6",
+      "role": "Full source sampled exactly once by DatasetProcessor"
+    },
+    "scope": "All original candidate paragraphs of the frozen development questions",
+    "candidate_occurrences": 9961,
+    "unique_candidate_passages": 9773,
+    "candidate_deduplication": "Exact extraction reuse; question memberships retained",
+    "question_types": {
+      "comparison": 225,
+      "bridge": 775
+    },
+    "python": "3.12.13 (main, May 10 2026, 19:35:37) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26100-SP0",
+    "packages": {
+      "datasets": "3.4.1",
+      "numpy": "1.26.2",
+      "pyarrow": "16.1.0"
+    },
+    "selection_source_sha256": "4f0961eed7b5d37a86c44a89de5de51b33848b35be86d9a45c5e60c10b2876b5",
+    "preparation_script_sha256": "ff79fcffff2820e2a2a1f11493c601e8cf1c0ae21245bd6b6bb963afb8f2d4bc",
+    "benchmark_config_sha256": "9d2c1623369f12dedab04215c0cd89322544707b0768fcae0d35124c4e7407ae",
+    "files": {
+      "ids.json": {
+        "sha256": "5743a89e421220d503cd665564656f126cd8bac30e2e3cf61513bb7d9da594d2",
+        "bytes": 31005
+      },
+      "source_indices.json": {
+        "sha256": "0ed9f6b5f7dce5a50b1dea3cc8b5dfbd7ccd53a28802445b912a096d8644a6a9",
+        "bytes": 8858
+      },
+      "questions.parquet": {
+        "sha256": "8f07d09811e1ef4c56aa92ef58c4fe62c7641396d49c6bb22b445db92ef6be0b",
+        "bytes": 3737109
+      },
+      "gold.jsonl": {
+        "sha256": "380a367c360f91a48bf37fbbd5ad8a21ab6dc6c1a5462bfab28708efc22c75bc",
+        "bytes": 6312424
+      },
+      "candidate_corpus.jsonl": {
+        "sha256": "0fdb89c154ef9fa61952298fa3d61df954871464f507352e2a289e288bee67cb",
+        "bytes": 12588721
+      },
+      "question_passages.jsonl": {
+        "sha256": "8cbbb338c22111e152c5f8a2e8a84a0f105cc9f595c57f14063dea20669ab0f2",
+        "bytes": 738348
+      }
+    },
+    "llm_calls_for_preparation": 0
+  }
+}

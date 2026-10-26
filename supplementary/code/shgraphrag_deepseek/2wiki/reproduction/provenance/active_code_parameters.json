@@ -1,0 +1,135 @@
+{
+  "scope": "Offline reading of the isolated DeepSeek relay n1000 code; no completed runtime is claimed",
+  "runtime_source_commit": "Recorded by effective_config.json at real campaign launch",
+  "sampling": {
+    "sample_size": 1000,
+    "seed": 42,
+    "input_rows": 12576,
+    "order": "random.Random(42).sample(sorted unique IDs, 1000)"
+  },
+  "extraction": {
+    "active_method": "process_chunks with global queue for original individual prompts",
+    "worker_limit": 64,
+    "unique_passage_prompts": 6361,
+    "cross_question_prompt_packing": false,
+    "tuple_delimiter": " : ",
+    "record_delimiter": "\n",
+    "completion_delimiter": "\n\n",
+    "cache_key": "SHA1 of exact title-newline-sentences input text",
+    "maximum_attempts_per_uncached_chunk": 3,
+    "retry_delay_seconds": 1.0,
+    "configured_LLM_BATCH_SIZE": 5,
+    "active_multi_chunk_prompt_batching": false
+  },
+  "entity_merge": {
+    "scope": "Within each original question document",
+    "cosine_threshold": 0.95,
+    "other_candidate_condition": "Either original entity ID is a substring of the other",
+    "candidate_pair_llm_batch_size": 10,
+    "parallel_independent_documents": 64,
+    "original_confirmation_prompt_preserved": true,
+    "resume_document_checkpoints": "Input, model identity and code hash bound; merged structure before pruning",
+    "prior_response_replay": false
+  },
+  "sparsification": {
+    "active_method": "_prune_to_bridge_entities",
+    "minimum_distinct_chunk_hashes_for_bridge_entity": 2,
+    "entity_ids_scoped_by_question_id": true,
+    "kept_entities": "All bridge entities",
+    "kept_relationships": "Both endpoints must be bridge entities",
+    "offline_two_hop_hyperedge_construction": "TODO in original source"
+  },
+  "graph_writer": {
+    "batch_size": 50,
+    "local_worker_count": "os.cpu_count(), observed24",
+    "note": "Local database concurrency is distinct from the shared text API request cap"
+  },
+  "indexes": {
+    "entity_database_batch_size": 50,
+    "chunk_database_batch_size": 100,
+    "active_embedding_subbatch_maximum": 32,
+    "configured_EMBEDDING_BATCH_SIZE": 64,
+    "actual_subbatch_source": "Hardcoded min(32, len(embedding_tasks)) in both original indexers",
+    "entity_index_name": "entity",
+    "chunk_index_name": "chunk",
+    "embedding_model": "local Ollama bge-m3:latest",
+    "expected_dimension": 1024
+  },
+  "local_embedding_engineering": {
+    "maximum_in_flight": 4,
+    "maximum_items_per_request": 32,
+    "input_text_and_return_order_preserved": true,
+    "retry_scope": "Observed HTTP400 loopback tokenize connection refusal or socket buffer failure",
+    "maximum_attempts": 3,
+    "retry_delays_seconds": [
+      1,
+      2
+    ],
+    "shared_ollama_restarted_or_reconfigured": false
+  },
+  "qa": {
+    "workers": 64,
+    "question_maximum_attempts": 3,
+    "entity_vector_top_k_before_question_id_filter": 10,
+    "question_entity_extraction_maximum": 10,
+    "default_retrieval_top_k": 3,
+    "initial_question_context_top_k": 2,
+    "declared_similarity_threshold": 0.3,
+    "entity_linking_threshold_note": "Original active entity-linking path takes first question-matching global-top10 result; no score cutoff applied there",
+    "chunk_retrieval": "Fetch question-associated chunks, embed their text lines per subquery, rank by cosine and select distinct top-k chunks",
+    "subquestion_iteration_limit": "2 times number of decomposed subquestions",
+    "early_two_hop_answer": "Original online path query and answer prompt",
+    "offline_path_question_repository": false
+  },
+  "transport": {
+    "model": "deepseek-v4.1-flash",
+    "reasoning_effort": null,
+    "maximum_actual_in_flight_across_processes": 64,
+    "request_timeout_seconds": 600,
+    "connect_timeout_seconds": 30,
+    "hidden_sdk_retries": 0,
+    "temperature": null,
+    "max_output_tokens": null,
+    "unprovided_generation_parameters": "Omitted from actual request payloads",
+    "fatal_http_statuses": [
+      400,
+      401,
+      402,
+      403,
+      404,
+      422,
+      429,
+      502,
+      503,
+      504
+    ],
+    "provider": "deepseek-relay",
+    "protocol": "openai-chat-completions",
+    "base_url": "https://new.21r.cn/v1",
+    "credential_id": "deepseek-relay-14ac1cd4ea79",
+    "generation_parameters": {},
+    "reasoning_control": "Omitted, matching user-supplied relay example",
+    "transient_outage_guard": {
+      "recoverable_http_statuses": [
+        429,
+        502,
+        503,
+        504
+      ],
+      "behavior": "Stop queued requests on first observed upstream failure; preserve in-flight outcomes; resume only after cooldown",
+      "poll_interval_seconds": 600
+    }
+  },
+  "evaluation": {
+    "dataset": "2WikiMultiHopQA IDs release 2021-04-07",
+    "denominator": 1000,
+    "id_alignment": "Exact frozen IDs",
+    "answer_metrics": [
+      "native exact match",
+      "native token F1",
+      "v1.1 native aliases/demonyms and canonical-only diagnostic"
+    ],
+    "missing_predictions": "Zero contribution with fixed denominator",
+    "extra_prediction_ids": "Rejected"
+  }
+}

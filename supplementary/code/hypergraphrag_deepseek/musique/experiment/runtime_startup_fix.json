@@ -1,0 +1,28 @@
+{
+  "kind": "pre_request_dataset_metadata_name_fix",
+  "source_directory": "hypergraphrag_deepseek_bge_musique_seed42_n1000_c100_summary500_budget8192",
+  "target_directory": "hypergraphrag_deepseek_bge_musique_seed42_n1000_c100_summary500_budget8192_runtimefix1",
+  "observed_at": "2026-10-25T19:15:57.936501+08:00",
+  "source_evidence_sha256": {
+    "run/provenance.json": "6d373e00bac8a2f73031f13f818093f8d4305cacf8a7f7d44e43ec3b79e6bfa7",
+    "run/status.json": "5d766ff27db3630743b20af94a8172084a6915d00faeebafe5348d42040b34db",
+    "run/failure.json": "0a408eff91ac829a215e7d6be02e9926595d0c5815e027259c7873d0e6fb55a7",
+    "run/campaign_attempts.jsonl": "9a4bd1f04a9f07ec8633da267d37355f7e7b07d526459f35f8e9220c49c9bd71",
+    "run/expected_chunks.json": "ff22aa6a21cf584af6e0cfeeba273cd6fcd0eaa05466873716c9ae04524f49de",
+    "run/document_passage_map.json": "f1205b8ee2875c8ef1165fbb20c955468964c59827e179d11fe769203a8775f7",
+    "launches/20261025_190408_345877/stderr.log": "32bf7c6ac4fd6fd435204ce0b98787e7da3eeaef7874622b763e9cab6f531fea",
+    "audit/summary_repair_import_preflight.json": "e05bd751ab8e0d2e3496641f93a4ec126b49d375be5f0befaf3b163258d687db"
+  },
+  "source_runner_sha256": "e9e2400e1f1cc5092b8c6c8053d5330c92a05ca24dc4ff1014381ba55253904a",
+  "fixed_runner_sha256": "04ad96c4786321f77d3dbf2385c065bee5598c8ac96f46a79711358d35a45eca",
+  "code_change": "Define the existing hard-coded MuSiQue dataset metadata constant before native build entry.",
+  "scientific_config_changed": false,
+  "native_algorithm_or_prompt_changed": false,
+  "preserved_exact_response_caches": 42259,
+  "failed_local_invocation_wall_s": 0.931633400003193,
+  "failed_local_text_requests": 0,
+  "failed_local_embedding_requests": 0,
+  "failed_before_native_insertion": true,
+  "credentials_loaded_by_preparation": false,
+  "model_requests_by_preparation": 0
+}

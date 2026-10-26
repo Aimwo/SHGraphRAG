@@ -1,0 +1,138 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-4omini-repro-20261021/reproduction/runs/full1000_4omini_v2_20261021/2wiki/summary.json",
+  "original_file_sha256": "3c66499b56e94124a2df55d92ccf269e2f30c8bb01f2e5da28a48b3eed79fe9d",
+  "content": {
+    "config": {
+      "dataset": "2wiki",
+      "limit": 1000,
+      "workers": 64,
+      "method_version": "source_alias_merge_global_graph_v2",
+      "source": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG",
+      "model": "openai/gpt-4o-mini",
+      "reasoning_effort": "none",
+      "provider": "openrouter",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api": "chat_completions",
+      "temperature": 0,
+      "reasoning_configuration": "non_reasoning_model_no_parameter",
+      "transport_timeout_s": 240,
+      "transport_max_attempts": 5,
+      "retry_incomplete_chunked_response": true,
+      "prediction_attempt_telemetry": "started_terminal_events_v1",
+      "retryable_finish_reasons": [
+        "content_filter",
+        "error"
+      ],
+      "malformed_finish_reason_retry": true,
+      "atomic_json_replace_max_attempts": 8,
+      "structured_max_attempts": 3,
+      "resource_sample_interval_s": 5,
+      "endpoint_completion": "fixed_missing_endpoint_records_v1_after_three_invalid_outputs",
+      "endpoint_completion_max_attempts": 3,
+      "max_subquestions": 6,
+      "path_length_edges": 2,
+      "questions_per_path": 2,
+      "embedding_model": "bge-m3:latest",
+      "embedding_dimensions": 1024,
+      "embedding_batch_size": 32,
+      "path_embedding_cache": "model_digest_exact_text_all_rows_retained",
+      "embedding_keep_alive": "5m",
+      "embedding_truncate": false,
+      "vector_dtype": "float32",
+      "vector_search": "exact_cosine_stable_tie_breaking",
+      "seed": 20261020,
+      "llm_seed": null,
+      "llm_seed_note": "No deterministic seed support established for this endpoint",
+      "top_paths": 3,
+      "top_entities": 2,
+      "top_hyperedges": 3,
+      "fallback_hyperedges": 2,
+      "entity_cosine_threshold": 0.3,
+      "entity_merge_threshold": 0.95,
+      "entity_merge_batch_size": 10,
+      "entity_merge_scope": "unlabelled_candidate_groups_construction_only",
+      "entity_index_text": "canonical_name",
+      "independent_subquestions": "parallel_waves_shared_request_semaphore",
+      "path_batch_size": 32,
+      "path_caps": null,
+      "storage": "isolated_JSON_graph_SQLite_embedding_cache_exact_cosine_numpy",
+      "retrieval_scope": "global_candidate_passage_union"
+    },
+    "data": {
+      "dataset": "2wiki",
+      "questions": 1000,
+      "passages": 6293,
+      "seed": 20261020,
+      "sample_status": "new_revision_sample_not_original_paper_sample",
+      "scope": "union_of_selected_questions_candidate_passages",
+      "retrieval_filter": "none_global_union",
+      "entity_merge_scope": "unlabelled_candidate_groups_construction_only",
+      "selection": "first_1000_frozen_ids_in_saved_sample_order",
+      "source_files": {
+        "sample_ids": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\2wiki\\sample_1000_seed20261020\\ids.json",
+          "sha256": "68551197a1195f5bf993c8121b1fb3155a0bd2cebcb8050340ed2dd95fe3bf5c"
+        },
+        "sample_gold": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\2wiki\\sample_1000_seed20261020\\gold.json",
+          "sha256": "dd793e58f788fa38aace6b1c6cdd5f84aba5cd8a0b4738e288a6113e246b6cc0"
+        },
+        "sample_parquet": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\2wiki\\sample_1000_seed20261020\\questions.parquet",
+          "sha256": "f4d0b221e14841dc5cea1dea6951e580f03996d9dac9b88c72002e075e8c7d43"
+        },
+        "corpus": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\2wiki\\sample_1000_seed20261020\\candidate_corpus.jsonl",
+          "sha256": "c5c51b260728c19a00d8c08020c5dcbf338304a82f367093a0ca3c3245f21384"
+        },
+        "question_passages": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\2wiki\\sample_1000_seed20261020\\question_passages.jsonl",
+          "sha256": "9cf9eaa2e7985bb92abef31e8ada16dc4eba7dfac72cf78535c272cb0f30670a"
+        },
+        "answer_aliases": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\raw_official\\2wiki\\release_20210407\\id_aliases.json",
+          "sha256": "f08ffcb6c2cefca9bdbe86b4248d6ad7a7743762d3f7264c14ff0bae85726fb6"
+        }
+      },
+      "inputs_sha256": {
+        "construction_groups.json": "e051075a331588bd2ef1c5d8225d080b5da5f095718fa6f900815fc152083699",
+        "corpus.jsonl": "51ccb639517ff6ae9285e15d97f5127804a72266ff328422d5eb818a6b281423",
+        "ids.json": "60b176d7158bb3488deabc4308b93a29518087116e92215a98a2d6ee230d4a5d",
+        "questions.json": "7a5f58ffab1ec607408d13c9da80c106cf35b81afc7627a60fe819a2026567ef"
+      }
+    },
+    "path_repository": {
+      "paths_expected": 180222,
+      "paths_completed": 180222,
+      "questions": 360444,
+      "sha256": "93b1903bf2f609ce91636bde0fd0da83e89ef21c3cbc5dcc091b5665620fdb1c",
+      "batch_size": 32,
+      "caps": null
+    },
+    "metrics": {
+      "dataset": "2wiki",
+      "expected": 1000,
+      "completed": 1000,
+      "missing_or_failed": 0,
+      "primary_protocol": "HotpotQA_single_reference_answer_EM_token_F1",
+      "primary_em": 58.1,
+      "primary_f1": 65.39833777333776,
+      "native_alias_em": 63.0,
+      "native_alias_f1": 69.41089466089464,
+      "retrieval_passage_recall": 92.65,
+      "retrieval_all_supports": 83.9,
+      "supporting_passage_f1": 66.66087301587272,
+      "support_metric_note": "Passage-level diagnostic, not official sentence-level support F1.",
+      "direct_count": 128,
+      "direct_fraction": 0.128,
+      "nonempty_answers": 931
+    },
+    "coverage": {
+      "extractions": 6293,
+      "predictions": 1000,
+      "expected_questions": 1000,
+      "expected_passages": 6293
+    }
+  }
+}

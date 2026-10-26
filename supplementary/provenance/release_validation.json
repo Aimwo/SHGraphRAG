@@ -1,0 +1,1098 @@
+{
+  "record_kind": "publication_offline_validation_not_a_new_inference_run",
+  "validated_at": "2026-10-26T16:37:48.422770+00:00",
+  "official_data_reconstruction": {
+    "status": "passed",
+    "seeds": [
+      20261020,
+      42
+    ],
+    "questions_per_dataset": 1000,
+    "official_release_hashes_verified": true,
+    "ordered_ids_match_published_protocols": true,
+    "historical_corpus_gold_and_membership_hashes_verified": true,
+    "candidate_passages": {
+      "20261020": {
+        "hotpotqa": 9800,
+        "2wiki": 6293,
+        "musique": 11524
+      },
+      "42": {
+        "hotpotqa": 9773,
+        "2wiki": 6361,
+        "musique": 11835
+      }
+    },
+    "model_calls": 0,
+    "network_requests": 0
+  },
+  "input_handoffs": [
+    {
+      "profile": "sh-gpt4omini",
+      "dataset": "hotpotqa",
+      "exit_code": 0,
+      "log": "prepare_sh-gpt4omini_hotpotqa.log"
+    },
+    {
+      "profile": "sh-gpt4omini",
+      "dataset": "2wiki",
+      "exit_code": 0,
+      "log": "prepare_sh-gpt4omini_2wiki.log"
+    },
+    {
+      "profile": "sh-gpt4omini",
+      "dataset": "musique",
+      "exit_code": 0,
+      "log": "prepare_sh-gpt4omini_musique.log"
+    },
+    {
+      "profile": "hyper-gpt4omini",
+      "dataset": "hotpotqa",
+      "exit_code": 0,
+      "log": "prepare_hyper-gpt4omini_hotpotqa.log"
+    },
+    {
+      "profile": "hyper-gpt4omini",
+      "dataset": "2wiki",
+      "exit_code": 0,
+      "log": "prepare_hyper-gpt4omini_2wiki.log"
+    },
+    {
+      "profile": "hyper-gpt4omini",
+      "dataset": "musique",
+      "exit_code": 0,
+      "log": "prepare_hyper-gpt4omini_musique.log"
+    },
+    {
+      "profile": "sh-deepseek",
+      "dataset": "hotpotqa",
+      "exit_code": 0,
+      "log": "prepare_sh-deepseek_hotpotqa.log"
+    },
+    {
+      "profile": "sh-deepseek",
+      "dataset": "2wiki",
+      "exit_code": 0,
+      "log": "prepare_sh-deepseek_2wiki.log"
+    },
+    {
+      "profile": "sh-deepseek",
+      "dataset": "musique",
+      "exit_code": 0,
+      "log": "prepare_sh-deepseek_musique.log"
+    },
+    {
+      "profile": "hyper-deepseek",
+      "dataset": "hotpotqa",
+      "exit_code": 0,
+      "log": "prepare_hyper-deepseek_hotpotqa.log"
+    },
+    {
+      "profile": "hyper-deepseek",
+      "dataset": "2wiki",
+      "exit_code": 0,
+      "log": "prepare_hyper-deepseek_2wiki.log"
+    },
+    {
+      "profile": "hyper-deepseek",
+      "dataset": "musique",
+      "exit_code": 0,
+      "log": "prepare_hyper-deepseek_musique.log"
+    }
+  ],
+  "hyper_gpt_all_dataset_handoff": {
+    "profile": "hyper-gpt4omini",
+    "dataset": "all",
+    "exit_code": 0,
+    "log": "prepare_hyper-gpt4omini_all.log"
+  },
+  "offline_regression_suites": [
+    {
+      "profile": "sh-gpt4omini",
+      "dataset": "hotpotqa",
+      "tests_run": 32,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "external_and_service_connections_permitted": false,
+      "asyncio_internal_socketpair_permitted": true,
+      "status": "passed"
+    },
+    {
+      "profile": "hyper-gpt4omini",
+      "dataset": "hotpotqa",
+      "tests_run": 38,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "external_and_service_connections_permitted": false,
+      "asyncio_internal_socketpair_permitted": true,
+      "status": "passed"
+    },
+    {
+      "profile": "sh-deepseek",
+      "dataset": "hotpotqa",
+      "tests_run": 30,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "external_and_service_connections_permitted": false,
+      "asyncio_internal_socketpair_permitted": true,
+      "status": "passed"
+    },
+    {
+      "profile": "sh-deepseek",
+      "dataset": "2wiki",
+      "tests_run": 36,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "external_and_service_connections_permitted": false,
+      "asyncio_internal_socketpair_permitted": true,
+      "status": "passed"
+    },
+    {
+      "profile": "sh-deepseek",
+      "dataset": "musique",
+      "tests_run": 30,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "external_and_service_connections_permitted": false,
+      "asyncio_internal_socketpair_permitted": true,
+      "status": "passed"
+    },
+    {
+      "profile": "hyper-deepseek",
+      "dataset": "hotpotqa",
+      "tests_run": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "external_and_service_connections_permitted": false,
+      "asyncio_internal_socketpair_permitted": true,
+      "status": "passed"
+    },
+    {
+      "profile": "hyper-deepseek",
+      "dataset": "2wiki",
+      "tests_run": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "external_and_service_connections_permitted": false,
+      "asyncio_internal_socketpair_permitted": true,
+      "status": "passed"
+    },
+    {
+      "profile": "hyper-deepseek",
+      "dataset": "musique",
+      "tests_run": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "external_and_service_connections_permitted": false,
+      "asyncio_internal_socketpair_permitted": true,
+      "status": "passed"
+    }
+  ],
+  "total_tests": 233,
+  "public_orchestration_tests": {
+    "status": "passed",
+    "tests_run": 4
+  },
+  "scientific_core_and_prompt_hash_checks": [
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/base.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/hypergraphrag.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/kg/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/kg/chroma_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/kg/milvus_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/kg/mongo_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/kg/neo4j_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/kg/oracle_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/kg/tidb_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/llm.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/operate.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/prompt.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/storage.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/2wiki/hypergraphrag/utils.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/base.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/hypergraphrag.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/kg/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/kg/chroma_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/kg/milvus_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/kg/mongo_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/kg/neo4j_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/kg/oracle_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/kg/tidb_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/llm.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/operate.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/prompt.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/storage.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/hotpotqa/hypergraphrag/utils.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/base.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/hypergraphrag.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/kg/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/kg/chroma_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/kg/milvus_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/kg/mongo_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/kg/neo4j_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/kg/oracle_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/kg/tidb_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/llm.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/operate.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/prompt.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/storage.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_deepseek/musique/hypergraphrag/utils.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/base.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/hypergraphrag.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/kg/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/kg/chroma_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/kg/milvus_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/kg/mongo_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/kg/neo4j_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/kg/oracle_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/kg/tidb_impl.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/llm.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/operate.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/prompt.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/storage.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/hypergraphrag_gpt4omini/hypergraphrag/utils.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/build/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/build/build_chunk_index.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/build/build_graph.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/build/build_index_and_community.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/build/incremental/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/build/incremental/file_change_manager.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/build/incremental/incremental_update_scheduler.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/build/incremental/manual_edit_manager.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/build/incremental_graph_builder.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/build/incremental_update.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/build/main.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/community/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/community/detector/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/community/detector/base.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/community/detector/leiden.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/community/detector/projections.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/community/detector/sllpa.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/community/summary/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/community/summary/base.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/community/summary/leiden.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/community/summary/sllpa.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/config/prompt.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/core/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/core/base_indexer.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/core/graph_connection.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/core/utils.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/extraction/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/extraction/entity_extractor.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/extraction/graph_writer.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/graph_consistency_validator.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/indexing/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/indexing/chunk_indexer.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/indexing/embedding_manager.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/indexing/entity_indexer.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/processing/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/processing/entity_merger.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/processing/similar_entity.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/structure/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/graph/structure/struct_builder.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/model/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/model/deepseek_relay.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/model/get_models.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/model/measured_embeddings.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/processor/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/processor/dataset_processor.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/processor/document_processor.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/processor/file_reader.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/processor/sample_selection.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/processor/text_chunker.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/2wiki/qa/prediction.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/build/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/build/build_chunk_index.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/build/build_graph.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/build/build_index_and_community.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/build/incremental/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/build/incremental/file_change_manager.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/build/incremental/incremental_update_scheduler.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/build/incremental/manual_edit_manager.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/build/incremental_graph_builder.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/build/incremental_update.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/build/main.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/community/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/community/detector/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/community/detector/base.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/community/detector/leiden.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/community/detector/projections.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/community/detector/sllpa.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/community/summary/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/community/summary/base.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/community/summary/leiden.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/community/summary/sllpa.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/config/prompt.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/core/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/core/base_indexer.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/core/graph_connection.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/core/utils.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/extraction/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/extraction/entity_extractor.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/extraction/graph_writer.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/graph_consistency_validator.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/indexing/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/indexing/chunk_indexer.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/indexing/embedding_manager.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/indexing/entity_indexer.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/processing/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/processing/entity_merger.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/processing/similar_entity.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/structure/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/graph/structure/struct_builder.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/model/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/model/deepseek_relay.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/model/get_models.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/model/measured_embeddings.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/processor/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/processor/dataset_processor.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/processor/document_processor.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/processor/file_reader.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/processor/sample_selection.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/processor/text_chunker.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/hotpotqa/qa/prediction.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/build/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/build/build_chunk_index.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/build/build_graph.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/build/build_index_and_community.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/build/incremental/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/build/incremental/file_change_manager.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/build/incremental/incremental_update_scheduler.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/build/incremental/manual_edit_manager.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/build/incremental_graph_builder.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/build/incremental_update.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/build/main.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/community/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/community/detector/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/community/detector/base.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/community/detector/leiden.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/community/detector/projections.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/community/detector/sllpa.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/community/summary/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/community/summary/base.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/community/summary/leiden.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/community/summary/sllpa.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/config/prompt.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/core/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/core/base_indexer.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/core/graph_connection.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/core/utils.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/extraction/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/extraction/entity_extractor.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/extraction/graph_writer.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/graph_consistency_validator.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/indexing/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/indexing/chunk_indexer.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/indexing/embedding_manager.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/indexing/entity_indexer.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/processing/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/processing/entity_merger.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/processing/similar_entity.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/structure/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/graph/structure/struct_builder.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/model/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/model/deepseek_relay.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/model/get_models.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/model/measured_embeddings.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/processor/__init__.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/processor/dataset_processor.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/processor/document_processor.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/processor/file_reader.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/processor/sample_selection.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/processor/text_chunker.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_deepseek/musique/qa/prediction.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_gpt4omini/config/prompt.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_gpt4omini/reproduction/entity_resolution.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_gpt4omini/reproduction/graph.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_gpt4omini/reproduction/prompts.py",
+      "unchanged": true
+    },
+    {
+      "file": "code/shgraphrag_gpt4omini/reproduction/runner.py",
+      "unchanged": true
+    }
+  ],
+  "captured_core_and_prompts_unchanged": true,
+  "original_source_files": 516,
+  "portability_modified_files": 65,
+  "publication_model_calls": 0,
+  "publication_embedding_calls": 0,
+  "private_credential_files_read": false,
+  "existing_graph_or_embedding_services_contacted": false,
+  "fresh_dependency_installation_performed": false,
+  "static_release_validation": {
+    "status": "passed",
+    "published_files_checked": 592,
+    "json_files_parsed": 82,
+    "protocol_lists_checked": 6,
+    "markdown_files_checked": 18,
+    "optional_adapter_syntax_notes": [],
+    "errors": [],
+    "model_calls": 0,
+    "network_requests": 0,
+    "scope": "Release bytes and static documentation only; historical inference not repeated."
+  }
+}

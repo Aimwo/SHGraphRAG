@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="930" viewBox="0 0 1400 930" role="img">
+<style>text{font-family:Segoe UI,Arial,sans-serif}</style>
+<rect x="0" y="0" width="1400" height="930" rx="0" fill="#0c1424"/>
+<text x="56" y="60" font-size="34" font-weight="700" fill="#f4f7fc">SHGraphRAG  /  Supplementary Reproduction</text>
+<text x="56" y="96" font-size="20" font-weight="400" fill="#b9c9dd">Four completed profiles. Two explicit protocols. Traceable source and evaluation.</text>
+<rect x="56" y="130" width="1288" height="96" rx="18" fill="#152238" stroke="#39506d"/>
+<text x="84" y="166" font-size="15" font-weight="700" fill="#80b5ff">OFFICIAL DEVELOPMENT RELEASES</text>
+<text x="84" y="202" font-size="25" font-weight="600" fill="#f4f7fc">HotpotQA distractor  +  2WikiMultiHopQA  +  MuSiQue-Ans</text>
+<path d="M368 226 L368 255" fill="none" stroke="#39506d" stroke-width="3"/>
+<path d="M362 247 L368 255" fill="none" stroke="#39506d" stroke-width="3"/>
+<path d="M374 247 L368 255" fill="none" stroke="#39506d" stroke-width="3"/>
+<rect x="56" y="262" width="624" height="62" rx="18" fill="#1a2e48" stroke="#80b5ff"/>
+<text x="80" y="302" font-size="22" font-weight="600" fill="#80b5ff">SEED 20261020   |   GPT-4o mini / OpenRouter</text>
+<rect x="56" y="350" width="624" height="144" rx="18" fill="#152238" stroke="#39506d"/>
+<text x="80" y="388" font-size="25" font-weight="700" fill="#f4f7fc">SHGraphRAG</text>
+<text x="80" y="420" font-size="19" font-weight="400" fill="#b9c9dd">Global identity merge and sparse graph</text>
+<text x="80" y="445" font-size="19" font-weight="400" fill="#b9c9dd">Offline two-hop path-question repository</text>
+<text x="80" y="470" font-size="19" font-weight="400" fill="#b9c9dd">Global candidate-union retrieval</text>
+<rect x="56" y="518" width="624" height="144" rx="18" fill="#152238" stroke="#39506d"/>
+<text x="80" y="556" font-size="25" font-weight="700" fill="#f4f7fc">HyperGraphRAG</text>
+<text x="80" y="588" font-size="19" font-weight="400" fill="#b9c9dd">Native hybrid retrieval; top-k 60</text>
+<text x="80" y="613" font-size="19" font-weight="400" fill="#b9c9dd">Audited overflow-only embedding fallback</text>
+<text x="80" y="638" font-size="19" font-weight="400" fill="#b9c9dd">32 text workers; local BGE on port 11436</text>
+<path d="M368 662 L368 700" fill="none" stroke="#39506d" stroke-width="3"/>
+<path d="M362 692 L368 700" fill="none" stroke="#39506d" stroke-width="3"/>
+<path d="M374 692 L368 700" fill="none" stroke="#39506d" stroke-width="3"/>
+<path d="M1032 226 L1032 255" fill="none" stroke="#39506d" stroke-width="3"/>
+<path d="M1026 247 L1032 255" fill="none" stroke="#39506d" stroke-width="3"/>
+<path d="M1038 247 L1032 255" fill="none" stroke="#39506d" stroke-width="3"/>
+<rect x="720" y="262" width="624" height="62" rx="18" fill="#1a2e48" stroke="#65d8c0"/>
+<text x="744" y="302" font-size="22" font-weight="600" fill="#65d8c0">SEED 42   |   DeepSeek / historical relay</text>
+<rect x="720" y="350" width="624" height="144" rx="18" fill="#152238" stroke="#39506d"/>
+<text x="744" y="388" font-size="25" font-weight="700" fill="#f4f7fc">SHGraphRAG</text>
+<text x="744" y="420" font-size="19" font-weight="400" fill="#b9c9dd">Upstream build and supplied tuple QA</text>
+<text x="744" y="445" font-size="19" font-weight="400" fill="#b9c9dd">Online two-hop lookup; 0 offline path questions</text>
+<text x="744" y="470" font-size="19" font-weight="400" fill="#b9c9dd">Question-scoped retrieval</text>
+<rect x="720" y="518" width="624" height="144" rx="18" fill="#152238" stroke="#39506d"/>
+<text x="744" y="556" font-size="25" font-weight="700" fill="#f4f7fc">HyperGraphRAG</text>
+<text x="744" y="588" font-size="19" font-weight="400" fill="#b9c9dd">Native hybrid retrieval; top-k 60</text>
+<text x="744" y="613" font-size="19" font-weight="400" fill="#b9c9dd">Visible summaries 500 / generation budget 8192</text>
+<text x="744" y="638" font-size="19" font-weight="400" fill="#b9c9dd">Shared physical gate 100; embeddings at most 4</text>
+<path d="M1032 662 L1032 700" fill="none" stroke="#39506d" stroke-width="3"/>
+<path d="M1026 692 L1032 700" fill="none" stroke="#39506d" stroke-width="3"/>
+<path d="M1038 692 L1032 700" fill="none" stroke="#39506d" stroke-width="3"/>
+<rect x="56" y="710" width="1288" height="116" rx="18" fill="#14352f" stroke="#65d8c0"/>
+<text x="84" y="749" font-size="17" font-weight="700" fill="#65d8c0">INDEPENDENT EVALUATION  +  PROVENANCE</text>
+<text x="84" y="785" font-size="24" font-weight="600" fill="#f4f7fc">1,000 frozen IDs per dataset  /  native and canonical scores kept separate</text>
+<text x="56" y="867" font-size="19" font-weight="400" fill="#b9c9dd">Published: implementation, prompts, locks, ordered IDs, aggregate receipts, reproducible procedures.</text>
+<text x="56" y="899" font-size="19" font-weight="400" fill="#b9c9dd">External inputs: official dataset files, local BGE model, and reader-authorized provider access.</text>
+</svg>

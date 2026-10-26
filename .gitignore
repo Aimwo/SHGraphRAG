@@ -201,6 +201,34 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+# Supplementary experiments: publish source and metadata, keep runtime data local.
+!supplementary/code/**/build/
+!supplementary/code/**/build/**
+supplementary/data/
+supplementary/.venv*/
+supplementary/code/**/.runtime/
+supplementary/code/**/.cache/
+supplementary/code/**/cache/
+supplementary/code/**/inputs/
+supplementary/code/**/dataset/
+supplementary/code/**/files/
+supplementary/code/**/run/
+supplementary/code/**/runs/
+supplementary/code/**/artifacts/
+supplementary/code/**/audit/
+supplementary/code/**/launches/
+supplementary/code/**/embedding_service_*/
+supplementary/code/**/tokenizer_cache/
+supplementary/code/**/STOP_MODEL_CALLS
+*.dpapi.json
+.env.*
+!.env.example
+*.sqlite
+*.sqlite3
+*.npy
+*.npz
+*.parquet
+
 # Marimo
 marimo/_static/
 marimo/_lsp/

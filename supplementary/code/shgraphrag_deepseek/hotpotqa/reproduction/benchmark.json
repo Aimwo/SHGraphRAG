@@ -1,0 +1,20 @@
+{
+  "id": "hotpotqa",
+  "name": "HotpotQA distractor",
+  "source_rows": 7405,
+  "source": "dataset/hotpotqa/dev.parquet",
+  "source_sha256": "c20b638ca82b21d04fe12e14ff417ad05153d4d215a65de54497fca4e972f7c6",
+  "native_gold": "dataset/hotpotqa/dev.native.json",
+  "native_gold_sha256": "f0563a3933cee21a0657fd8add8296116d0b04d02623f9b5f1b7f36f8a6f0299",
+  "native_gold_format": "json",
+  "aliases": null,
+  "aliases_sha256": null,
+  "native_source": {
+    "source": "D:\\Users\\hd\\Desktop\\2026-CommercialOrder\\OnGoingOrders\\Papers\\Paper_SHGraphRAG\\Edit\\Repo\\SHGraphRAG\\dataset\\hotpot_qa\\distractor\\validation-00000-of-00001.parquet",
+    "sha256": "c20b638ca82b21d04fe12e14ff417ad05153d4d215a65de54497fca4e972f7c6",
+    "conversion": "Lossless native Hotpot fields reconstructed from pinned official Parquet"
+  },
+  "conversion_helper_sha256": "84fbcc37045008ff30395a45d56ef94151c356bfd64526460f0ac424f16c569d",
+  "seed": 42,
+  "sample_size": 1000
+}

@@ -1,0 +1,39 @@
+{
+  "status": "ready",
+  "provider": "deepseek-relay",
+  "text_api": "openai-chat-completions",
+  "base_url": "https://new.21r.cn/v1",
+  "model": "deepseek-v4.1-flash",
+  "allowed_returned_models": [
+    "deepseek-v4.1-flash"
+  ],
+  "credential_id": "user-supplied-DEEPSEEK_API_KEY",
+  "max_in_flight": 100,
+  "generation_parameters": {},
+  "generation_note": "Temperature, output caps and thinking controls are omitted unless explicitly supplied by the native method or confirmed for the chosen relay model.",
+  "request_timeout_seconds": 600,
+  "max_text_attempts": 3,
+  "proxy": null,
+  "embedding": {
+    "base_url": "http://127.0.0.1:11434",
+    "model": "bge-m3:latest",
+    "dimension": 1024,
+    "expected_digest_from_reference": "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab",
+    "actual_digest": null,
+    "digest_note": "Reference digest only; do not claim a runtime digest has been verified without evidence.",
+    "max_in_flight": 4,
+    "batch_size": 32,
+    "truncate": null,
+    "truncate_note": "Omitted, matching the referenced langchain_ollama client; actual server defaults are not overridden.",
+    "options": {
+      "num_batch": 8192
+    },
+    "vector_transform": "none; preserve native Ollama output and native cosine-vector storage"
+  },
+  "dataset": "MuSiQue-Ans v1.0 development",
+  "sample_seed": 42,
+  "sample_size": 1000,
+  "authorization": "Fresh runs require explicit local model API opt-in.",
+  "credential_environment": "DEEPSEEK_API_KEY",
+  "dataset_id": "musique"
+}

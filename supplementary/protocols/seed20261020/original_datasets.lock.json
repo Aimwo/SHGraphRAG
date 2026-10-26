@@ -1,0 +1,158 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/CompareMethods/_materials/datasets.lock.json",
+  "original_file_sha256": "c6836a0098ae83b13744032514aa40bddaaf79ec4793203785363d304c0c5254",
+  "content": {
+    "schema_version": 1,
+    "prepared_at": "2026-10-21T02:12:08.800077+08:00",
+    "source_readme": "Edit/Repo/SHGraphRAG/dataset/paper_ready/README.md",
+    "source_manifest": "Edit/Repo/SHGraphRAG/dataset/paper_ready/manifest.json",
+    "scope": "frozen 1,000 dev questions per dataset and pooled candidate corpora",
+    "full_corpus_experiment": false,
+    "network_requests": 0,
+    "model_calls": 0,
+    "datasets": [
+      {
+        "dataset": "hotpotqa",
+        "split": "dev",
+        "sample_seed": 20261020,
+        "question_count": 1000,
+        "candidate_passage_count": 9800,
+        "scope": "union_of_sample_candidate_passages",
+        "sampling_status": "new_revision_sample_not_verified_original_paper_sample",
+        "sources": {
+          "ids": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/hotpotqa/sample_1000_seed20261020/ids.json",
+            "bytes": 28001,
+            "sha256": "83dc5392a9b16a67377ee86828eb5221edf611e3360317760b053ab9203eda0c"
+          },
+          "native_gold_evaluation_only": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/hotpotqa/sample_1000_seed20261020/gold.json",
+            "bytes": 6203824,
+            "sha256": "42180b0a0da52520ce84445d026ac259a5235d9e8eda85d0713b0c86fae4b67a"
+          },
+          "candidate_corpus": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/hotpotqa/sample_1000_seed20261020/candidate_corpus.jsonl",
+            "bytes": 12391817,
+            "sha256": "18097bf92c9f772d67ecc2fa2ba1e8bf22215fa2cd6ae9c8613a6e5f3332a646"
+          },
+          "question_passages_evaluation_only": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/hotpotqa/sample_1000_seed20261020/question_passages.jsonl",
+            "bytes": 818568,
+            "sha256": "cbcaaa7e87e3223d06a89db5293b0f4632ccd5453e2052bc49ef3888d0bca3c9"
+          },
+          "normalized_questions_evaluation_only": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/hotpotqa/sample_1000_seed20261020/questions.parquet",
+            "bytes": 3623620,
+            "sha256": "5ea3eb52c5341bcba01e3eae61ffd0ef92a0f343b9e7006b5dfa48127ac043ce"
+          }
+        },
+        "inference_queries": {
+          "path": "Edit/Repo/CompareMethods/_materials/queries/hotpotqa.jsonl",
+          "bytes": 143883,
+          "sha256": "617c3ef9031c027abc9862315d1193de6b77e5feac57e61512cc1cad2ea1bb17"
+        },
+        "inference_query_fields": [
+          "id",
+          "question"
+        ],
+        "query_id_order_matches_frozen_ids": true,
+        "inference_corpus_filter_by_question_id": false
+      },
+      {
+        "dataset": "2wiki",
+        "split": "dev",
+        "sample_seed": 20261020,
+        "question_count": 1000,
+        "candidate_passage_count": 6293,
+        "scope": "union_of_sample_candidate_passages",
+        "sampling_status": "new_revision_sample_not_verified_original_paper_sample",
+        "sources": {
+          "ids": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/2wiki/sample_1000_seed20261020/ids.json",
+            "bytes": 36001,
+            "sha256": "68551197a1195f5bf993c8121b1fb3155a0bd2cebcb8050340ed2dd95fe3bf5c"
+          },
+          "native_gold_evaluation_only": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/2wiki/sample_1000_seed20261020/gold.json",
+            "bytes": 4558242,
+            "sha256": "dd793e58f788fa38aace6b1c6cdd5f84aba5cd8a0b4738e288a6113e246b6cc0"
+          },
+          "candidate_corpus": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/2wiki/sample_1000_seed20261020/candidate_corpus.jsonl",
+            "bytes": 6445278,
+            "sha256": "c5c51b260728c19a00d8c08020c5dcbf338304a82f367093a0ca3c3245f21384"
+          },
+          "question_passages_evaluation_only": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/2wiki/sample_1000_seed20261020/question_passages.jsonl",
+            "bytes": 829000,
+            "sha256": "9cf9eaa2e7985bb92abef31e8ada16dc4eba7dfac72cf78535c272cb0f30670a"
+          },
+          "normalized_questions_evaluation_only": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/2wiki/sample_1000_seed20261020/questions.parquet",
+            "bytes": 2332618,
+            "sha256": "f4d0b221e14841dc5cea1dea6951e580f03996d9dac9b88c72002e075e8c7d43"
+          }
+        },
+        "inference_queries": {
+          "path": "Edit/Repo/CompareMethods/_materials/queries/2wiki.jsonl",
+          "bytes": 128155,
+          "sha256": "fcb0933b92aff4706c10d8c2805f536b324965920e54934d39fa2f52b80c12ac"
+        },
+        "inference_query_fields": [
+          "id",
+          "question"
+        ],
+        "query_id_order_matches_frozen_ids": true,
+        "inference_corpus_filter_by_question_id": false
+      },
+      {
+        "dataset": "musique",
+        "split": "dev",
+        "sample_seed": 20261020,
+        "question_count": 1000,
+        "candidate_passage_count": 11524,
+        "scope": "union_of_sample_candidate_passages",
+        "sampling_status": "new_revision_sample_not_verified_original_paper_sample",
+        "sources": {
+          "ids": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/musique/sample_1000_seed20261020/ids.json",
+            "bytes": 26691,
+            "sha256": "f040f245c0c49232e0aea1fdcf3a556c82446faff596d9708c0d6eac9a4da019"
+          },
+          "native_gold_evaluation_only": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/musique/sample_1000_seed20261020/gold.jsonl",
+            "bytes": 12455504,
+            "sha256": "8be447021fa5a75309e6e80375bd2fb79dce78fc16a20267662b9569e8176459"
+          },
+          "candidate_corpus": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/musique/sample_1000_seed20261020/candidate_corpus.jsonl",
+            "bytes": 12930591,
+            "sha256": "3d76e8957a0a84c4526d1a7eae55f040aaeaa33a45f960cb7d3322bc48bd5447"
+          },
+          "question_passages_evaluation_only": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/musique/sample_1000_seed20261020/question_passages.jsonl",
+            "bytes": 1579538,
+            "sha256": "5f591fcd6fe2c950510fea2e682cc6fe1680572a39cdff523a030d27e2d8265f"
+          },
+          "normalized_questions_evaluation_only": {
+            "path": "Edit/Repo/SHGraphRAG/dataset/paper_ready/musique/sample_1000_seed20261020/questions.parquet",
+            "bytes": 6108211,
+            "sha256": "7e93748c45cfd32d6f09ca90744d6df75b678e99ba93722a63875cafa8912f35"
+          }
+        },
+        "inference_queries": {
+          "path": "Edit/Repo/CompareMethods/_materials/queries/musique.jsonl",
+          "bytes": 153591,
+          "sha256": "1e6d7c7893e3a095202dbae3e8d19d4b0bcc2f8aac8b9b5e1509f0736bc7f83c"
+        },
+        "inference_query_fields": [
+          "id",
+          "question"
+        ],
+        "query_id_order_matches_frozen_ids": true,
+        "inference_corpus_filter_by_question_id": false
+      }
+    ]
+  }
+}

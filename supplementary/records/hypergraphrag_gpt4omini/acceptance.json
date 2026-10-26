@@ -1,0 +1,299 @@
+{
+  "status": "accepted_complete",
+  "prediction_count": 3000,
+  "original_file_sha256": "d3eb1fa28fc0f14f978d7f06b3a7e6e90bf891124130f9e7d990779ffc28b14b",
+  "checks": [
+    {
+      "requirement": "all_final_deliverables_exist",
+      "passed": true
+    },
+    {
+      "requirement": "worker_completed_all_work",
+      "passed": true
+    },
+    {
+      "requirement": "independent_full_verification",
+      "passed": true
+    },
+    {
+      "requirement": "dataset_primitive_metric_crosscheck_complete",
+      "passed": true
+    },
+    {
+      "requirement": "independent_all_vector_indexes_verified",
+      "passed": true
+    },
+    {
+      "requirement": "full_3000_questions_and_32_workers",
+      "passed": true
+    },
+    {
+      "requirement": "correct_model_embedding_and_configuration",
+      "passed": true
+    },
+    {
+      "requirement": "embedding_overflow_policy_is_explicit_and_narrow",
+      "passed": true
+    },
+    {
+      "requirement": "provider_filters_are_unavailable_and_never_retried",
+      "passed": true
+    },
+    {
+      "requirement": "truncated_outputs_are_unavailable_under_unchanged_caps",
+      "passed": true
+    },
+    {
+      "requirement": "missing_finish_outputs_are_separate_unavailable_outcomes",
+      "passed": true
+    },
+    {
+      "requirement": "all_frozen_source_files_match",
+      "passed": true
+    },
+    {
+      "requirement": "isolated_embedding_process_and_model_contract_recorded",
+      "passed": true
+    },
+    {
+      "requirement": "dataset_lock_is_unchanged",
+      "passed": true
+    },
+    {
+      "requirement": "hardware_software_and_dependencies_recorded",
+      "passed": true
+    },
+    {
+      "requirement": "reproducibility_anchors_and_configuration_match",
+      "passed": true
+    },
+    {
+      "requirement": "all_three_datasets_in_reports",
+      "passed": true
+    },
+    {
+      "requirement": "explicit_provider_errors_use_bounded_exact_payload_retries",
+      "passed": true
+    },
+    {
+      "requirement": "text_retry_groups_and_original_failure_artifacts_valid",
+      "passed": true
+    },
+    {
+      "requirement": "historical_embedding_contracts_authenticated",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:exact_frozen_1000_ids",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:all_predictions_valid",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:usage_matches_all_original_raw_attempts",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:unavailable_raw_outputs_preserved_without_retry",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:independent_metrics_and_predictions_match",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:filtered_questions_remain_empty_and_counted",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:truncated_and_malformed_answers_remain_counted",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:incomplete_answers_remain_empty_and_counted",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:metrics_complete_and_finite",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:timings_for_every_question",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:query_wall_time_includes_interrupted_work",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:full_corpus_and_valid_index",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:vector_files_still_match_independent_audit",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:construction_query_usage_and_storage",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:embedding_http_attempts_bounded_and_traceable",
+      "passed": true
+    },
+    {
+      "requirement": "hotpotqa:paper_table_matches_verified_artifacts",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:exact_frozen_1000_ids",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:all_predictions_valid",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:usage_matches_all_original_raw_attempts",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:unavailable_raw_outputs_preserved_without_retry",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:independent_metrics_and_predictions_match",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:filtered_questions_remain_empty_and_counted",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:truncated_and_malformed_answers_remain_counted",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:incomplete_answers_remain_empty_and_counted",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:metrics_complete_and_finite",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:timings_for_every_question",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:query_wall_time_includes_interrupted_work",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:full_corpus_and_valid_index",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:vector_files_still_match_independent_audit",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:construction_query_usage_and_storage",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:embedding_http_attempts_bounded_and_traceable",
+      "passed": true
+    },
+    {
+      "requirement": "2wiki:paper_table_matches_verified_artifacts",
+      "passed": true
+    },
+    {
+      "requirement": "musique:exact_frozen_1000_ids",
+      "passed": true
+    },
+    {
+      "requirement": "musique:all_predictions_valid",
+      "passed": true
+    },
+    {
+      "requirement": "musique:usage_matches_all_original_raw_attempts",
+      "passed": true
+    },
+    {
+      "requirement": "musique:unavailable_raw_outputs_preserved_without_retry",
+      "passed": true
+    },
+    {
+      "requirement": "musique:independent_metrics_and_predictions_match",
+      "passed": true
+    },
+    {
+      "requirement": "musique:filtered_questions_remain_empty_and_counted",
+      "passed": true
+    },
+    {
+      "requirement": "musique:truncated_and_malformed_answers_remain_counted",
+      "passed": true
+    },
+    {
+      "requirement": "musique:incomplete_answers_remain_empty_and_counted",
+      "passed": true
+    },
+    {
+      "requirement": "musique:metrics_complete_and_finite",
+      "passed": true
+    },
+    {
+      "requirement": "musique:timings_for_every_question",
+      "passed": true
+    },
+    {
+      "requirement": "musique:query_wall_time_includes_interrupted_work",
+      "passed": true
+    },
+    {
+      "requirement": "musique:full_corpus_and_valid_index",
+      "passed": true
+    },
+    {
+      "requirement": "musique:vector_files_still_match_independent_audit",
+      "passed": true
+    },
+    {
+      "requirement": "musique:construction_query_usage_and_storage",
+      "passed": true
+    },
+    {
+      "requirement": "musique:embedding_http_attempts_bounded_and_traceable",
+      "passed": true
+    },
+    {
+      "requirement": "musique:paper_table_matches_verified_artifacts",
+      "passed": true
+    },
+    {
+      "requirement": "imported_completed_indexes_and_answers_unchanged",
+      "passed": true
+    },
+    {
+      "requirement": "original_raw_failure_artifacts_unchanged",
+      "passed": true
+    },
+    {
+      "requirement": "original_failed_work_and_cache_lineage_preserved",
+      "passed": true
+    },
+    {
+      "requirement": "final_logs_include_every_original_history_record",
+      "passed": true
+    },
+    {
+      "requirement": "report_contains_quality_efficiency_and_limits",
+      "passed": true
+    }
+  ]
+}

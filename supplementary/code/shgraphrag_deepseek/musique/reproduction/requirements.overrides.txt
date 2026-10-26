@@ -1,0 +1,2 @@
+# Python 3.12 compatibility; full raw upstream requirements are preserved.
+six==1.17.0

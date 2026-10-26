@@ -1,0 +1,311 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG/output/paper_revision/2026-10-24/hypergraphrag_deepseek_bge_hotpotqa_seed42_n1000_c100_summary500_budget8192/run/provenance.json",
+  "original_file_sha256": "8fec2ac5d3f09086facce9735b85cc7edcbada6c72520e944838e8251bc2c9a6",
+  "content": {
+    "config": {
+      "status": "ready",
+      "provider": "deepseek-relay",
+      "text_api": "openai-chat-completions",
+      "base_url": "https://new.21r.cn/v1",
+      "model": "deepseek-v4.1-flash",
+      "allowed_returned_models": [
+        "deepseek-v4.1-flash"
+      ],
+      "max_in_flight": 100,
+      "generation_parameters": {},
+      "generation_note": "Temperature, output caps and thinking controls are omitted unless explicitly supplied by the native method or confirmed for the chosen relay model.",
+      "request_timeout_seconds": 600,
+      "max_text_attempts": 3,
+      "proxy": null,
+      "embedding": {
+        "base_url": "http://127.0.0.1:11434",
+        "model": "bge-m3:latest",
+        "dimension": 1024,
+        "expected_digest_from_reference": "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab",
+        "actual_digest": null,
+        "digest_note": "Reference digest only; do not claim a runtime digest has been verified without evidence.",
+        "max_in_flight": 4,
+        "batch_size": 32,
+        "truncate": null,
+        "truncate_note": "Omitted, matching the referenced langchain_ollama client; actual server defaults are not overridden.",
+        "options": {
+          "num_batch": 8192
+        },
+        "vector_transform": "none; preserve native Ollama output and native cosine-vector storage"
+      },
+      "dataset": "HotpotQA distractor development",
+      "sample_seed": 42,
+      "sample_size": 1000,
+      "dataset_id": "hotpotqa"
+    },
+    "method": {
+      "official_commit": "d587cdf8c3fe2be7719557f845324cb3a321f5e2",
+      "algorithm": "HyperGraphRAG native tuple extraction and hybrid entity/hyperedge retrieval",
+      "storage": "NetworkXStorage/NanoVectorDBStorage/JsonKVStorage",
+      "chunk_token_size": 1200,
+      "chunk_overlap_token_size": 100,
+      "tokenizer": "gpt-4o-mini o200k_base (token accounting only; no GPT model calls)",
+      "entity_extract_max_gleaning": 2,
+      "entity_summary_to_max_tokens": 500,
+      "mode": "hybrid",
+      "top_k": 60,
+      "max_token_for_text_unit": 4000,
+      "max_token_for_global_context": 4000,
+      "max_token_for_local_context": 4000,
+      "response_type": "A short answer for exact-match question answering. Return only a JSON object with one key, \"answer\", whose value is the concise answer string. Use the shortest complete entity name, date, number or yes/no answer as appropriate. Do not include explanations, citations, Markdown or reasoning. If the supplied evidence is insufficient, use {\"answer\": \"\"}.",
+      "path_question_repository": {
+        "applicable": false,
+        "count": 0,
+        "reason": "Not a component of this native HyperGraphRAG implementation"
+      },
+      "corpus_scope": "Global union of selected candidate paragraphs; no question-specific filter",
+      "summary_backend_adaptation": {
+        "name": "user_approved_bounded_visible_summary_20261025",
+        "visible_target_tokens": 500,
+        "visible_tokenizer": "gpt-4o-mini/o200k_base",
+        "physical_generation_budget_tokens": 8192,
+        "length_constraint": "\n\nLength constraint: The final summary must be no more than 500 tokens. Return only that concise final summary.",
+        "nonempty_provider_length_output": "use, label provider truncation",
+        "visible_text_over_target": "use prefix of at most 500 native tokenizer tokens, label local truncation",
+        "empty_or_filtered_output": "unavailable; retain original extracted description through the existing explicit fallback",
+        "legacy_summary": "reuse exact original completed or nonempty length-terminated output",
+        "other_stages": "unchanged"
+      },
+      "initial_model_cache": "Exact text requests retained; identical-input BGE vectors reused where available; changed summary descriptions re-embedded"
+    },
+    "inputs": {
+      "dataset": "HotpotQA distractor development",
+      "dataset_id": "hotpotqa",
+      "split": "development",
+      "seed": 42,
+      "count": 1000,
+      "source_count": 7405,
+      "sampling": "random.Random(42).sample(sorted(unique_ids), 1000)",
+      "order": "RNG draw order",
+      "source": {
+        "name": "HotpotQA distractor development",
+        "source": "dataset/paper_ready/hotpotqa/dev.json",
+        "sha256": "5642f62c533df6066d86bb458af83d6fa7508d823173825ac9ae39f6de2308fa",
+        "count": 7405,
+        "parquet": "dataset/hotpot_qa/distractor/validation-00000-of-00001.parquet",
+        "parquet_sha256": "c20b638ca82b21d04fe12e14ff417ad05153d4d215a65de54497fca4e972f7c6",
+        "release": "hotpotqa/hotpot_qa commit 1908d6afbbead072334abe2965f91bd2709910ab"
+      },
+      "official_gold_sha256": "5642f62c533df6066d86bb458af83d6fa7508d823173825ac9ae39f6de2308fa",
+      "retrieval_scope": "global union of all selected candidate passages; no question ID filtering",
+      "gold_policy": "evaluation only; model input is id/question and unlabeled passage text",
+      "corpus_text_policy": "title + newline + original sentences joined with newlines; no resegmentation",
+      "status": "new_revision_sample_not_original_paper_sample",
+      "candidate_occurrences": 9961,
+      "unique_candidate_passages": 9773,
+      "type_counts": {
+        "comparison": 225,
+        "bridge": 775
+      },
+      "native_support_titles_absent_from_candidates": [],
+      "files": {
+        "answer_aliases.jsonl": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "candidate_corpus.jsonl": {
+          "sha256": "0ac7e48742aa0ab06976a1c6176af16296f03947abdd19edf607866072a308cd",
+          "bytes": 12598494
+        },
+        "gold.jsonl": {
+          "sha256": "e151df622d1b06343b009cb69a2e6b7d14aa0f75e38e02c4bf254856b57c41ef",
+          "bytes": 6313424
+        },
+        "ids.json": {
+          "sha256": "5743a89e421220d503cd665564656f126cd8bac30e2e3cf61513bb7d9da594d2",
+          "bytes": 31005
+        },
+        "queries.jsonl": {
+          "sha256": "8631bdadc56864ca262d0706dafec00cc2756482d92baf2e68a801b053b74606",
+          "bytes": 144177
+        },
+        "question_passages.jsonl": {
+          "sha256": "8ac8049c2ff053a96714c64b9c166fd3baa982923faaa09572532995d47ef67b",
+          "bytes": 739348
+        },
+        "source_indices.json": {
+          "sha256": "0ed9f6b5f7dce5a50b1dea3cc8b5dfbd7ccd53a28802445b912a096d8644a6a9",
+          "bytes": 8858
+        }
+      },
+      "model_api_requests": 0
+    },
+    "source_sha256": {
+      "experiment\\__init__.py": "e427806c02e7e61fae2c0cc069fee6fab9ee17ddbc3e614591a75216344bf324",
+      "experiment\\capacity_recovery.py": "229aa43bedb25780065269034933d27894bcaa0319f8b26fdf1d7457415f15aa",
+      "experiment\\common.py": "a7b71c28b5147bd3ca34939cd9353dc01ad224a2d695dc162fad44d18259d4c1",
+      "experiment\\config.json": "36c6aabbcddb042eecefd7483da6199d90eae200aa87c387ce6f8a9b56507465",
+      "experiment\\config.py": "d4375a79fb33a5c3bb5901e1d65f5a118653f63c0e37525c4ff83afee20fa5c1",
+      "experiment\\evaluate.py": "db592e14197dbc88f41b28c5a74ffabba2ac8481983cebdb47eef20f019ccc2b",
+      "experiment\\offline_checks.py": "7e0b2f70bf23778a335e1ad25bb8c9ceb018f8b7c30585916aa9d712568c706f",
+      "experiment\\prepare.py": "67168b3957fd2915fddcee17938fa1836079b424c3a42d92a8e1682cafa832dd",
+      "experiment\\resume_guard.py": "46e86df5f20ae4975ccc1585ee1c2277e1a85213ae76ab6ef87720e86f940ba9",
+      "experiment\\run.py": "f72fbfaf1b9db6a13f7bd17620d8d96ad777814ddff4b59c9f6871ddda1f453a",
+      "experiment\\summary_policy.py": "bc3b48c347eca7dc7e09f9a4fa332cba9af6cf5bd2b32b9b7fe53622623d480f",
+      "experiment\\summary_reuse.py": "0cd35653f823b82866a210e8bf203a96cb7c5abfd9bc2b620d168dda0f50c137",
+      "experiment\\telemetry.py": "5cc6ff7231ba2b47a986291b457b402955c0298c704b3b441c4b9e16ba0fdbbd",
+      "experiment\\test_additional_datasets.py": "014e2cb6c3259105c48a73665a3d33ef6e362e6d075ef5555c464579cbe63a6c",
+      "experiment\\test_experiment.py": "9549f250a05ca2bb51690fdadf6cf3e6acc38698c4f4c66a855bb05ff086f287",
+      "experiment\\test_runtime_recovery.py": "fae9b07ca2afd6995f10daa85cfb01552459650419248a34a46716ee9111b2a4",
+      "experiment\\text_cache_rekey.py": "2576c6fc2113c3aa405ec36acf9f83584af498b96f0a8a2e0c3ffc630b709b81",
+      "experiment\\transport.py": "b95eeb7175050387cb8b11812853e464dc11d2a76fc4a11de14ce1f36e8e0434",
+      "experiment\\verify.py": "096f86e39c3056075494eeef676378d8ac5c9b7a012688d4002356a1001583cb",
+      "hypergraphrag\\__init__.py": "42db2a734b8c565ead8ea7d84f1422226dba430674d2e28e124b8656c8a02103",
+      "hypergraphrag\\base.py": "2d9437b8c1c005c64902b04a4a978efa8d52395ee3703c363070ce9509ec6c68",
+      "hypergraphrag\\hypergraphrag.py": "2b1c49dd201232706705526dfe16d55a451b7b8a63837aea8e9978a6b56cfc79",
+      "hypergraphrag\\kg\\__init__.py": "fbd3eff0946b1cd66087d6a8ced0d073e050b053fa70e082af6769923565a202",
+      "hypergraphrag\\kg\\chroma_impl.py": "b9aaf16bda1a7155c1ccc42e41439be3c0ff9edb81dd4e48f09a8be4a782774d",
+      "hypergraphrag\\kg\\milvus_impl.py": "a1d491c90faf98ee9e0c6e0747c04f841aa0827a0169b2be0811f366f768a6d8",
+      "hypergraphrag\\kg\\mongo_impl.py": "c37b8ba5582216c3c3986eabe7bdc02e9b33f99e2f9de941523041323517c5bf",
+      "hypergraphrag\\kg\\neo4j_impl.py": "8c26260a07953da3387592b63b8049eb302a31845b75fae7ab27cff55f688078",
+      "hypergraphrag\\kg\\oracle_impl.py": "e44e57dfaa692f7583eda2dd6033006b4ec91fe30b7fc0493d29dc8666405ced",
+      "hypergraphrag\\kg\\tidb_impl.py": "fa9dd0fceab7e699facbb4c13f536267cff7acff751a9131d873203e7f75feb8",
+      "hypergraphrag\\llm.py": "aa62c03e368aa5bfd8765820c12db7e3b0b3bf43d292a0c980af60cac74c44a3",
+      "hypergraphrag\\operate.py": "2751b4c8f94da95918b6458635159fd8767e0e0ab2ce93b2a0cac4bd42f9faa3",
+      "hypergraphrag\\prompt.py": "2730b18d849641d9dedafad2374034bd5ed90d403402a1991ea0596e869b085e",
+      "hypergraphrag\\storage.py": "42c270938b33169cbacb85415a43dc32e0e3cf459e4485b5f09ff11fce5e4669",
+      "hypergraphrag\\utils.py": "77fa3fdf368b7b3df1da3a5a6f88bdadb65a9265d8b2b50903d55a7889eb9eca",
+      "launch.ps1": "91f5bd89e524e6a77f93f3ab180c700f62e472b3f74977443591cb7458ac4f91"
+    },
+    "source_provenance": {
+      "official_repository": "https://github.com/LHRLAB/HyperGraphRAG",
+      "official_commit": "d587cdf8c3fe2be7719557f845324cb3a321f5e2",
+      "copied_working_source": "<LOCAL_WORKSPACE>\\Edit\\Repo\\CompareMethods\\HyperGraphRAG",
+      "source_sha256": {
+        "hypergraphrag\\__init__.py": "42db2a734b8c565ead8ea7d84f1422226dba430674d2e28e124b8656c8a02103",
+        "hypergraphrag\\base.py": "2d9437b8c1c005c64902b04a4a978efa8d52395ee3703c363070ce9509ec6c68",
+        "hypergraphrag\\hypergraphrag.py": "2b1c49dd201232706705526dfe16d55a451b7b8a63837aea8e9978a6b56cfc79",
+        "hypergraphrag\\kg\\__init__.py": "fbd3eff0946b1cd66087d6a8ced0d073e050b053fa70e082af6769923565a202",
+        "hypergraphrag\\kg\\chroma_impl.py": "b9aaf16bda1a7155c1ccc42e41439be3c0ff9edb81dd4e48f09a8be4a782774d",
+        "hypergraphrag\\kg\\milvus_impl.py": "a1d491c90faf98ee9e0c6e0747c04f841aa0827a0169b2be0811f366f768a6d8",
+        "hypergraphrag\\kg\\mongo_impl.py": "c37b8ba5582216c3c3986eabe7bdc02e9b33f99e2f9de941523041323517c5bf",
+        "hypergraphrag\\kg\\neo4j_impl.py": "8c26260a07953da3387592b63b8049eb302a31845b75fae7ab27cff55f688078",
+        "hypergraphrag\\kg\\oracle_impl.py": "e44e57dfaa692f7583eda2dd6033006b4ec91fe30b7fc0493d29dc8666405ced",
+        "hypergraphrag\\kg\\tidb_impl.py": "fa9dd0fceab7e699facbb4c13f536267cff7acff751a9131d873203e7f75feb8",
+        "hypergraphrag\\llm.py": "aa62c03e368aa5bfd8765820c12db7e3b0b3bf43d292a0c980af60cac74c44a3",
+        "hypergraphrag\\operate.py": "2751b4c8f94da95918b6458635159fd8767e0e0ab2ce93b2a0cac4bd42f9faa3",
+        "hypergraphrag\\prompt.py": "2730b18d849641d9dedafad2374034bd5ed90d403402a1991ea0596e869b085e",
+        "hypergraphrag\\storage.py": "42c270938b33169cbacb85415a43dc32e0e3cf459e4485b5f09ff11fce5e4669",
+        "hypergraphrag\\utils.py": "77fa3fdf368b7b3df1da3a5a6f88bdadb65a9265d8b2b50903d55a7889eb9eca"
+      },
+      "patch_sha256": "74972a0bd89768b728fcf2295b65e3346695d71b60155a9d653206b4a86d5a7a",
+      "prior_model_outputs_copied": false,
+      "prior_vectors_copied": false,
+      "credentials_copied_or_loaded": false,
+      "upstream_reference_chat": "01a15ac7-0a19-7f51-88dd-fe73d6040d6f",
+      "source_notes": [
+        "Original tuple prompts, graph construction and hybrid ranking retained.",
+        "Existing instrumentation adds retrieval trace and exception-safe async scheduling.",
+        "Existing terminal unavailable-output policies preserve complete prior extraction and do not invent unavailable facts.",
+        "Optional Hugging Face/Bedrock imports are lazy."
+      ]
+    },
+    "dependency_lock_sha256": "cfd61154ec4886def48fefab8f743264c58b05c500ca8a06d6d3a6d93eff952d",
+    "python_hash_seed": "42",
+    "capacity_recovery_import": {
+      "recovery_kind": "summary_visible_limit_repair",
+      "source_directory": "hypergraphrag_deepseek_bge_hotpotqa_seed42_n1000_c100_capacity8192",
+      "original_config": {
+        "status": "ready",
+        "provider": "deepseek-relay",
+        "text_api": "openai-chat-completions",
+        "base_url": "https://new.21r.cn/v1",
+        "model": "deepseek-v4.1-flash",
+        "allowed_returned_models": [
+          "deepseek-v4.1-flash"
+        ],
+        "max_in_flight": 100,
+        "generation_parameters": {},
+        "generation_note": "Temperature, output caps and thinking controls are omitted unless explicitly supplied by the native method or confirmed for the chosen relay model.",
+        "request_timeout_seconds": 600,
+        "max_text_attempts": 3,
+        "proxy": null,
+        "embedding": {
+          "base_url": "http://127.0.0.1:11434",
+          "model": "bge-m3:latest",
+          "dimension": 1024,
+          "expected_digest_from_reference": "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab",
+          "actual_digest": null,
+          "digest_note": "Reference digest only; do not claim a runtime digest has been verified without evidence.",
+          "max_in_flight": 4,
+          "batch_size": 32,
+          "truncate": null,
+          "truncate_note": "Omitted, matching the referenced langchain_ollama client; actual server defaults are not overridden.",
+          "options": {
+            "num_batch": 8192
+          },
+          "vector_transform": "none; preserve native Ollama output and native cosine-vector storage"
+        },
+        "dataset": "HotpotQA distractor development",
+        "sample_seed": 42,
+        "sample_size": 1000,
+        "dataset_id": "hotpotqa"
+      },
+      "target_config": {
+        "status": "ready",
+        "provider": "deepseek-relay",
+        "text_api": "openai-chat-completions",
+        "base_url": "https://new.21r.cn/v1",
+        "model": "deepseek-v4.1-flash",
+        "allowed_returned_models": [
+          "deepseek-v4.1-flash"
+        ],
+        "max_in_flight": 100,
+        "generation_parameters": {},
+        "generation_note": "Temperature, output caps and thinking controls are omitted unless explicitly supplied by the native method or confirmed for the chosen relay model.",
+        "request_timeout_seconds": 600,
+        "max_text_attempts": 3,
+        "proxy": null,
+        "embedding": {
+          "base_url": "http://127.0.0.1:11434",
+          "model": "bge-m3:latest",
+          "dimension": 1024,
+          "expected_digest_from_reference": "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab",
+          "actual_digest": null,
+          "digest_note": "Reference digest only; do not claim a runtime digest has been verified without evidence.",
+          "max_in_flight": 4,
+          "batch_size": 32,
+          "truncate": null,
+          "truncate_note": "Omitted, matching the referenced langchain_ollama client; actual server defaults are not overridden.",
+          "options": {
+            "num_batch": 8192
+          },
+          "vector_transform": "none; preserve native Ollama output and native cosine-vector storage"
+        },
+        "dataset": "HotpotQA distractor development",
+        "sample_seed": 42,
+        "sample_size": 1000,
+        "dataset_id": "hotpotqa"
+      },
+      "source_evidence_sha256": {
+        "experiment/config.json": "36c6aabbcddb042eecefd7483da6199d90eae200aa87c387ce6f8a9b56507465",
+        "inputs/manifest.json": "1d6e39f09b4bac350f3193c4579fdfbfb0e20846348898c81fd92d77f24d7a48",
+        "run/provenance.json": "7a25eace3d3cd7f6b18088855c602e9358edbf8bd38df8cac78ebc7e5c322d33",
+        "provenance/capacity_recovery.json": "785896b904bdc805912b0abac8ae1d49c927acde7910f9e5dee83297221b53ae",
+        "run/api_calls.jsonl": "3fabe0c14edb36e2a099c2f33f5188e7ba56a6ef0d8ae146020bb59767a033a7",
+        "run/embedding_calls.jsonl": "0717f995f2f30507195b8fe738a0ef484bd087e4ab51e6bf70e79b43ca4d4482",
+        "run/request_started.jsonl": "40c0e79126dbf55920296700d248caf38a574f11ecf646ed019dfcf953229789",
+        "run/construction_attempts.jsonl": "67657d1032df421f8742cbe0a9f2f0b2c14341837ee6eae87c66521db63910e7",
+        "run/campaign_attempts.jsonl": "3e5b8589a6ae778bdeb30d6920fa7719cbb7e60713482726ec2b1c3156e0c7de",
+        "run/phase_events.jsonl": "2aa8001b2cb7f08e4abecfec0f9b163a3dff3a0bb871343c812c9c0f1e8dd29d"
+      },
+      "original_provenance_sha256": "7a25eace3d3cd7f6b18088855c602e9358edbf8bd38df8cac78ebc7e5c322d33",
+      "cache_mapping": "provenance/text_cache_rekey_mapping.jsonl",
+      "cache_mapping_sha256": "1c8c1b57dd07c82a6daa12ef92977f079fa10dfcba08c23fe3a8d9870f010074",
+      "imported_terminal_text_caches": 35065,
+      "embedding_cache": {
+        "source_file": "run/cache/embeddings.sqlite",
+        "source_file_sha256": "84cad7103f87459c6db1b939fb46a8c4012c808f1374ec13346a361f7b4b471a",
+        "vectors": 220421
+      },
+      "user_interruption": null,
+      "reason": "User-approved summary repair; same text model, samples, corpus and BGE identity. Native assembly is rerun using exact cached extractions."
+    }
+  }
+}

@@ -1,0 +1,8 @@
+# Minimal data tools; the exact installed closure is recorded in
+# audit/environment.dataset-tools.freeze.txt. Full upstream requirements remain
+# separately resolved in requirements.upstream-resolved.txt.
+datasets==3.4.1
+numpy==1.26.2
+pyarrow==16.1.0
+# Upstream textract pulls six==1.12.0, whose six.moves fails on Python 3.12.
+six==1.17.0

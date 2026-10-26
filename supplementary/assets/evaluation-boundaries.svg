@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="690" viewBox="0 0 1400 690" role="img">
+<style>text{font-family:Segoe UI,Arial,sans-serif}</style>
+<rect x="0" y="0" width="1400" height="690" rx="0" fill="#0c1424"/>
+<text x="56" y="60" font-size="34" font-weight="700" fill="#f4f7fc">Keep inference and evaluation inputs explicit</text>
+<text x="56" y="96" font-size="20" font-weight="400" fill="#b9c9dd">Question IDs align the two streams; answer labels do not enter model prompts.</text>
+<rect x="56" y="132" width="390" height="108" rx="18" fill="#152238" stroke="#39506d"/>
+<text x="80" y="174" font-size="23" font-weight="600" fill="#f4f7fc">Official local development files</text>
+<text x="80" y="211" font-size="18" font-weight="400" fill="#b9c9dd">Pinned release hashes and native fields</text>
+<path d="M446 187 L548 187" fill="none" stroke="#39506d" stroke-width="3"/>
+<path d="M540 181 L548 187" fill="none" stroke="#39506d" stroke-width="3"/>
+<path d="M540 193 L548 187" fill="none" stroke="#39506d" stroke-width="3"/>
+<rect x="556" y="132" width="788" height="108" rx="18" fill="#1a2e48" stroke="#80b5ff"/>
+<text x="580" y="174" font-size="25" font-weight="600" fill="#80b5ff">Offline protocol reconstruction</text>
+<text x="580" y="211" font-size="20" font-weight="400" fill="#b9c9dd">Seed, 1,000 ordered IDs, candidate identities, and text hashes verified</text>
+<path d="M950 240 L950 265" fill="none" stroke="#39506d" stroke-width="3"/>
+<path d="M346 265 L1054 265" fill="none" stroke="#39506d" stroke-width="3"/>
+<path d="M346 265 L346 294" fill="none" stroke="#80b5ff" stroke-width="3"/>
+<path d="M340 286 L346 294" fill="none" stroke="#80b5ff" stroke-width="3"/>
+<path d="M352 286 L346 294" fill="none" stroke="#80b5ff" stroke-width="3"/>
+<path d="M1054 265 L1054 294" fill="none" stroke="#ffd18a" stroke-width="3"/>
+<path d="M1048 286 L1054 294" fill="none" stroke="#ffd18a" stroke-width="3"/>
+<path d="M1060 286 L1054 294" fill="none" stroke="#ffd18a" stroke-width="3"/>
+<rect x="56" y="304" width="580" height="144" rx="18" fill="#152238" stroke="#80b5ff"/>
+<text x="80" y="345" font-size="16" font-weight="700" fill="#80b5ff">INFERENCE</text>
+<text x="80" y="382" font-size="24" font-weight="600" fill="#f4f7fc">ID + question + candidate passage text</text>
+<text x="80" y="419" font-size="20" font-weight="400" fill="#b9c9dd">Documented memberships / graph scope</text>
+<rect x="764" y="304" width="580" height="144" rx="18" fill="#152238" stroke="#ffd18a"/>
+<text x="788" y="345" font-size="16" font-weight="700" fill="#ffd18a">EVALUATION ONLY</text>
+<text x="788" y="382" font-size="23" font-weight="600" fill="#f4f7fc">Native answers, aliases, supporting facts</text>
+<text x="788" y="419" font-size="20" font-weight="400" fill="#b9c9dd">Opened by scorers after predictions exist</text>
+<path d="M346 448 L346 496" fill="none" stroke="#80b5ff" stroke-width="3"/>
+<path d="M340 488 L346 496" fill="none" stroke="#80b5ff" stroke-width="3"/>
+<path d="M352 488 L346 496" fill="none" stroke="#80b5ff" stroke-width="3"/>
+<path d="M1054 448 L1054 496" fill="none" stroke="#ffd18a" stroke-width="3"/>
+<path d="M1048 488 L1054 496" fill="none" stroke="#ffd18a" stroke-width="3"/>
+<path d="M1060 488 L1054 496" fill="none" stroke="#ffd18a" stroke-width="3"/>
+<rect x="56" y="506" width="580" height="104" rx="18" fill="#152238" stroke="#80b5ff"/>
+<text x="80" y="549" font-size="24" font-weight="600" fill="#80b5ff">Build → retrieve → generate</text>
+<text x="80" y="584" font-size="19" font-weight="400" fill="#b9c9dd">Saved predictions and immutable attempt history</text>
+<path d="M636 558 L754 558" fill="none" stroke="#65d8c0" stroke-width="3"/>
+<path d="M746 552 L754 558" fill="none" stroke="#65d8c0" stroke-width="3"/>
+<path d="M746 564 L754 558" fill="none" stroke="#65d8c0" stroke-width="3"/>
+<rect x="764" y="506" width="580" height="104" rx="18" fill="#14352f" stroke="#65d8c0"/>
+<text x="788" y="549" font-size="23" font-weight="600" fill="#65d8c0">Full-denominator EM / F1 + verification</text>
+<text x="788" y="584" font-size="20" font-weight="400" fill="#b9c9dd">No dropping empty, failed, or missing IDs</text>
+<text x="56" y="657" font-size="20" font-weight="400" fill="#b9c9dd">Retrieval scope remains profile-specific; shared input IDs do not imply identical retrieval conditions.</text>
+</svg>

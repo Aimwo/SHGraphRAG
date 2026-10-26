@@ -1,0 +1,59 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/CompareMethods/HyperGraphRAG/revision_openrouter/runs/full1000_gpt4omini_20261022_overflow1/embedding_contract.json",
+  "original_file_sha256": "a8607fc397983c64cc3460e01d7ebefad5d3918d6c7be7f443172819fecdd6b0",
+  "content": {
+    "model": "bge-m3:latest",
+    "digest": "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab",
+    "dimensions": 1024,
+    "norm": 0.9999999403953552,
+    "manifest_details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "bert",
+      "families": [
+        "bert"
+      ],
+      "parameter_size": "566.70M",
+      "quantization_level": "F16",
+      "context_length": 8192,
+      "embedding_length": 1024,
+      "runner": "ggml"
+    },
+    "loaded_model_at_start": [],
+    "ollama_version": "0.40.4",
+    "endpoint": "http://127.0.0.1:11436/api/embed",
+    "proxy": "bypassed: direct loopback client with trust_env=False",
+    "http_recovery": {
+      "max_attempts_per_exact_request": 4,
+      "retry_statuses": [
+        400,
+        408,
+        409,
+        425,
+        429,
+        "5xx"
+      ],
+      "retry_transport_errors": true,
+      "exact_payload_unchanged_between_retries": true,
+      "explicit_context_overflow": "separate_audited_truncate_true_fallback",
+      "attempt_log": "embedding_http_attempts.jsonl",
+      "raw_http_failure_artifacts": "cache/embedding_failures/"
+    },
+    "execution_options": {
+      "num_ctx": 8192,
+      "num_batch": 8192
+    },
+    "overflow_policy": {
+      "trigger": "HTTP400_exact_input_length_exceeds_context_error",
+      "primary_truncate": false,
+      "fallback_truncate": true,
+      "fallback": "Ollama_native_context_truncation_same_model_text_and_options",
+      "scope": "all_embedding_inputs_without_gold_or_dataset_specific_selection",
+      "raw_provenance": "cache/embedding_overflows/",
+      "in_range_cached_vectors": "retain_prior_successful_truncate_false_vectors"
+    },
+    "runtime_scope": "dedicated_local_Ollama_process_port11436",
+    "service_manifest_sha256": "7179a6423ff1d732eb855dd07461ec4242b79598de521091abb78154b56733cb"
+  }
+}

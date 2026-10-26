@@ -1,0 +1,14 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-upstream-deepseek-relay-20261024/reproduction/runs/musique1000_seed42_deepseek-relay-14ac1cd4ea79_20261024/state.json",
+  "original_file_sha256": "04e5c977a703c573d7514500670ce2c39eca4d3b630ef28fb3a80cdb4f95dc30",
+  "content": {
+    "status": "completed",
+    "stage": "evaluation",
+    "started_at": "2026-10-24T16:59:13.553766+00:00",
+    "source_bundle_sha256": "e9f456bc59c793965f2d92f241a404d9a464c105a508fa4f1e524994dc4e9eb6",
+    "full_reproduction_completed": true,
+    "updated_at": "2026-10-24T17:07:41.059143+00:00",
+    "finished_at": "2026-10-24T17:07:49.182772+00:00"
+  }
+}

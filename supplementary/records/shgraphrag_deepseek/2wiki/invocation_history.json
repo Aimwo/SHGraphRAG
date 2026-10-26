@@ -1,0 +1,133 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-upstream-deepseek-relay-2wiki-20261024/reproduction/runs/2wiki1000_seed42_deepseek-relay-14ac1cd4ea79_20261024/full_invocation_provenance.json",
+  "original_file_sha256": "71e0bde5c759f603e81126b5439469bbcf0d6b9bf7e951208da71b909c97dfc7",
+  "content": {
+    "passed": true,
+    "invocations": [
+      {
+        "state_file": "invocation_history\\2026-10-24T221614.234257_0000\\state.json",
+        "state_file_sha256": "5450789854740e0bd9af8c15fa5218cffab663dd5a65ee8c6a0ab6b30479bdca",
+        "configuration_file": "invocation_history\\2026-10-24T221614.234257_0000\\effective_config.json",
+        "configuration_file_sha256": "f2be6f562b6d5ac5eff781795bb46657a7d4341d66f746a9cabda59255362a36",
+        "started_at": "2026-10-24T22:16:14.234257+00:00",
+        "finished_at": "2026-10-24T22:32:05.695623+00:00",
+        "status_at_audit": "failed",
+        "source_bundle_sha256": "d5d444ca9471a2694b5458dc453f410d61270e3132de2d2399a439265fc36d39",
+        "working_commit": "7428113d0a99694c8b1939162a2159d8f0808d6f",
+        "text_dispatch_workers": 32,
+        "request_hard_limit": 64,
+        "embedding_request_capacity": 4,
+        "abrupt_interruption_evidence": null
+      },
+      {
+        "state_file": "invocation_history\\2026-10-24T224359.569991_0000\\state.json",
+        "state_file_sha256": "6512a16bdd821bd43d37c90d28bd903814301bf021c1a7134a0e6e05828b6973",
+        "configuration_file": "invocation_history\\2026-10-24T224359.569991_0000\\effective_config.json",
+        "configuration_file_sha256": "f2be6f562b6d5ac5eff781795bb46657a7d4341d66f746a9cabda59255362a36",
+        "started_at": "2026-10-24T22:43:59.569991+00:00",
+        "finished_at": "2026-10-24T23:38:22.789187+00:00",
+        "status_at_audit": "failed",
+        "source_bundle_sha256": "d5d444ca9471a2694b5458dc453f410d61270e3132de2d2399a439265fc36d39",
+        "working_commit": "7428113d0a99694c8b1939162a2159d8f0808d6f",
+        "text_dispatch_workers": 32,
+        "request_hard_limit": 64,
+        "embedding_request_capacity": 4,
+        "abrupt_interruption_evidence": null
+      },
+      {
+        "state_file": "invocation_history\\2026-10-24T234941.009696_0000\\state.json",
+        "state_file_sha256": "a07888be5019d6be8d1990117bd869fc3565f1456f7af30b7f53032d0754547c",
+        "configuration_file": "invocation_history\\2026-10-24T234941.009696_0000\\effective_config.json",
+        "configuration_file_sha256": "f2be6f562b6d5ac5eff781795bb46657a7d4341d66f746a9cabda59255362a36",
+        "started_at": "2026-10-24T23:49:41.009696+00:00",
+        "finished_at": "2026-10-25T00:22:13.820766+00:00",
+        "status_at_audit": "failed",
+        "source_bundle_sha256": "d5d444ca9471a2694b5458dc453f410d61270e3132de2d2399a439265fc36d39",
+        "working_commit": "7428113d0a99694c8b1939162a2159d8f0808d6f",
+        "text_dispatch_workers": 32,
+        "request_hard_limit": 64,
+        "embedding_request_capacity": 4,
+        "abrupt_interruption_evidence": null
+      },
+      {
+        "state_file": "invocation_history\\2026-10-25T021308.006928_0000\\state.json",
+        "state_file_sha256": "7cfede2865352ebd7f41d2b47ce0c2c1de8fd30572d0fe74fa3f764547b4edd3",
+        "configuration_file": "invocation_history\\2026-10-25T021308.006928_0000\\effective_config.json",
+        "configuration_file_sha256": "a1171ebfa89373ec7e72c4bf56d2ea04fd96983f403fabe673f2d10bf12cded3",
+        "started_at": "2026-10-25T02:13:08.006928+00:00",
+        "finished_at": "2026-10-25T02:31:18.884625+00:00",
+        "status_at_audit": "failed",
+        "source_bundle_sha256": "5542cdf2cc7b26bc1064ada2a75fc212a6e6186d8d7203cdc93dc784755ef474",
+        "working_commit": "7428113d0a99694c8b1939162a2159d8f0808d6f",
+        "text_dispatch_workers": 32,
+        "request_hard_limit": 64,
+        "embedding_request_capacity": 4,
+        "abrupt_interruption_evidence": null
+      },
+      {
+        "state_file": "invocation_history\\2026-10-25T025857.748959_0000\\state.json",
+        "state_file_sha256": "5493d1d979d9ee595bbdfe847eb1a3bfc00c9d388a612a4eaa717b9400fa82c2",
+        "configuration_file": "invocation_history\\2026-10-25T025857.748959_0000\\effective_config.json",
+        "configuration_file_sha256": "9fca59a6dd1f43d9aadb17229b3dc9e733988a94e17f1af5a02723f3cb92128c",
+        "started_at": "2026-10-25T02:58:57.748959+00:00",
+        "finished_at": "2026-10-25T03:06:15.979860+00:00",
+        "status_at_audit": "failed",
+        "source_bundle_sha256": "4458fea2768c5bb4ec342f56eefd5371b7f4771e540f19b56da0a1b7d4566c36",
+        "working_commit": "7428113d0a99694c8b1939162a2159d8f0808d6f",
+        "text_dispatch_workers": 64,
+        "request_hard_limit": 64,
+        "embedding_request_capacity": 4,
+        "abrupt_interruption_evidence": null
+      },
+      {
+        "state_file": "invocation_history\\2026-10-25T031532.048368_0000\\state.json",
+        "state_file_sha256": "ffbf0932d39d4d71642d2f49a1ff276289be53e1f0e33b26f975337cf4c23c39",
+        "configuration_file": "invocation_history\\2026-10-25T031532.048368_0000\\effective_config.json",
+        "configuration_file_sha256": "3995380dabf5fb21d533315e4a615da651c8a0969ea5f7840260392c55368a78",
+        "started_at": "2026-10-25T03:15:32.048368+00:00",
+        "finished_at": "2026-10-25T03:34:56.973710+00:00",
+        "status_at_audit": "failed",
+        "source_bundle_sha256": "c220524c775ade9caaed3e95cf1eac1776e6a78911783303ef8143be7656f40e",
+        "working_commit": "7428113d0a99694c8b1939162a2159d8f0808d6f",
+        "text_dispatch_workers": 100,
+        "request_hard_limit": 100,
+        "embedding_request_capacity": 8,
+        "abrupt_interruption_evidence": null
+      },
+      {
+        "state_file": "invocation_history\\2026-10-25T034641.684607_0000\\state.json",
+        "state_file_sha256": "c34969ef3283d3ded0d8e34bbcd0e48eb227aa471929329a0b83dab084772dbb",
+        "configuration_file": "invocation_history\\2026-10-25T034641.684607_0000\\effective_config.json",
+        "configuration_file_sha256": "3995380dabf5fb21d533315e4a615da651c8a0969ea5f7840260392c55368a78",
+        "started_at": "2026-10-25T03:46:41.684607+00:00",
+        "finished_at": null,
+        "status_at_audit": "running",
+        "source_bundle_sha256": "c220524c775ade9caaed3e95cf1eac1776e6a78911783303ef8143be7656f40e",
+        "working_commit": "7428113d0a99694c8b1939162a2159d8f0808d6f",
+        "text_dispatch_workers": 100,
+        "request_hard_limit": 100,
+        "embedding_request_capacity": 8,
+        "abrupt_interruption_evidence": {
+          "path": "invocation_history\\2026-10-25T034641.684607_0000\\abrupt_interruption.json",
+          "sha256": "377de20fe8b89a2cd7ea74db190c0228dcd6d740aaa1115aaadf4659de5e266a"
+        }
+      },
+      {
+        "state_file": "state.json",
+        "state_file_sha256": "36b42939627112e227d6a98b1ddf7726ff25c4de435e6a7fff0c99bfda2a6186",
+        "configuration_file": "effective_config.json",
+        "configuration_file_sha256": "3995380dabf5fb21d533315e4a615da651c8a0969ea5f7840260392c55368a78",
+        "started_at": "2026-10-25T03:59:47.924388+00:00",
+        "finished_at": "2026-10-25T04:06:04.884144+00:00",
+        "status_at_audit": "completed",
+        "source_bundle_sha256": "c220524c775ade9caaed3e95cf1eac1776e6a78911783303ef8143be7656f40e",
+        "working_commit": "7428113d0a99694c8b1939162a2159d8f0808d6f",
+        "text_dispatch_workers": 100,
+        "request_hard_limit": 100,
+        "embedding_request_capacity": 8,
+        "abrupt_interruption_evidence": null
+      }
+    ]
+  }
+}

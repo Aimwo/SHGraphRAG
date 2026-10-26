@@ -1,0 +1,16 @@
+{
+  "status": "ready",
+  "provider": "deepseek-relay",
+  "protocol": "openai-chat-completions",
+  "base_url": "https://new.21r.cn/v1",
+  "model": "deepseek-v4.1-flash",
+  "allowed_returned_models": [
+    "deepseek-v4.1-flash"
+  ],
+  "credential_id": "user-supplied-DEEPSEEK_API_KEY",
+  "max_in_flight": 64,
+  "generation_parameters": {},
+  "request_timeout_seconds": 600,
+  "authorization": "Fresh runs require SHGRAPHRAG_ALLOW_MODEL_API=1 and the reader's own authorized credential.",
+  "credential_environment": "DEEPSEEK_API_KEY"
+}

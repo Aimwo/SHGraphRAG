@@ -1,0 +1,134 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-4omini-repro-20261021/reproduction/runs/full1000_4omini_v2_20261021/hotpotqa/summary.json",
+  "original_file_sha256": "c564efb5965e25ea3093bdb7b96b492cf93d64b035b50faab006f5cab84e938d",
+  "content": {
+    "config": {
+      "dataset": "hotpotqa",
+      "limit": 1000,
+      "workers": 64,
+      "method_version": "source_alias_merge_global_graph_v2",
+      "source": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG",
+      "model": "openai/gpt-4o-mini",
+      "reasoning_effort": "none",
+      "provider": "openrouter",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api": "chat_completions",
+      "temperature": 0,
+      "reasoning_configuration": "non_reasoning_model_no_parameter",
+      "transport_timeout_s": 240,
+      "transport_max_attempts": 5,
+      "retry_incomplete_chunked_response": true,
+      "prediction_attempt_telemetry": "started_terminal_events_v1",
+      "retryable_finish_reasons": [
+        "content_filter",
+        "error"
+      ],
+      "malformed_finish_reason_retry": true,
+      "atomic_json_replace_max_attempts": 8,
+      "structured_max_attempts": 3,
+      "resource_sample_interval_s": 5,
+      "endpoint_completion": "fixed_missing_endpoint_records_v1_after_three_invalid_outputs",
+      "endpoint_completion_max_attempts": 3,
+      "max_subquestions": 6,
+      "path_length_edges": 2,
+      "questions_per_path": 2,
+      "embedding_model": "bge-m3:latest",
+      "embedding_dimensions": 1024,
+      "embedding_batch_size": 32,
+      "path_embedding_cache": "model_digest_exact_text_all_rows_retained",
+      "embedding_keep_alive": "5m",
+      "embedding_truncate": false,
+      "vector_dtype": "float32",
+      "vector_search": "exact_cosine_stable_tie_breaking",
+      "seed": 20261020,
+      "llm_seed": null,
+      "llm_seed_note": "No deterministic seed support established for this endpoint",
+      "top_paths": 3,
+      "top_entities": 2,
+      "top_hyperedges": 3,
+      "fallback_hyperedges": 2,
+      "entity_cosine_threshold": 0.3,
+      "entity_merge_threshold": 0.95,
+      "entity_merge_batch_size": 10,
+      "entity_merge_scope": "unlabelled_candidate_groups_construction_only",
+      "entity_index_text": "canonical_name",
+      "independent_subquestions": "parallel_waves_shared_request_semaphore",
+      "path_batch_size": 32,
+      "path_caps": null,
+      "storage": "isolated_JSON_graph_SQLite_embedding_cache_exact_cosine_numpy",
+      "retrieval_scope": "global_candidate_passage_union"
+    },
+    "data": {
+      "dataset": "hotpotqa",
+      "questions": 1000,
+      "passages": 9800,
+      "seed": 20261020,
+      "sample_status": "new_revision_sample_not_original_paper_sample",
+      "scope": "union_of_selected_questions_candidate_passages",
+      "retrieval_filter": "none_global_union",
+      "entity_merge_scope": "unlabelled_candidate_groups_construction_only",
+      "selection": "first_1000_frozen_ids_in_saved_sample_order",
+      "source_files": {
+        "sample_ids": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\hotpotqa\\sample_1000_seed20261020\\ids.json",
+          "sha256": "83dc5392a9b16a67377ee86828eb5221edf611e3360317760b053ab9203eda0c"
+        },
+        "sample_gold": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\hotpotqa\\sample_1000_seed20261020\\gold.json",
+          "sha256": "42180b0a0da52520ce84445d026ac259a5235d9e8eda85d0713b0c86fae4b67a"
+        },
+        "sample_parquet": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\hotpotqa\\sample_1000_seed20261020\\questions.parquet",
+          "sha256": "5ea3eb52c5341bcba01e3eae61ffd0ef92a0f343b9e7006b5dfa48127ac043ce"
+        },
+        "corpus": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\hotpotqa\\sample_1000_seed20261020\\candidate_corpus.jsonl",
+          "sha256": "18097bf92c9f772d67ecc2fa2ba1e8bf22215fa2cd6ae9c8613a6e5f3332a646"
+        },
+        "question_passages": {
+          "path": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG\\dataset\\paper_ready\\hotpotqa\\sample_1000_seed20261020\\question_passages.jsonl",
+          "sha256": "cbcaaa7e87e3223d06a89db5293b0f4632ccd5453e2052bc49ef3888d0bca3c9"
+        }
+      },
+      "inputs_sha256": {
+        "construction_groups.json": "662648ba65a3dae7a000f472db6d72468adddb6448e3f88331fe805b7cd9390a",
+        "corpus.jsonl": "7b6bd6a3a56fb13d99bb07f0f924ebee8823b8abde6c4ffd977902892a494df5",
+        "ids.json": "c3109fc869ffa482b07133c122075975bac22069beaf8ac8f1342945337cd924",
+        "questions.json": "291986d72df4d6599bdb6a2cc9f63ac3d7527c97d536ef46aa84880d1b5e195c"
+      }
+    },
+    "path_repository": {
+      "paths_expected": 532333,
+      "paths_completed": 532333,
+      "questions": 1064666,
+      "sha256": "f818cfc6de36c534e0da61023bece5044c31e3cdcf81a9373662ca5a72282c7e",
+      "batch_size": 32,
+      "caps": null
+    },
+    "metrics": {
+      "dataset": "hotpotqa",
+      "expected": 1000,
+      "completed": 1000,
+      "missing_or_failed": 0,
+      "primary_protocol": "HotpotQA_single_reference_answer_EM_token_F1",
+      "primary_em": 53.0,
+      "primary_f1": 67.17802295657556,
+      "native_alias_em": 53.0,
+      "native_alias_f1": 67.17802295657556,
+      "retrieval_passage_recall": 83.75,
+      "retrieval_all_supports": 69.1,
+      "supporting_passage_f1": 67.64999999999976,
+      "support_metric_note": "Passage-level diagnostic, not official sentence-level support F1.",
+      "direct_count": 358,
+      "direct_fraction": 0.358,
+      "nonempty_answers": 952
+    },
+    "coverage": {
+      "extractions": 9800,
+      "predictions": 1000,
+      "expected_questions": 1000,
+      "expected_passages": 9800
+    }
+  }
+}

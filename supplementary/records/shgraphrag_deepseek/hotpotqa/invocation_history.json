@@ -1,0 +1,55 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-upstream-deepseek-relay-hotpotqa-20261024/reproduction/runs/hotpotqa1000_seed42_deepseek-relay-14ac1cd4ea79_20261024/full_invocation_provenance.json",
+  "original_file_sha256": "2867a4cbc76a5da05cc8f9424980004df83fe513df5f34ca24798c9c00393405",
+  "content": {
+    "passed": true,
+    "invocations": [
+      {
+        "state_file": "invocation_history\\2026-10-24T171228.095901_0000\\state.json",
+        "state_file_sha256": "3d165f2911089e83d6924615bb16d8c198ebc04197fc315484d07facada2e014",
+        "configuration_file": "invocation_history\\2026-10-24T171228.095901_0000\\effective_config.json",
+        "configuration_file_sha256": "7c8a746f440c69f9ae5d55d83c9aa4ef75281aeeaf9662f8c82a3c52dfa062d5",
+        "started_at": "2026-10-24T17:12:28.095901+00:00",
+        "finished_at": "2026-10-24T20:56:22.022445+00:00",
+        "status_at_audit": "failed",
+        "source_bundle_sha256": "eccc05617187d00dc280fb85eef1702566c32523b7dea75981707a26c4056259",
+        "working_commit": "e898876fe6bc0c38012d7c784e4f06a8a9d27927",
+        "text_dispatch_workers": 32,
+        "request_hard_limit": 64,
+        "embedding_request_capacity": 4,
+        "abrupt_interruption_evidence": null
+      },
+      {
+        "state_file": "invocation_history\\2026-10-24T210849.915017_0000\\state.json",
+        "state_file_sha256": "5666d2b09426499ceaccc31c56eeaed017053b21b4996b3a8b2fe875ea094261",
+        "configuration_file": "invocation_history\\2026-10-24T210849.915017_0000\\effective_config.json",
+        "configuration_file_sha256": "7c8a746f440c69f9ae5d55d83c9aa4ef75281aeeaf9662f8c82a3c52dfa062d5",
+        "started_at": "2026-10-24T21:08:49.915017+00:00",
+        "finished_at": "2026-10-24T21:23:58.814432+00:00",
+        "status_at_audit": "failed",
+        "source_bundle_sha256": "eccc05617187d00dc280fb85eef1702566c32523b7dea75981707a26c4056259",
+        "working_commit": "e898876fe6bc0c38012d7c784e4f06a8a9d27927",
+        "text_dispatch_workers": 32,
+        "request_hard_limit": 64,
+        "embedding_request_capacity": 4,
+        "abrupt_interruption_evidence": null
+      },
+      {
+        "state_file": "state.json",
+        "state_file_sha256": "e42640cb98810bd09831bd7da2f5b183876cacb1993679c8ffda4250d55a2fea",
+        "configuration_file": "effective_config.json",
+        "configuration_file_sha256": "fafe15130747b6b6c9a40247238ed3af41db51f6c8654f771ac11df5743a0a1a",
+        "started_at": "2026-10-24T21:29:50.695817+00:00",
+        "finished_at": "2026-10-24T22:12:01.396245+00:00",
+        "status_at_audit": "completed",
+        "source_bundle_sha256": "ad52b94b6effd9bd1e4ffc9bd810f5028c39f013e17609fb7f6c5c05cad43daf",
+        "working_commit": "e898876fe6bc0c38012d7c784e4f06a8a9d27927",
+        "text_dispatch_workers": 32,
+        "request_hard_limit": 64,
+        "embedding_request_capacity": 4,
+        "abrupt_interruption_evidence": null
+      }
+    ]
+  }
+}

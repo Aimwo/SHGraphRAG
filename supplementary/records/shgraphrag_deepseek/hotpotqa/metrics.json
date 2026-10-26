@@ -1,0 +1,21 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-upstream-deepseek-relay-hotpotqa-20261024/reproduction/runs/hotpotqa1000_seed42_deepseek-relay-14ac1cd4ea79_20261024/metrics.json",
+  "original_file_sha256": "8881a92c6666b10d81c1f21d266a81e7f4eee24dc4eb5c25448ef4c52da5a856",
+  "content": {
+    "dataset": "hotpotqa",
+    "answer_em": 0.608,
+    "answer_f1": 0.7621963174390857,
+    "answer_em_percent": 60.8,
+    "answer_f1_percent": 76.21963174390856,
+    "canonical_answer_em": 0.608,
+    "canonical_answer_f1": 0.7621963174390857,
+    "denominator": 1000,
+    "prediction_count": 1000,
+    "prediction_coverage": 1.0,
+    "missing_prediction_ids": [],
+    "metric_definition": "Native unmodified EM/F1 functions; 2Wiki v1.1 aliases and demonyms; fixed frozen IDs",
+    "supporting_fact_metrics": null,
+    "supporting_fact_metrics_note": "Supplied QA returns chunk references rather than native sentence-level predictions"
+  }
+}

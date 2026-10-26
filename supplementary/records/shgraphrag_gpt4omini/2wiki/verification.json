@@ -1,0 +1,28 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-4omini-repro-20261021/reproduction/runs/full1000_4omini_v2_20261021/2wiki/verification.json",
+  "original_file_sha256": "fbe53c8770e7d7a8c555b916dec521df4a2c778b6c392366bc9072748e4c076e",
+  "content": {
+    "status": "passed",
+    "questions": 1000,
+    "passages": 6293,
+    "paths": 180222,
+    "path_questions": 360444,
+    "api_attempts": 19870,
+    "checks": [
+      "source_and_input_hashes",
+      "label_free_inference_questions",
+      "exact_id_alignment",
+      "full_extraction_coverage",
+      "complete_uncapped_path_repository",
+      "normalized_1024d_BGE_M3_indexes",
+      "prediction_evidence_boundaries",
+      "4omini_no_reasoning_tokens",
+      "full_evaluation_denominator",
+      "unlabelled_construction_groups",
+      "complete_LLM_alias_confirmation",
+      "graph_rebuilt_from_confirmed_mapping",
+      "frozen_implementation_hashes"
+    ]
+  }
+}

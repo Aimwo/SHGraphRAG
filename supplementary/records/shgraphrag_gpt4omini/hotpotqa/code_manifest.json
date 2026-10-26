@@ -1,0 +1,30 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG-4omini-repro-20261021/reproduction/runs/full1000_4omini_v2_20261021/hotpotqa/code_manifest.json",
+  "original_file_sha256": "42b8d8b5f9468e0ca07036fa625149ba01a79af2e7b88158500121e2b8a974e2",
+  "content": {
+    "git_commit": "a6c98db8b4109c4887519f1b616bdcf757b7647e",
+    "modules_sha256": {
+      "campaign.py": "bb88383ee3f6d7e32b8f8ceb681b31f272d6cfcf58cb153536a1b73d3f6d2d72",
+      "client.py": "eb9793a8ae5a0100184050c347225c11b996d5d8f672f2359d2c61d0667d3972",
+      "data.py": "b61e95b9778b5d249b96fcb592b6cc972016e38a59af72bc98866ffe8b848703",
+      "embedding.py": "b0091c4fb56df7941c02e77229369b2c56c0976f27a1400da1861e16db34bceb",
+      "entity_resolution.py": "9bb635e35f482992199c308406ec302c160627d413d839780866e4105a0243ff",
+      "evaluate.py": "f8ff4be2fb0f8342cbfd21a2e0379ae7f7ef6404ad4e0212a24c6f232ac4e861",
+      "graph.py": "81900e5168cab9cabf691da54a062926b5f3020a1b7d77832f41f94f82f748e7",
+      "preflight.py": "387546553bfa4b505dd5788d1522a57e3d75c3d242ba7d347ef27c6a82d7bf4e",
+      "prompts.py": "2d2b5726a8c33777bd95f605a4ff15240990167203d33fd1fd8c71c2a5dd4856",
+      "report.py": "da010d777dc577956deee1ca491043ea634ac98246c823d40ab188a4223b4000",
+      "runner.py": "56297cda3d20fa05065b090e35ef450dcc1c95496a69aa646248f88a2cf4ab5b",
+      "telemetry.py": "aae85f963d1cea8e4475a49a02288a39da07a3fd2fecff7d5ffd0e01424bca48",
+      "test_reproduction.py": "8c29864f19858c79678329669e4f8e649f83eed0ea9731f3d4b710bed629b466",
+      "verify_run.py": "7b6eccf6fd43c53ff447556df380f1616afef1bcb62132025922ddf14a2e7723",
+      "__init__.py": "8c03c05efd6f07e8219f82fd2c970b4d115927a7afe6ae27856dd5d9531b309c"
+    },
+    "supporting_files_sha256": {
+      "config/prompt.py": "8b56547bbdb475f8597c40748003b828fef23e75eb2dd9e54a116540cd1284e5",
+      "reproduction/requirements.lock.txt": "e779d87352d2205908c2ca440dac103a79ba49db909c6be36adfbb16deed55ee",
+      "reproduction/METHOD_FIDELITY.md": "7b3706bc6328ef627ebdefe2aeca3d850b85d26c7997328b8cff58ee34e7187e"
+    }
+  }
+}

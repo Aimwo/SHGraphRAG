@@ -1,0 +1,347 @@
+{
+  "record_kind": "historical_metadata_not_a_new_run",
+  "source_file": "Edit/Repo/SHGraphRAG/output/paper_revision/2026-10-24/hypergraphrag_deepseek_bge_musique_seed42_n1000_c100_summary500_budget8192_runtimefix1/run/provenance.json",
+  "original_file_sha256": "1a3e58df772b56815e199502b69cf51fedd764ae9192be4ee319cb3d912cda86",
+  "content": {
+    "config": {
+      "status": "ready",
+      "provider": "deepseek-relay",
+      "text_api": "openai-chat-completions",
+      "base_url": "https://new.21r.cn/v1",
+      "model": "deepseek-v4.1-flash",
+      "allowed_returned_models": [
+        "deepseek-v4.1-flash"
+      ],
+      "max_in_flight": 100,
+      "generation_parameters": {},
+      "generation_note": "Temperature, output caps and thinking controls are omitted unless explicitly supplied by the native method or confirmed for the chosen relay model.",
+      "request_timeout_seconds": 600,
+      "max_text_attempts": 3,
+      "proxy": null,
+      "embedding": {
+        "base_url": "http://127.0.0.1:11434",
+        "model": "bge-m3:latest",
+        "dimension": 1024,
+        "expected_digest_from_reference": "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab",
+        "actual_digest": null,
+        "digest_note": "Reference digest only; do not claim a runtime digest has been verified without evidence.",
+        "max_in_flight": 4,
+        "batch_size": 32,
+        "truncate": null,
+        "truncate_note": "Omitted, matching the referenced langchain_ollama client; actual server defaults are not overridden.",
+        "options": {
+          "num_batch": 8192
+        },
+        "vector_transform": "none; preserve native Ollama output and native cosine-vector storage"
+      },
+      "dataset": "MuSiQue-Ans v1.0 development",
+      "sample_seed": 42,
+      "sample_size": 1000
+    },
+    "method": {
+      "official_commit": "d587cdf8c3fe2be7719557f845324cb3a321f5e2",
+      "algorithm": "HyperGraphRAG native tuple extraction and hybrid entity/hyperedge retrieval",
+      "storage": "NetworkXStorage/NanoVectorDBStorage/JsonKVStorage",
+      "chunk_token_size": 1200,
+      "chunk_overlap_token_size": 100,
+      "tokenizer": "gpt-4o-mini o200k_base (token accounting only; no GPT model calls)",
+      "entity_extract_max_gleaning": 2,
+      "entity_summary_to_max_tokens": 500,
+      "mode": "hybrid",
+      "top_k": 60,
+      "max_token_for_text_unit": 4000,
+      "max_token_for_global_context": 4000,
+      "max_token_for_local_context": 4000,
+      "response_type": "A short answer for exact-match question answering. Return only a JSON object with one key, \"answer\", whose value is the concise answer string. Use the shortest complete entity name, date, number or yes/no answer as appropriate. Do not include explanations, citations, Markdown or reasoning. If the supplied evidence is insufficient, use {\"answer\": \"\"}.",
+      "path_question_repository": {
+        "applicable": false,
+        "count": 0,
+        "reason": "Not a component of this native HyperGraphRAG implementation"
+      },
+      "corpus_scope": "Global union of selected candidate paragraphs; no question-specific filter",
+      "summary_backend_adaptation": {
+        "name": "user_approved_bounded_visible_summary_20261025",
+        "visible_target_tokens": 500,
+        "visible_tokenizer": "gpt-4o-mini/o200k_base",
+        "physical_generation_budget_tokens": 8192,
+        "length_constraint": "\n\nLength constraint: The final summary must be no more than 500 tokens. Return only that concise final summary.",
+        "nonempty_provider_length_output": "use, label provider truncation",
+        "visible_text_over_target": "use prefix of at most 500 native tokenizer tokens, label local truncation",
+        "empty_or_filtered_output": "unavailable; retain original extracted description through the existing explicit fallback",
+        "legacy_summary": "reuse exact original completed or nonempty length-terminated output",
+        "other_stages": "unchanged"
+      },
+      "initial_model_cache": "Exact text requests retained; identical-input BGE vectors reused where available; changed summary descriptions re-embedded"
+    },
+    "inputs": {
+      "dataset": "MuSiQue-Ans v1.0",
+      "split": "development",
+      "seed": 42,
+      "count": 1000,
+      "source_count": 2417,
+      "sampling": "random.Random(42).sample(sorted(unique_ids), 1000)",
+      "order": "RNG draw order; identical to reference chat artifacts",
+      "candidate_occurrences": 19997,
+      "unique_candidate_passages": 11835,
+      "retrieval_scope": "global union of all selected candidate passages; no question ID filtering",
+      "gold_policy": "evaluation only; model input is id/question and unlabeled passage text",
+      "reference_artifact": "<LOCAL_WORKSPACE>\\Edit\\Repo\\SHGraphRAG-upstream-deepseek-relay-20261024\\reproduction\\artifacts\\musique_seed42_n1000",
+      "official_gold_sha256": "15fa63794d18a94ce12411aca6e2327e65b6e83b0b1490efab3f1962e48abf3b",
+      "hop_counts": {
+        "2hop": 537,
+        "4hop1": 92,
+        "3hop1": 238,
+        "4hop2": 26,
+        "3hop2": 69,
+        "4hop3": 38
+      },
+      "files": {
+        "candidate_corpus.jsonl": {
+          "sha256": "51d407687a5f70679c1ebb8c4d7435fad05abbef14a46bf5695e526ea265f135",
+          "bytes": 13335167
+        },
+        "gold.jsonl": {
+          "sha256": "5a22ad36e4ed44d98a6a2c54b470612e66fdf6e44c6360d7c19e00b34cdf5090",
+          "bytes": 12503314
+        },
+        "ids.json": {
+          "sha256": "42edcc61a5c018626abfe3f43c5148e15e18682aa23938a9fb887d586bc203ad",
+          "bytes": 29358
+        },
+        "queries.jsonl": {
+          "sha256": "ebbaa65e60ccbc8c730fcfb67d927a657c3da60cd1331caddf22373f78f6e83a",
+          "bytes": 149308
+        },
+        "question_passages.jsonl": {
+          "sha256": "3a0a1c93bae78a4d51d2ade1a91745ddaa1ff9755ee1d5c5ed1c1c3e24d8d2c7",
+          "bytes": 1419149
+        },
+        "questions.parquet": {
+          "sha256": "ef8482a1e5ef5dc77a20e42af95cdde7418698288950a1564d542fce985cdab7",
+          "bytes": 6237534
+        },
+        "source_indices.json": {
+          "sha256": "a0b41f72bf93da1431a3a4341d606b4ac32f6f53970bcb9a07437fc66c6b2751",
+          "bytes": 8520
+        }
+      },
+      "status": "new_revision_sample_not_original_paper_sample",
+      "model_api_requests": 0
+    },
+    "source_sha256": {
+      "experiment\\__init__.py": "e427806c02e7e61fae2c0cc069fee6fab9ee17ddbc3e614591a75216344bf324",
+      "experiment\\capacity_recovery.py": "229aa43bedb25780065269034933d27894bcaa0319f8b26fdf1d7457415f15aa",
+      "experiment\\common.py": "a7b71c28b5147bd3ca34939cd9353dc01ad224a2d695dc162fad44d18259d4c1",
+      "experiment\\config.json": "0b5e5c9b4c32daaa404cab7a2993771d9740087b616eb80100434b9d4d8499ea",
+      "experiment\\config.py": "d4375a79fb33a5c3bb5901e1d65f5a118653f63c0e37525c4ff83afee20fa5c1",
+      "experiment\\evaluate.py": "7277464a1a9b36ab3a94ac4adb0285f1ed6031295055abc6c0918be9fe939196",
+      "experiment\\offline_checks.py": "66d209d81efc1a2b4f30c56c9992b1d5fdf876cedf45b814478dfd37808094e8",
+      "experiment\\prepare.py": "79c2a4b486c5d626414e0a080ed2c9b14f499d1e22071b47a1afae4d1fd861da",
+      "experiment\\recovery.py": "b32517ee97f5468d98c52988e42cc0f2392fca7c583d396f712d7d21cdd08de3",
+      "experiment\\resume_guard.py": "46e86df5f20ae4975ccc1585ee1c2277e1a85213ae76ab6ef87720e86f940ba9",
+      "experiment\\run.py": "04ad96c4786321f77d3dbf2385c065bee5598c8ac96f46a79711358d35a45eca",
+      "experiment\\runtime_startup_fix.json": "590a22438600e33745b44fe7281cf2146219cc03d1ae688f3aa17bed3691136d",
+      "experiment\\summary_policy.py": "bc3b48c347eca7dc7e09f9a4fa332cba9af6cf5bd2b32b9b7fe53622623d480f",
+      "experiment\\summary_reuse.py": "0cd35653f823b82866a210e8bf203a96cb7c5abfd9bc2b620d168dda0f50c137",
+      "experiment\\telemetry.py": "5cc6ff7231ba2b47a986291b457b402955c0298c704b3b441c4b9e16ba0fdbbd",
+      "experiment\\test_experiment.py": "9549f250a05ca2bb51690fdadf6cf3e6acc38698c4f4c66a855bb05ff086f287",
+      "experiment\\test_runtime_recovery.py": "fae9b07ca2afd6995f10daa85cfb01552459650419248a34a46716ee9111b2a4",
+      "experiment\\text_cache_rekey.py": "2576c6fc2113c3aa405ec36acf9f83584af498b96f0a8a2e0c3ffc630b709b81",
+      "experiment\\transport.py": "b95eeb7175050387cb8b11812853e464dc11d2a76fc4a11de14ce1f36e8e0434",
+      "experiment\\verify.py": "650fc28c26721c5d79e17140e7eac981ce116522429e3a128fd1a43de064fcd9",
+      "hypergraphrag\\__init__.py": "42db2a734b8c565ead8ea7d84f1422226dba430674d2e28e124b8656c8a02103",
+      "hypergraphrag\\base.py": "2d9437b8c1c005c64902b04a4a978efa8d52395ee3703c363070ce9509ec6c68",
+      "hypergraphrag\\hypergraphrag.py": "2b1c49dd201232706705526dfe16d55a451b7b8a63837aea8e9978a6b56cfc79",
+      "hypergraphrag\\kg\\__init__.py": "fbd3eff0946b1cd66087d6a8ced0d073e050b053fa70e082af6769923565a202",
+      "hypergraphrag\\kg\\chroma_impl.py": "b9aaf16bda1a7155c1ccc42e41439be3c0ff9edb81dd4e48f09a8be4a782774d",
+      "hypergraphrag\\kg\\milvus_impl.py": "a1d491c90faf98ee9e0c6e0747c04f841aa0827a0169b2be0811f366f768a6d8",
+      "hypergraphrag\\kg\\mongo_impl.py": "c37b8ba5582216c3c3986eabe7bdc02e9b33f99e2f9de941523041323517c5bf",
+      "hypergraphrag\\kg\\neo4j_impl.py": "8c26260a07953da3387592b63b8049eb302a31845b75fae7ab27cff55f688078",
+      "hypergraphrag\\kg\\oracle_impl.py": "e44e57dfaa692f7583eda2dd6033006b4ec91fe30b7fc0493d29dc8666405ced",
+      "hypergraphrag\\kg\\tidb_impl.py": "fa9dd0fceab7e699facbb4c13f536267cff7acff751a9131d873203e7f75feb8",
+      "hypergraphrag\\llm.py": "aa62c03e368aa5bfd8765820c12db7e3b0b3bf43d292a0c980af60cac74c44a3",
+      "hypergraphrag\\operate.py": "2751b4c8f94da95918b6458635159fd8767e0e0ab2ce93b2a0cac4bd42f9faa3",
+      "hypergraphrag\\prompt.py": "2730b18d849641d9dedafad2374034bd5ed90d403402a1991ea0596e869b085e",
+      "hypergraphrag\\storage.py": "42c270938b33169cbacb85415a43dc32e0e3cf459e4485b5f09ff11fce5e4669",
+      "hypergraphrag\\utils.py": "77fa3fdf368b7b3df1da3a5a6f88bdadb65a9265d8b2b50903d55a7889eb9eca",
+      "launch.ps1": "91f5bd89e524e6a77f93f3ab180c700f62e472b3f74977443591cb7458ac4f91"
+    },
+    "source_provenance": {
+      "official_repository": "https://github.com/LHRLAB/HyperGraphRAG",
+      "official_commit": "d587cdf8c3fe2be7719557f845324cb3a321f5e2",
+      "copied_working_source": "<LOCAL_WORKSPACE>\\Edit\\Repo\\CompareMethods\\HyperGraphRAG",
+      "source_sha256": {
+        "hypergraphrag\\__init__.py": "42db2a734b8c565ead8ea7d84f1422226dba430674d2e28e124b8656c8a02103",
+        "hypergraphrag\\base.py": "2d9437b8c1c005c64902b04a4a978efa8d52395ee3703c363070ce9509ec6c68",
+        "hypergraphrag\\hypergraphrag.py": "2b1c49dd201232706705526dfe16d55a451b7b8a63837aea8e9978a6b56cfc79",
+        "hypergraphrag\\kg\\__init__.py": "fbd3eff0946b1cd66087d6a8ced0d073e050b053fa70e082af6769923565a202",
+        "hypergraphrag\\kg\\chroma_impl.py": "b9aaf16bda1a7155c1ccc42e41439be3c0ff9edb81dd4e48f09a8be4a782774d",
+        "hypergraphrag\\kg\\milvus_impl.py": "a1d491c90faf98ee9e0c6e0747c04f841aa0827a0169b2be0811f366f768a6d8",
+        "hypergraphrag\\kg\\mongo_impl.py": "c37b8ba5582216c3c3986eabe7bdc02e9b33f99e2f9de941523041323517c5bf",
+        "hypergraphrag\\kg\\neo4j_impl.py": "8c26260a07953da3387592b63b8049eb302a31845b75fae7ab27cff55f688078",
+        "hypergraphrag\\kg\\oracle_impl.py": "e44e57dfaa692f7583eda2dd6033006b4ec91fe30b7fc0493d29dc8666405ced",
+        "hypergraphrag\\kg\\tidb_impl.py": "fa9dd0fceab7e699facbb4c13f536267cff7acff751a9131d873203e7f75feb8",
+        "hypergraphrag\\llm.py": "aa62c03e368aa5bfd8765820c12db7e3b0b3bf43d292a0c980af60cac74c44a3",
+        "hypergraphrag\\operate.py": "2751b4c8f94da95918b6458635159fd8767e0e0ab2ce93b2a0cac4bd42f9faa3",
+        "hypergraphrag\\prompt.py": "2730b18d849641d9dedafad2374034bd5ed90d403402a1991ea0596e869b085e",
+        "hypergraphrag\\storage.py": "42c270938b33169cbacb85415a43dc32e0e3cf459e4485b5f09ff11fce5e4669",
+        "hypergraphrag\\utils.py": "77fa3fdf368b7b3df1da3a5a6f88bdadb65a9265d8b2b50903d55a7889eb9eca"
+      },
+      "patch_sha256": "74972a0bd89768b728fcf2295b65e3346695d71b60155a9d653206b4a86d5a7a",
+      "prior_model_outputs_copied": false,
+      "prior_vectors_copied": false,
+      "credentials_copied_or_loaded": false,
+      "upstream_reference_chat": "01a15ac7-0a19-7f51-88dd-fe73d6040d6f",
+      "source_notes": [
+        "Original tuple prompts, graph construction and hybrid ranking retained.",
+        "Existing instrumentation adds retrieval trace and exception-safe async scheduling.",
+        "Existing terminal unavailable-output policies preserve complete prior extraction and do not invent unavailable facts.",
+        "Optional Hugging Face/Bedrock imports are lazy."
+      ]
+    },
+    "dependency_lock_sha256": "cfd61154ec4886def48fefab8f743264c58b05c500ca8a06d6d3a6d93eff952d",
+    "python_hash_seed": "42",
+    "capacity_recovery_import": {
+      "status": "offline_prepared_waiting_for_other_chat_evaluation",
+      "prepared_at": "2026-10-25T12:14:12.485286+08:00",
+      "dataset": "musique",
+      "source_directory": "hypergraphrag_deepseek_bge_seed42_n1000_c32_recovery1",
+      "original_config": {
+        "status": "ready",
+        "provider": "deepseek-relay",
+        "text_api": "openai-chat-completions",
+        "base_url": "https://new.21r.cn/v1",
+        "model": "deepseek-v4.1-flash",
+        "allowed_returned_models": [
+          "deepseek-v4.1-flash"
+        ],
+        "max_in_flight": 32,
+        "generation_parameters": {},
+        "generation_note": "Temperature, output caps and thinking controls are omitted unless explicitly supplied by the native method or confirmed for the chosen relay model.",
+        "request_timeout_seconds": 600,
+        "max_text_attempts": 3,
+        "proxy": null,
+        "embedding": {
+          "base_url": "http://127.0.0.1:11434",
+          "model": "bge-m3:latest",
+          "dimension": 1024,
+          "expected_digest_from_reference": "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab",
+          "actual_digest": null,
+          "digest_note": "Reference digest only; do not claim a runtime digest has been verified without evidence.",
+          "max_in_flight": 4,
+          "batch_size": 32,
+          "truncate": null,
+          "truncate_note": "Omitted, matching the referenced langchain_ollama client; actual server defaults are not overridden.",
+          "options": {},
+          "vector_transform": "none; preserve native Ollama output and native cosine-vector storage"
+        },
+        "dataset": "MuSiQue-Ans v1.0 development",
+        "sample_seed": 42,
+        "sample_size": 1000
+      },
+      "target_config": {
+        "status": "ready",
+        "provider": "deepseek-relay",
+        "text_api": "openai-chat-completions",
+        "base_url": "https://new.21r.cn/v1",
+        "model": "deepseek-v4.1-flash",
+        "allowed_returned_models": [
+          "deepseek-v4.1-flash"
+        ],
+        "max_in_flight": 100,
+        "generation_parameters": {},
+        "generation_note": "Temperature, output caps and thinking controls are omitted unless explicitly supplied by the native method or confirmed for the chosen relay model.",
+        "request_timeout_seconds": 600,
+        "max_text_attempts": 3,
+        "proxy": null,
+        "embedding": {
+          "base_url": "http://127.0.0.1:11434",
+          "model": "bge-m3:latest",
+          "dimension": 1024,
+          "expected_digest_from_reference": "7907646426070047a77226ac3e684fbbe8410524f7b4a74d02837e43f2146bab",
+          "actual_digest": null,
+          "digest_note": "Reference digest only; do not claim a runtime digest has been verified without evidence.",
+          "max_in_flight": 4,
+          "batch_size": 32,
+          "truncate": null,
+          "truncate_note": "Omitted, matching the referenced langchain_ollama client; actual server defaults are not overridden.",
+          "options": {
+            "num_batch": 8192
+          },
+          "vector_transform": "none; preserve native Ollama output and native cosine-vector storage"
+        },
+        "dataset": "MuSiQue-Ans v1.0 development",
+        "sample_seed": 42,
+        "sample_size": 1000
+      },
+      "original_provenance_sha256": "b8fc40194670d058fef32be6dbbbf807099951760ff3bd8aa99156d998bba689",
+      "source_evidence_sha256": {
+        "experiment/config.json": "6e28f854529d537313ab1f539a645549f5955ee099b5f876e30637a7e2b6c3d6",
+        "inputs/manifest.json": "0e52297be00e749b0d39f6bbe3a42536566d142fe687d8256136e097ee248944",
+        "run/provenance.json": "b8fc40194670d058fef32be6dbbbf807099951760ff3bd8aa99156d998bba689",
+        "run/status.json": "bf50c5b409d60679e8bba09c6b60325d28fd2cd38551154e4a1d7c1670079970",
+        "run/api_calls.jsonl": "d0a704163bb5b2e9406a0869c105c792a1067acc80938351a69f9a1b98779818",
+        "run/embedding_calls.jsonl": "8bcf60a2622a12b206a499acc6395f9e5ae6ade6c7fe559968c161ca2701b61e",
+        "run/request_started.jsonl": "5c62efe73cb1cb76873244467a48e4819274a0c70fe388047e8b204463874f91",
+        "run/construction_attempts.jsonl": "3d7b8ad8962dfa7110878f22033fd064d41d2b7ef2fa423f324d712ac8f0de4b",
+        "run/campaign_attempts.jsonl": "72d73339dead02b7c0a94452e0ff2b03f4b85f9aa2ecc424a3962c82af526b44",
+        "run/phase_events.jsonl": "f99118a0fddb7770ab1639ffd227c6fa89b5e9752ca91e70dc77e0b750e8b7ce",
+        "run/cache_hits.jsonl": "cad6c6dfcb60b6c456b9f6370bda614e0d27485f8acf41b0d952592aab25f169",
+        "run/resource_samples.jsonl": "ee7f1a01deb0b2bc9eabe23b5f90dc99cec1294705dae96526601c75600a446f",
+        "run/environment.json": "8899491ef1e1bdb804a5d18dccabc30f590a9567aaabba9d153ed61179e54c1c",
+        "run/expected_chunks.json": "ff22aa6a21cf584af6e0cfeeba273cd6fcd0eaa05466873716c9ae04524f49de",
+        "run/prompts.json": "8ab8395bfae35a76069c2c7ae31a953bc692333c8a6c8dd736dc964b256adf48"
+      },
+      "cache_mapping": "provenance/text_cache_rekey_mapping.jsonl",
+      "cache_mapping_sha256": "afa34bdbc27275ebd45b965c21372f58edd2a471f7913899d4b94604f3ac27b8",
+      "imported_terminal_text_caches": 42259,
+      "imported_terminal_outcomes": {
+        "completed": 40382,
+        "output_truncated": 1869,
+        "provider_filtered": 8
+      },
+      "imported_vectors": 0,
+      "copied_indexes": 0,
+      "user_interruption": null,
+      "real_new_capacity_requests": 0,
+      "credentials_loaded": false,
+      "configuration_delta": {
+        "embedding.options": {
+          "from": {},
+          "to": {
+            "num_batch": 8192
+          }
+        },
+        "max_in_flight": {
+          "from": 32,
+          "to": 100
+        }
+      },
+      "limitations": [
+        "Original failed batch succeeded in one separately authorized local BGE validation.",
+        "That diagnostic does not establish full index construction or sustained throughput.",
+        "All vectors are rebuilt under num_batch=8192; no old vector or index is imported.",
+        "Every historical physical attempt, unavailable outcome and unknown interruption remains auditable.",
+        "User pause and conditional-release guards remain active until the other chat finishes evaluation."
+      ],
+      "concurrency_preparation_source": {
+        "directory": "hypergraphrag_deepseek_bge_musique_seed42_n1000_c32_capacity8192",
+        "pinned_files": {
+          "experiment/config.json": "fdec5e7ed5043de40865dd21704d29e569dbba3ab0ca5b9ffbc96a9a901f8149",
+          "provenance/capacity_recovery.json": "ec30dc11e779193e2296d05bbeb7fd7f37410b290b2cf5fb5cf05c6c8685d5e3",
+          "provenance/text_cache_rekey_mapping.jsonl": "afa34bdbc27275ebd45b965c21372f58edd2a471f7913899d4b94604f3ac27b8"
+        },
+        "cache_identity_note": "Scheduling ceiling and authorization prose do not enter provider_identity; all prepared text-cache keys, responses and original physical identities are unchanged from the independently verified c32 capacity preparation."
+      },
+      "conditional_authorization": {
+        "path_relative_to_campaign": "conditional_resume_20261025/authorization.json",
+        "combined_request_ceiling": 100
+      },
+      "direct_user_resume_authorization": {
+        "mode": "immediate_user_resume",
+        "record_relative_to_campaign": "conditional_resume_20261025/authorization.json",
+        "supersedes_wait_for_other_chat_independent_checks": true
+      }
+    }
+  }
+}
